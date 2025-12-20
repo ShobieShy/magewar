@@ -1,6 +1,6 @@
 # Magewar - A Co-op Looter Fantasy RPG
 
-> A Godot 4.5-based collaborative multiplayer fantasy RPG inspired by Konosuba and Borderlands, featuring deep crafting systems, procedural dungeons, and dynamic spell mechanics.
+> A Godot 4.5-based collaborative multiplayer fantasy RPG inspired by Konosuba and Borderlands, featuring modular weapon crafting, rock-paper-scissors elemental combat, and dynamic spell mechanics.
 
 ## Overview
 
@@ -9,10 +9,11 @@ Magewar is a co-op looter fantasy RPG built with **Godot 4.5** that combines the
 ### Key Features
 
 - **Co-op Multiplayer:** Up to 6 players via Steam P2P networking
-- **Deep Crafting System:** Assemble custom staffs and wands from interchangeable parts
+- **Deep Crafting System:** Customize staffs/wands with rarity-based spell cores + modular parts
+- **6-Element Magic System:** Fire, Water, Earth, Air, Light, Dark with rock-paper-scissors balance
 - **Loot-Driven:** 6-tier rarity system (Basic → Unique) with randomized stats
 - **Procedural Dungeons:** 5 dynamically populated dungeons with varied enemy spawns
-- **13-Element Magic System:** Comprehensive spell framework with 14+ preset spells
+- **Specialized Elements:** Light heals allies, Dark corrupts enemies into summons
 - **Quest Framework:** 10+ objective types with branching paths
 - **Skill Progression:** Customizable skill trees with 4+ active systems
 - **Cross-Platform:** Windows, Linux, macOS via Godot + Steam SDK
@@ -125,25 +126,51 @@ SaveManager.save_game()
 
 ### 2. Crafting System
 
-Craft custom staffs and wands from modular parts. Located in `scripts/systems/crafting_*.gd` (7 files).
+Craft custom staffs and wands by combining a **rarity-based spell core** with **modular performance parts**. Located in `scripts/systems/crafting_*.gd` (7 files).
+
+**Core Concept:**
+The base staff/wand **is the spell** (Fire/Water/Earth/Air/Light/Dark) with a rarity tier. Parts are **modifiers** that enhance the spell's delivery and power.
 
 **Weapon Composition:**
-- **Staffs:** Head (1-3 gem slots) + Exterior + Interior + Handle + Optional Charm
-- **Wands:** Head (1 gem slot) + Exterior + Interior + Optional Handle
+- **Base Spell Core** (determines element + starting spell, has rarity: Basic → Unique)
+  - Fire, Water, Earth, Air, Light, Dark
+  - Each rarity grants stat multipliers (1.0x to 2.5x)
+  
+- **Modifier Parts** (enhance the spell core):
+  - **Head** (Staff only) - Holds 1-3 gem slots for secondary effects
+  - **Exterior** - Affects fire rate and projectile speed
+  - **Interior** - Boosts base damage and mana efficiency
+  - **Handle** - Improves accuracy, stability, and handling
+  - **Charm** (Optional) - Extra augmentation (e.g., damage type conversion)
+
+**Example Weapon:**
+```
+Rare Fire Staff = Rare Fire Spell Core + Oak Exterior + Silver Interior + Leather Handle
+= 1.5x fire damage, medium fire rate, good accuracy
+```
 
 **Key Files:**
 - `crafting_manager.gd` - Orchestration and UI integration
 - `crafting_logic.gd` - Core recipe validation and crafting
 - `crafting_recipe_manager.gd` - Recipe database
 - `crafting_achievement_manager.gd` - Milestone tracking
+- `weapon_configuration.gd` - Spell core + parts assembly
 
 **Example Usage:**
 ```gdscript
-# In Assembly UI
-var recipe = CraftingManager.create_recipe([head_part, exterior, interior, handle])
-if recipe.is_valid():
-    var crafted_staff = recipe.craft()
-    inventory.add_item(crafted_staff)
+# In Assembly UI - Select a spell core and add parts
+var fire_core = get_rare_fire_core()  # Rarity + element
+var exterior = get_oak_exterior()
+var interior = get_silver_interior()
+var handle = get_leather_handle()
+
+var config = WeaponConfiguration.new()
+config.spell_core = fire_core  # Base spell: Fire (1.5x multiplier)
+config.add_part(exterior)
+config.add_part(interior)
+config.add_part(handle)
+
+var crafted_staff = CraftingManager.craft_weapon(config)
 ```
 
 ### 3. Inventory & Equipment
@@ -176,31 +203,65 @@ var total_damage = player.get_stat("damage")  # Includes gear
 
 ### 4. Spell System
 
-13-element magic system with 14+ preset spells and a modular effect framework.
+**6-Element Magic System** with rock-paper-scissors balance and specialized effects.
 
-**Core Components:**
-- `spell_data.gd` - Spell definition (name, cost, cooldown, effects)
-- `spell_effect.gd` - Base effect class
-- 6 effect types: Damage, Heal, Movement, Shield, Status, Summon
-- 13 elements: Fire, Ice, Lightning, Earth, Wind, Water, Light, Dark, Shadow, Holy, Arcane, Poison, None
+**Core Elements (6 Total):**
 
-**Preset Spells:**
-- Arcane Bolt, Arcane Missile
-- Fireball, Fireball Enhanced
-- Ice Shard, Ice Shard Piercing
-- Lightning Strike, Lightning Chain
-- Earth Shield, Earth Spike
-- Healing Light, Healing Wave
-- Shield Barrier, Wind Dash
+| Element | Strong Against | Weak Against | Special Effect |
+|---------|---|---|---|
+| **Fire** 🔥 | Air | Water | AOE damage over time |
+| **Water** 💧 | Fire | Earth | Slowing/freeze effects |
+| **Earth** 🪨 | Water | Air | Knockback and stun |
+| **Air** 💨 | Earth | Fire | High critical damage |
+| **Light** ✨ | Dark | None | Heals allies + 1 summon |
+| **Dark** 🌑 | Light | None | Corrupts enemies → summons |
 
-**Casting a Spell:**
-```gdscript
-# In SpellCaster component
-var spell = SpellManager.get_spell("fireball")
-if can_cast_spell(spell):
-    cast_spell(spell, target_position)
-    # Network: Automatically synced via SpellNetworkManager
+**Rock-Paper-Scissors Balance:**
 ```
+Fire beats Air
+Air beats Earth  
+Earth beats Water
+Water beats Fire
+
+Light beats Dark
+Dark beats Light (neutral, both strong)
+```
+
+**Element-Specific Mechanics:**
+
+1. **Light Element**
+   - Primary: Healing (direct HP restore)
+   - Secondary: Radiant Summon (1 allied creature)
+   - Weakness: Absorbed by Dark magic
+   
+2. **Dark Element**
+   - Primary: Damage + enemy corruption
+   - Secondary: Summon corrupted enemies as servants
+   - Effect: Twisted enemies fight for player, then expire
+   - Weakness: Purged by Light magic
+
+3. **Fire/Water/Earth/Air**
+   - Bidirectional weakness system enforces balance
+   - Spell cores have innate element
+   - Gems can modify element or add secondary effects
+
+**Casting System:**
+```gdscript
+# Spell core determines element automatically
+var rare_fire_staff = get_rare_fire_staff()
+# Rare Fire Staff casting = 1.5x base damage, Fire element
+
+if can_cast_spell(rare_fire_staff):
+    cast_spell(rare_fire_staff, target_position)
+    # Automatically scaled by rarity + element strength
+    # Network: Synced via SpellNetworkManager
+```
+
+**Key Files:**
+- `spell_data.gd` - Spell definition (element, cost, cooldown, effects)
+- `spell_effect.gd` - Base effect class
+- `spell_caster.gd` - Casting mechanics for entities
+- `spell_network_manager.gd` - Network spell synchronization
 
 ### 5. Enemy & Loot System
 
@@ -334,16 +395,28 @@ SaveManager.load_game()
 ### Items
 Located in `resources/items/` - All items are `.tres` resource files:
 
+**Spell Cores (Base Weapons):** Rarity-locked spell cores with 6 element types
+  - Fire Core (Basic, Uncommon, Rare, Mythic, Primordial, Unique)
+  - Water Core (6 rarity tiers)
+  - Earth Core (6 rarity tiers)
+  - Air Core (6 rarity tiers)
+  - Light Core (6 rarity tiers) - Healing + summon
+  - Dark Core (6 rarity tiers) - Corruption + summon
+  - Total: 36 spell core variants with stat multipliers
+
+**Modifier Parts:** Performance enhancements (can have own rarities)
+  - Exteriors (6 variants): Wood, Oak, Runewood, etc. - Fire rate/speed
+  - Interiors (6 variants): Iron/Silver/Mithril Conduits - Damage/efficiency
+  - Handles (6 variants): Leather/Silk/Master's grips - Accuracy/stability
+  - Heads (Staff only, 6 variants): Crystal/Focus/Core - Gem slots (1-3)
+  - Charms (Optional, 6 variants): Ember/Frost/Vampiric - Secondary effects
+
 **Equipment:** 10 armor/accessory templates (Apprentice to Legendary tiers)
-**Gems:** 5 types (Amethyst, Ruby, Sapphire, Topaz, Emerald)
+
 **Grimoires:** 3 spell books (Apprentice, Elemental, Forbidden)
-**Weapon Parts:** 13 interchangeable parts
-  - Heads: Cracked Crystal, Polished Focus, Primordial Core
-  - Exteriors: Rough Wood, Carved Oak, Runewood
-  - Handles: Leather Wrap, Silk Binding, Master's Grip
-  - Interiors: Iron/Silver/Mithril Conduits
-  - Charms: Ember, Frost, Vampiric
+
 **Potions:** 7 consumables (Health, Mana, Stamina, Elixirs)
+
 **Misc:** Joe's Trash (tutorial quest item)
 
 ### Spells
@@ -385,18 +458,26 @@ Each defines stats, abilities, and drop tables.
 
 ### Enumerations (`scripts/data/enums.gd` - 285 lines)
 
-Global enums for game state, items, damage types, elements, and more:
+Global enums for game state, items, elements, and more:
 
 ```gdscript
 enum GameState { MENU, LOADING, PLAYING, PAUSED, CUTSCENE }
 enum NetworkMode { OFFLINE, LOCAL_MULTIPLAYER, STEAM_P2P }
 enum ItemRarity { BASIC, UNCOMMON, RARE, MYTHIC, PRIMORDIAL, UNIQUE }
-enum DamageType { PHYSICAL, FIRE, ICE, LIGHTNING, ARCANE, LIGHT, DARK }
-enum Element { FIRE, ICE, LIGHTNING, EARTH, WIND, WATER, LIGHT, DARK, SHADOW, HOLY, ARCANE, POISON, NONE }
+
+# 6-Element System (Rock-Paper-Scissors)
+enum Element { FIRE, WATER, EARTH, AIR, LIGHT, DARK }
+
+# Element Matchups (Auto-calculated from triangle)
+# Fire > Air > Earth > Water > Fire (cycle)
+# Light vs Dark (balanced opposition)
+
 enum ObjectiveType { KILL, COLLECT, TALK, EXPLORE, DEFEAT_BOSS, SURVIVE, ESCORT, INTERACT, CUSTOM_EVENT }
 enum EquipmentSlot { HEAD, BODY, BELT, FEET, PRIMARY_WEAPON, SECONDARY_WEAPON, GRIMOIRE, POTION }
 enum SkillType { PASSIVE, ACTIVE, SPELL_AUGMENT }
 enum QuestState { LOCKED, AVAILABLE, ACTIVE, COMPLETED, FAILED }
+enum SpellCore { FIRE, WATER, EARTH, AIR, LIGHT, DARK }
+enum PartType { EXTERIOR, INTERIOR, HANDLE, HEAD, CHARM }
 # ... and 20+ more
 ```
 
@@ -415,8 +496,38 @@ const PLAYER_BASE_SPEED = 5.0
 const INVENTORY_SIZE = 40
 const STORAGE_SIZE = 100
 const POTION_QUICK_USE_KEY = KEY_Q
+
+# Rarity Multipliers (applied to spell cores)
+const RARITY_STAT_MULTIPLIERS = {
+    ItemRarity.BASIC: 1.0,        # Base power
+    ItemRarity.UNCOMMON: 1.2,     # +20%
+    ItemRarity.RARE: 1.5,         # +50%
+    ItemRarity.MYTHIC: 1.8,       # +80%
+    ItemRarity.PRIMORDIAL: 2.2,   # +120%
+    ItemRarity.UNIQUE: 2.5        # +150%
+}
+
+# Element Advantage System (Damage multiplier)
+const ELEMENT_ADVANTAGE = 1.25  # 25% bonus when strong against
+const ELEMENT_DISADVANTAGE = 0.75  # 25% reduction when weak against
+
 const ITEM_RARITY_WEIGHTS = { ... }  # Probability curve
 # ... and 40+ more
+```
+
+### Element Matchup Chart
+```
+ADVANTAGE MATRIX:
+Fire   > Air      (25% boost to Fire when fighting Air)
+Air    > Earth    (25% boost to Air when fighting Earth)
+Earth  > Water    (25% boost to Earth when fighting Water)
+Water  > Fire     (25% boost to Water when fighting Fire)
+
+Light vs Dark     (Balanced - no advantage)
+
+SPECIAL EFFECTS:
+Light   = Healing + 1 Summon (allied creature)
+Dark    = Corruption + Summon (enemies become servants)
 ```
 
 ## World Organization
@@ -440,6 +551,176 @@ Each dungeon has:
 ### Locations Network
 Fast travel system connects all major hubs via `FastTravelManager`.
 
+## Magic System Deep Dive
+
+### The 6-Element System
+
+Magewar features a balanced **rock-paper-scissors magic system** with 6 core elements:
+
+#### The Damage Cycle
+
+```
+        FIRE (🔥)
+         /    \
+        /      \
+      AIR      WATER
+       \        /
+        \      /
+        EARTH
+```
+
+**Elemental Advantages:**
+- **Fire** > Air (Fire burns through air) = 25% damage boost
+- **Air** > Earth (Wind erodes stone) = 25% damage boost
+- **Earth** > Water (Ground absorbs water) = 25% damage boost
+- **Water** > Fire (Water extinguishes flames) = 25% damage boost
+
+**Reverse Logic** - Disadvantages are automatic:
+- Air < Water (Water fills air)
+- Earth < Air (Wind scatters earth)
+- Water < Earth (Earth blocks water)
+- Fire < Water (Fire extinguished by water)
+
+#### Special Opposites
+
+**Light vs Dark** (No advantage/disadvantage - perfectly balanced)
+- Light does not gain bonus vs Dark
+- Dark does not gain bonus vs Light
+- **But:** Each has unique mechanics that make them distinct
+
+#### Element-Specific Mechanics
+
+**1. Fire (🔥 - Offense)**
+- Standard damage-dealing element
+- Advantage over Air
+- AOE and damage-over-time effects
+- Burns terrain for tactical advantage
+
+**2. Water (💧 - Control)**
+- Advantage over Fire
+- Slowing and freezing effects
+- Movement speed reduction
+- Freezes enemies to reduce actions
+
+**3. Earth (🪨 - Defense)**
+- Advantage over Water
+- Knockback and stun effects
+- Shield and armor bonuses
+- Can create walls or obstacles
+
+**4. Air (💨 - Speed)**
+- Advantage over Earth
+- High critical damage
+- Movement speed boost
+- Projectile velocity increase
+
+**5. Light (✨ - Support)**
+- **Primary:** Healing spell (restores ally HP)
+- **Secondary:** Summon **Radiant Guardian** (1 allied creature)
+- Opposed by Dark (not at disadvantage, but has interaction)
+- Cannot damage enemies (only support role)
+- Radiant summons last ~30 seconds
+
+**6. Dark (🌑 - Conversion)**
+- **Primary:** Corruption curse (converts enemy loyalty)
+- **Secondary:** Enemy becomes **Corrupted Servant** (fights for player)
+- Opposed by Light (not at disadvantage, but interacts)
+- Cannot heal enemies
+- Corrupted servants have 50% reduced HP, fight until death or duration expires (~30 seconds)
+- Multiple corruptions stack (can control multiple enemies)
+
+### Spell Core System
+
+**What is a Spell Core?**
+
+A Spell Core is the **base weapon** that defines:
+1. **Element Type** (determines spell cast)
+2. **Rarity Level** (scales damage 1.0x to 2.5x)
+3. **Innate Stats** (base damage, mana cost, cooldown)
+
+**Rarity Scaling:**
+
+| Rarity | Damage Multiplier | Mana Cost | Cooldown Reduction |
+|--------|---|---|---|
+| Basic | 1.0x | 100% | 0% |
+| Uncommon | 1.2x | 90% | 5% |
+| Rare | 1.5x | 80% | 10% |
+| Mythic | 1.8x | 70% | 15% |
+| Primordial | 2.2x | 60% | 20% |
+| Unique | 2.5x | 50% | 25% |
+
+**Example:**
+```
+Basic Fire Staff = 1.0x damage, 50 mana, 5s cooldown
+Rare Fire Staff  = 1.5x damage, 40 mana, 4.5s cooldown
+Unique Fire Staff = 2.5x damage, 25 mana, 3.75s cooldown
+```
+
+### Part System (Modifiers)
+
+Parts are **modifiers** that enhance spell core performance:
+
+**Exterior Parts** (Affects Fire Rate & Projectile Speed)
+- Low: 0.8x fire rate, 0.9x projectile speed
+- Medium: 1.0x fire rate, 1.0x projectile speed
+- High: 1.2x fire rate, 1.1x projectile speed
+
+**Interior Parts** (Affects Damage & Mana Efficiency)
+- Low: 0.9x damage, +10% mana cost
+- Medium: 1.0x damage, 0% mana change
+- High: 1.1x damage, -10% mana cost
+
+**Handle Parts** (Affects Accuracy & Stability)
+- Poor: 0.8x accuracy, 0.7x stability
+- Standard: 1.0x accuracy, 1.0x stability
+- Excellent: 1.2x accuracy, 1.2x stability
+
+**Head Parts** (Staff only - Gem Slots)
+- Tier 1: 1 gem slot, +5% elemental damage
+- Tier 2: 2 gem slots, +10% elemental damage
+- Tier 3: 3 gem slots, +15% elemental damage
+
+**Charm Parts** (Optional - Secondary Effect)
+- Ember Charm: +20% fire damage
+- Frost Charm: +20% water damage
+- Chaos Charm: +20% critical damage
+
+### Damage Calculation Example
+
+```gdscript
+# Rare Fire Staff + High-tier parts example:
+
+Base Damage = Spell Core (50)
+Rarity Multiplier = 1.5x (Rare)
+Element Advantage = 1.25x (Fire vs Air target)
+Interior Bonus = 1.1x (high interior)
+Charm Bonus = 1.2x (fire charm)
+Critical Hit = 2.0x (random)
+
+Final Damage = 50 × 1.5 × 1.25 × 1.1 × 1.2 × 2.0 = 495 damage!
+```
+
+### Special Summon Systems
+
+#### Light Summons (Radiant Guardian)
+- **Triggered by:** Light element spell core cast
+- **Count:** Maximum 1 active summon per player
+- **Duration:** 30 seconds or until defeated
+- **Stats:** 100% of player's level + 50% of player's damage
+- **Behavior:** Attacks nearest enemy, follows player
+- **Network:** Spawned on all clients when Light spell cast
+
+#### Dark Summons (Corrupted Servants)
+- **Triggered by:** Dark element spell core cast on enemy
+- **Count:** Unlimited (but each costs mana/cooldown)
+- **Duration:** 30 seconds or until defeated
+- **Stats:** 50% of target's original stats
+- **Behavior:** Attacks former allies, follows player
+- **Network:** Enemy AI switches to player control when corrupted
+- **Note:** When corrupted servant expires, enemy returns to dust (doesn't respawn)
+
+---
+
 ## Story & Lore
 
 ### The Cataclysm (10 Years Before Game Start)
@@ -457,10 +738,61 @@ The Summoned are weak individuals pulled from another world by Crazy Joe, an unh
 
 ## Development Workflow
 
-### Adding a New Item
+### Adding a New Spell Core (Fire/Water/Earth/Air/Light/Dark)
+
+1. **Create spell core resource** in `resources/spells/cores/`
+   - Set element (FIRE, WATER, EARTH, AIR, LIGHT, DARK)
+   - Set rarity (BASIC, UNCOMMON, RARE, MYTHIC, PRIMORDIAL, UNIQUE)
+   - Define base damage, mana cost, cooldown
+   - Element determines spell mechanics automatically
+   
+2. **Register in SpellManager**
+   - Add entry in `autoload/spell_manager.gd`
+   - Map element to casting behavior and effects
+   
+3. **Configure Special Effects (if Light/Dark)**
+   - **Light cores:** Link to `summon_radiant_effect.gd`
+   - **Dark cores:** Link to `enemy_corruption_effect.gd`
+   - Set summon type and duration (30s default)
+   
+4. **Add to loot tables**
+   - Update boss/dungeon drops by rarity
+   - Add shop inventory entries
+   
+5. **Test in Assembly UI**
+   - Equip as primary weapon
+   - Cast and verify element advantage/disadvantage works
+   - For Light: verify healing and summon appear
+   - For Dark: cast on enemy and verify corruption
+
+### Adding a New Modifier Part
+
+1. **Create part resource** in `resources/items/parts/`
+   - Inherit from `StaffPartData`
+   - Choose part type (EXTERIOR, INTERIOR, HANDLE, HEAD, CHARM)
+   - Set modifier values:
+     - Exterior: fire_rate_multiplier, projectile_speed_multiplier
+     - Interior: damage_multiplier, mana_cost_modifier
+     - Handle: accuracy_multiplier, stability_multiplier
+     - Head: gem_slots, elemental_damage_bonus
+     - Charm: element_bonus or damage_type_bonus
+   
+2. **Register in ItemDatabase**
+   - Add to part lookup table in `item_database.gd`
+   
+3. **Add to crafting loot**
+   - Update enemy drop tables by part type
+   - Add shop entries for vendors
+   
+4. **Test in Assembly UI**
+   - Select spell core, then add this part
+   - Verify stats recalculate correctly
+   - Check part bonus applies (e.g., +20% damage for high interior)
+
+### Adding a New Item (Equipment/Potion/Misc)
 
 1. **Create a `.tres` resource file** in `resources/items/`
-   - Inherit from `ItemData` or `EquipmentData`
+   - Inherit from `ItemData`, `EquipmentData`, or `PotionData`
    - Set name, description, rarity, stats
    
 2. **Register in ItemDatabase**
@@ -472,21 +804,27 @@ The Summoned are weak individuals pulled from another world by Crazy Joe, an unh
 4. **Test in crafting/inventory UI**
    - Verify rendering and stat calculations
 
-### Adding a New Spell
+### Adding a New Spell Core (Element Variant)
 
-1. **Create spell definition** in `resources/spells/presets/`
-   - Name, manacost, cooldown, effects array
+1. **Create spell core resource** in `resources/spells/cores/`
+   - Set element (Fire, Water, Earth, Air, Light, Dark)
+   - Set rarity and stat multiplier
+   - Define base damage, mana cost, cooldown
    
-2. **Define effects** in `scripts/systems/spell_effects/`
+2. **Configure element effects** in `scripts/systems/spell_effects/`
    - Inherit from `SpellEffect`
-   - Implement `apply()` method
+   - Implement `apply_element_bonus()` for rock-paper-scissors logic
    
 3. **Register in SpellManager**
    - Add entry in `autoload/spell_manager.gd`
+   - Map element to casting behavior
    
-4. **Test casting**
-   - Add to a Grimoire
-   - Equip and cast in game
+4. **Special Handlers**
+   - **Light cores:** Add healing effect + summon logic
+   - **Dark cores:** Add enemy corruption + summon conversion
+   
+5. **Test in Assembly UI**
+   - Equip as weapon and cast to verify element behavior
 
 ### Adding a New Quest
 
@@ -520,13 +858,78 @@ The Summoned are weak individuals pulled from another world by Crazy Joe, an unh
 4. **Test in dungeon**
    - Verify spawn rates and loot drops
 
+### Crafting Workflow: Complete Example
+
+Here's a complete example of crafting a weapon in the Assembly UI:
+
+```gdscript
+# Step 1: Player selects a spell core from inventory
+var selected_core = player_inventory.get_item("Rare_Fire_Staff")
+# Type: SpellCoreData
+# Element: FIRE
+# Rarity: RARE (1.5x multiplier)
+# Base Damage: 50
+
+# Step 2: Player selects modifier parts
+var exterior = player_inventory.get_item("High_Quality_Wood")  # 1.2x fire rate
+var interior = player_inventory.get_item("Silver_Conduit")     # 1.1x damage
+var handle = player_inventory.get_item("Master_Leather_Grip")  # 1.2x accuracy
+var head = player_inventory.get_item("Polished_Focus")         # 2 gem slots
+var charm = player_inventory.get_item("Ember_Charm")           # +20% fire damage
+
+# Step 3: Build weapon configuration
+var config = WeaponConfiguration.new()
+config.spell_core = selected_core
+config.add_part(exterior)
+config.add_part(interior)
+config.add_part(handle)
+config.add_part(head)
+config.add_part(charm)
+
+# Step 4: Validate configuration
+var validation_errors = config.validate()
+if validation_errors.is_empty():
+    # Step 5: Calculate final stats
+    var final_stats = config.calculate_stats()
+    # Returns: {
+    #   damage: 50 × 1.5 (rare) × 1.1 (interior) × 1.2 (charm) = 99
+    #   fire_rate: 1.2x (from exterior)
+    #   accuracy: 1.2x (from handle)
+    #   mana_cost: 50 × 0.9 (mana efficiency from interior) = 45
+    #   cooldown: 5s (base from core)
+    # }
+
+    # Step 6: Start crafting
+    var crafted_weapon = CraftingManager.craft_weapon(config, player_level)
+    
+    # Step 7: Add to inventory
+    if crafted_weapon:
+        inventory.add_item(crafted_weapon)
+        # Achievement check: Did we discover a new recipe?
+        CraftingManager.check_recipe_discovery(config)
+else:
+    print("Cannot craft: ", validation_errors)  # e.g., "Too many gems", "Missing head"
+```
+
+**Result:**
+- Player now has **Rare Fire Staff with Silver Interior**
+- Deals ~99 damage per hit with Fire advantage vs Air enemies
+- Can cast fire spell automatically (element determined by core)
+- Parts provide stat bonuses
+- If Light core was used: Would heal allies + summon Radiant Guardian
+- If Dark core was used: Would corrupt enemies + turn them into servants
+
 ### Network Development
 
 For multiplayer features:
 1. Use `NetworkManager.is_multiplayer()` to gate code paths
 2. Call `SteamManager.send_p2p_message()` for P2P communication
 3. Server validates all critical operations (saves, quest progress)
-4. Automatic sync: Spells via `SpellNetworkManager`, Saves via `SaveNetworkManager`
+4. Automatic sync: 
+   - Spells via `SpellNetworkManager` (including element advantage calculations)
+   - Summons via summon effect network handlers
+   - Saves via `SaveNetworkManager`
+   - Corrupted enemies converted to player control on all clients
 
 ## Testing
 
@@ -725,20 +1128,40 @@ func take_damage(amount):
 - Check network tick rate in `constants.gd`
 - Use ENet locally (no Steam required)
 
+**Q: Spell cores not showing in Assembly UI**
+- A: Verify spell core resource exists in `resources/spells/cores/`
+- Check if registered in `SpellManager.get_spell_core()`
+- Ensure core has valid element (FIRE, WATER, EARTH, AIR, LIGHT, DARK)
+- Verify rarity multiplier is set correctly
+
+**Q: Element advantage not calculating correctly**
+- A: Check `Element` enum in `enums.gd` has 6 elements only
+- Verify `ELEMENT_ADVANTAGE` constant = 1.25
+- Confirm matchup logic in `spell_caster.gd` calculates modifier
+- Test with console: `SpellManager.get_element_multiplier(FIRE, AIR)` should return 1.25
+
+**Q: Light/Dark summons not appearing**
+- A: Check `summon_effect.gd` is linked to Light/Dark cores
+- Verify summon entity prefab exists in `scenes/summons/`
+- Confirm summon duration timer is initialized
+- Check network sync in `SpellNetworkManager` for co-op
+
 **Q: Crafting system crashes**
-- A: Ensure parts are valid types (use `ItemDatabase.validate_equipment()`)
-- Check recipe definition in `crafting_recipe_manager.gd`
-- Verify gem slots match head part
+- A: Ensure spell core is selected (not empty)
+- Check parts are valid types (use `WeaponConfiguration.validate()`)
+- Verify gem slots don't exceed head capacity
+- Confirm rarity multipliers exist for core in `RARITY_STAT_MULTIPLIERS`
 
 **Q: Saves won't load**
 - A: Run `SaveValidator` to check integrity
 - Delete corrupted save file, start fresh
 - Check file permissions in save directory
 
-**Q: Enemy spawns are too high/low**
-- A: Adjust `ITEM_RARITY_WEIGHTS` in `constants.gd`
-- Tune `EnemySpawnSystem` spawn rates
-- Check dungeon template composition
+**Q: Part modifiers not affecting spell damage**
+- A: Verify parts are registered in `weapon_configuration.gd`
+- Check stat calculations in `calculate_final_damage()` include part bonuses
+- Confirm part multipliers are loaded from resource files
+- Test with console: `weapon.get_total_damage()` should include all modifiers
 
 ## Documentation Index
 
@@ -764,12 +1187,16 @@ func take_damage(amount):
 | **GDScript Files** | 121 |
 | **Lines of Code** | ~33,000 |
 | **Scenes** | 58 (.tscn files) |
-| **Resources** | 84 (.tres files) |
+| **Resources** | 84+ (.tres files) |
 | **Autoload Managers** | 12 |
 | **Game Systems** | 35+ |
 | **Components** | 6 |
+| **Magic Elements** | 6 (Fire, Water, Earth, Air, Light, Dark) |
+| **Spell Cores** | 36 (6 elements × 6 rarities) |
+| **Modifier Parts** | 5 types (Exterior, Interior, Handle, Head, Charm) |
+| **Part Variants** | 30+ (6 variants per type) |
+| **Rarity Tiers** | 6 (Basic → Unique with 1.0x-2.5x multipliers) |
 | **Enemy Types** | 8 base + 15 variants |
-| **Spells** | 14+ presets |
 | **Skills** | 4+ implemented |
 | **UI Screens** | 15+ |
 | **Dungeons** | 5 procedural |
