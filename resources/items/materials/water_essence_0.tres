@@ -1,0 +1,11 @@
+[gd_resource type="CraftingMaterial" format=3]
+
+[resource]
+material_id = "water_essence_0"
+material_name = "Basic Water Essence"
+material_type = 1
+material_tier = 0
+element = 3
+description = "Basic-tier water essence for element-specific bonuses"
+weight = 1.0
+stack_limit = 999

@@ -1,0 +1,11 @@
+[gd_resource type="CraftingMaterial" format=3]
+
+[resource]
+material_id = "earth_essence_3"
+material_name = "Mythic Earth Essence"
+material_type = 1
+material_tier = 3
+element = 4
+description = "Mythic-tier earth essence for element-specific bonuses"
+weight = 1.0
+stack_limit = 999

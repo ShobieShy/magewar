@@ -1,0 +1,11 @@
+[gd_resource type="CraftingMaterial" format=3]
+
+[resource]
+material_id = "light_essence_1"
+material_name = "Uncommon Light Essence"
+material_type = 1
+material_tier = 1
+element = 6
+description = "Uncommon-tier light essence for element-specific bonuses"
+weight = 1.0
+stack_limit = 999

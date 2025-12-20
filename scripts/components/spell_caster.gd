@@ -176,6 +176,9 @@ func _execute_spell(spell: SpellData, aim_point: Vector3, aim_direction: Vector3
 			_execute_summon(spell, aim_point)
 	
 	spell_cast_completed.emit(spell)
+	
+	# Grant experience to active weapon
+	_grant_weapon_xp_from_spell(spell)
 
 # =============================================================================
 # DELIVERY IMPLEMENTATIONS
@@ -580,3 +583,21 @@ func _play_sound(sound: AudioStream, position: Vector3) -> void:
 	player.finished.connect(player.queue_free)
 	get_tree().current_scene.add_child(player)
 	player.play()
+
+# =============================================================================
+# WEAPON PROGRESSION
+# =============================================================================
+
+## Grant weapon XP from spell cast
+## Formula: 5 + (mana_cost / 10)
+func _grant_weapon_xp_from_spell(spell: SpellData) -> void:
+	var caster = get_parent()
+	if not caster or not caster.has_method("grant_weapon_xp"):
+		return
+	
+	# Calculate XP based on spell mana cost
+	var base_xp = 5.0
+	var spell_cost = spell.get_final_magika_cost() if spell else 0
+	var xp_amount = base_xp + (spell_cost / 10.0)
+	
+	caster.grant_weapon_xp(xp_amount)

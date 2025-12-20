@@ -1,0 +1,96 @@
+[gd_scene type="Control" class_name="RefinementUI" load_steps=2 format=3 uid="uid://cmlsdvv48w3q4hl9sdjax2"]
+
+[ext_resource type="Script" path="res://scenes/ui/menus/refinement_ui.gd" id="1_hgsb5"]
+
+[node name="RefinementUI" type="Control"]
+script = ExtResource("1_hgsb5")
+anchors_left = 0.0
+anchors_top = 0.0
+anchors_right = 1.0
+anchors_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+
+[node name="Panel" type="Panel" parent="."]
+anchors_left = 0.5
+anchors_top = 0.5
+anchors_right = 0.5
+anchors_bottom = 0.5
+offset_left = -250.0
+offset_top = -300.0
+offset_right = 250.0
+offset_bottom = 300.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+anchors_left = 0.0
+anchors_top = 0.0
+anchors_right = 1.0
+anchors_bottom = 1.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = -10.0
+margin_bottom = -10.0
+
+[node name="TitleLabel" type="Label" parent="Panel/VBoxContainer"]
+text = "Weapon Refinement"
+custom_minimum_size = Vector2(0, 40)
+
+[node name="TierLabel" type="Label" parent="Panel/VBoxContainer"]
+text = "Current Tier: +0/+10"
+custom_minimum_size = Vector2(0, 30)
+
+[node name="TierProgress" type="ProgressBar" parent="Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+value = 0.0
+
+[node name="SuccessLabel" type="Label" parent="Panel/VBoxContainer"]
+text = "Success Rate: 100%"
+custom_minimum_size = Vector2(0, 30)
+
+[node name="DowngradeWarning" type="Label" parent="Panel/VBoxContainer"]
+text = "⚠️ Warning: May downgrade on failure!"
+custom_minimum_size = Vector2(0, 40)
+
+[node name="CostPanel" type="PanelContainer" parent="Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 150)
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/VBoxContainer/CostPanel"]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel/VBoxContainer/CostPanel/MarginContainer"]
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/CostPanel/MarginContainer/VBox"]
+text = "Requirements:"
+custom_minimum_size = Vector2(0, 20)
+
+[node name="MaterialsList" type="ItemList" parent="Panel/VBoxContainer/CostPanel/MarginContainer/VBox"]
+custom_minimum_size = Vector2(0, 80)
+
+[node name="GoldCostLabel" type="Label" parent="Panel/VBoxContainer/CostPanel/MarginContainer/VBox"]
+text = "Gold Cost: 0"
+custom_minimum_size = Vector2(0, 20)
+
+[node name="RecoveryCheckbox" type="CheckBox" parent="Panel/VBoxContainer"]
+text = "Purchase Material Insurance"
+custom_minimum_size = Vector2(0, 30)
+
+[node name="RecoveryCostLabel" type="Label" parent="Panel/VBoxContainer"]
+text = "Insurance Cost: 0 gold"
+custom_minimum_size = Vector2(0, 25)
+
+[node name="ButtonContainer" type="HBoxContainer" parent="Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+
+[node name="RefineButton" type="Button" parent="Panel/VBoxContainer/ButtonContainer"]
+text = "Refine Weapon"
+custom_minimum_size = Vector2(150, 40)
+size_flags_horizontal = 3
+
+[node name="CancelButton" type="Button" parent="Panel/VBoxContainer/ButtonContainer"]
+text = "Cancel"
+custom_minimum_size = Vector2(100, 40)

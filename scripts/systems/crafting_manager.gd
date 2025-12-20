@@ -178,3 +178,140 @@ func get_difficulty_multipliers() -> Dictionary:
 ## Check if crafting system is available
 func is_available() -> bool:
 	return crafting_logic != null and crafting_logic.enable_crafting
+
+# =============================================================================
+# WEAPON PROGRESSION (Phase 1 - NEW)
+# =============================================================================
+
+## Grant experience to weapon
+func grant_weapon_xp(weapon: ItemData, amount: float) -> void:
+	if not weapon or not weapon.has_meta("leveling_system"):
+		return
+	
+	var leveling_system = weapon.get_meta("leveling_system")
+	if leveling_system and leveling_system.has_method("add_experience"):
+		leveling_system.add_experience(amount)
+
+## Get weapon level information
+func get_weapon_level_info(weapon: ItemData) -> Dictionary:
+	if not weapon or not weapon.has_meta("leveling_system"):
+		return {}
+	
+	var leveling_system = weapon.get_meta("leveling_system")
+	return {
+		"level": leveling_system.weapon_level,
+		"experience": leveling_system.weapon_experience,
+		"total_experience": leveling_system.total_experience,
+		"progress": leveling_system.get_level_progress(),
+		"xp_for_next": leveling_system.get_xp_for_next_level(),
+		"display_string": leveling_system.get_display_string()
+	}
+
+## Get weapon refinement information
+func get_refinement_info(weapon: ItemData) -> Dictionary:
+	if not weapon or not weapon.has_meta("refinement_system"):
+		return {}
+	
+	var refinement_system = weapon.get_meta("refinement_system")
+	return {
+		"level": refinement_system.refinement_level,
+		"is_max": refinement_system.is_max_refinement(),
+		"success_chance": refinement_system.get_success_chance(),
+		"downgrade_risk": refinement_system.get_downgrade_risk(),
+		"next_cost": refinement_system.get_next_refinement_cost(),
+		"damage_multiplier": refinement_system.get_damage_multiplier(),
+		"display_string": refinement_system.get_display_string()
+	}
+
+## Attempt to refine weapon
+func refine_weapon(weapon: ItemData, player_inventory: InventorySystem, player_gold: int) -> bool:
+	if not weapon or not weapon.has_meta("refinement_system"):
+		return false
+	
+	var refinement_system = weapon.get_meta("refinement_system")
+	if refinement_system.is_max_refinement():
+		return false
+	
+	# Get cost
+	var cost = refinement_system.get_next_refinement_cost()
+	var gold_cost = cost.get("gold", 0)
+	
+	# Check gold
+	if player_gold < gold_cost:
+		return false
+	
+	# Check materials
+	var material_requirements = cost.duplicate()
+	material_requirements.erase("gold")
+	
+	if not player_inventory.has_materials(material_requirements):
+		return false
+	
+	# Consume materials
+	if not player_inventory.consume_materials(material_requirements):
+		return false
+	
+	# Attempt refinement
+	var success = refinement_system.attempt_refinement()
+	
+	return success
+
+# =============================================================================
+# MATERIAL MANAGEMENT (Phase 1 - NEW)
+# =============================================================================
+
+## Add material to player inventory
+func add_material(inventory: InventorySystem, material_id: String, quantity: int = 1) -> bool:
+	return inventory.add_material(material_id, quantity)
+
+## Remove material from player inventory
+func remove_material(inventory: InventorySystem, material_id: String, quantity: int = 1) -> bool:
+	return inventory.remove_material(material_id, quantity)
+
+## Get material quantity
+func get_material_quantity(inventory: InventorySystem, material_id: String) -> int:
+	return inventory.get_material_quantity(material_id)
+
+## Check if player has required materials
+func has_materials(inventory: InventorySystem, requirements: Dictionary) -> bool:
+	return inventory.has_materials(requirements)
+
+## Consume materials for crafting/refinement
+func consume_materials(inventory: InventorySystem, requirements: Dictionary) -> bool:
+	return inventory.consume_materials(requirements)
+
+## Get all materials in inventory
+func get_all_materials(inventory: InventorySystem) -> Dictionary:
+	return inventory.get_all_materials()
+
+## Get material inventory count
+func get_material_inventory_count(inventory: InventorySystem) -> int:
+	return inventory.get_material_inventory_count()
+
+## Load a crafting material resource
+func load_material(material_id: String) -> CraftingMaterial:
+	var path = "res://resources/items/materials/%s.tres" % material_id
+	if ResourceLoader.exists(path):
+		return load(path)
+	push_warning("Material not found: %s" % path)
+	return null
+
+## Get all available material IDs
+func get_available_materials() -> Array[String]:
+	var materials: Array[String] = []
+	var dir = DirAccess.open("res://resources/items/materials/")
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while file_name != "":
+			if file_name.ends_with(".tres"):
+				materials.append(file_name.trim_suffix(".tres"))
+			file_name = dir.get_next()
+	return materials
+
+## Calculate recovery cost (material insurance)
+func calculate_recovery_cost(material_requirements: Dictionary) -> int:
+	var material_count = 0
+	for material_id in material_requirements:
+		material_count += material_requirements[material_id]
+	return material_count * 50  # 50 gold per material unit

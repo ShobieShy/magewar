@@ -1,0 +1,11 @@
+[gd_resource type="CraftingMaterial" format=3]
+
+[resource]
+material_id = "light_essence_4"
+material_name = "Primordial Light Essence"
+material_type = 1
+material_tier = 4
+element = 6
+description = "Primordial-tier light essence for element-specific bonuses"
+weight = 1.0
+stack_limit = 999

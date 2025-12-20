@@ -1,0 +1,11 @@
+[gd_resource type="CraftingMaterial" format=3]
+
+[resource]
+material_id = "wind_essence_3"
+material_name = "Mythic Wind Essence"
+material_type = 1
+material_tier = 3
+element = 5
+description = "Mythic-tier wind essence for element-specific bonuses"
+weight = 1.0
+stack_limit = 999

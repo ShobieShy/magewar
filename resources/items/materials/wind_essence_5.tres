@@ -1,0 +1,11 @@
+[gd_resource type="CraftingMaterial" format=3]
+
+[resource]
+material_id = "wind_essence_5"
+material_name = "Unique Wind Essence"
+material_type = 1
+material_tier = 5
+element = 5
+description = "Unique-tier wind essence for element-specific bonuses"
+weight = 1.0
+stack_limit = 999

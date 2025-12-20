@@ -1,0 +1,11 @@
+[gd_resource type="CraftingMaterial" format=3]
+
+[resource]
+material_id = "earth_essence_1"
+material_name = "Uncommon Earth Essence"
+material_type = 1
+material_tier = 1
+element = 4
+description = "Uncommon-tier earth essence for element-specific bonuses"
+weight = 1.0
+stack_limit = 999

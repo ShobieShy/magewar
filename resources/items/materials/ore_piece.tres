@@ -1,0 +1,11 @@
+[gd_resource type="CraftingMaterial" format=3]
+
+[resource]
+material_id = "ore_piece"
+material_name = "Uncommon Ore Piece"
+material_type = 0
+material_tier = 1
+element = 0
+description = "Uncommon-tier ore material for weapon crafting and refinement"
+weight = 1.0
+stack_limit = 999

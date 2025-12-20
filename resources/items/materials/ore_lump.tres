@@ -1,0 +1,11 @@
+[gd_resource type="CraftingMaterial" format=3]
+
+[resource]
+material_id = "ore_lump"
+material_name = "Mythic Ore Lump"
+material_type = 0
+material_tier = 3
+element = 0
+description = "Mythic-tier ore material for weapon crafting and refinement"
+weight = 1.0
+stack_limit = 999

@@ -22,8 +22,10 @@ var stats_component: StatsComponent
 
 var inventory: Array = []  # Array of ItemData or null
 var equipment: Dictionary = {}  # EquipmentSlot -> ItemData
+var materials: Dictionary = {}  # material_id -> quantity (for crafting materials)
 
 var inventory_size: int = Constants.INVENTORY_SIZE
+var materials_capacity: int = 50  # Max unique material types
 
 # Transaction system for preventing duplication during drag-drop
 var _transaction_counter: int = 0
@@ -390,6 +392,76 @@ func use_item(slot: int) -> bool:
 	return false
 
 # =============================================================================
+# MATERIAL MANAGEMENT
+# =============================================================================
+
+## Add crafting material to inventory
+func add_material(material_id: String, quantity: int = 1) -> bool:
+	if materials.size() >= materials_capacity and not materials.has(material_id):
+		push_warning("Material inventory full (max %d types)" % materials_capacity)
+		return false
+	
+	if material_id not in materials:
+		materials[material_id] = 0
+	
+	materials[material_id] += quantity
+	inventory_changed.emit()
+	return true
+
+## Remove crafting material from inventory
+func remove_material(material_id: String, quantity: int = 1) -> bool:
+	if not materials.has(material_id):
+		return false
+	
+	if materials[material_id] < quantity:
+		return false
+	
+	materials[material_id] -= quantity
+	
+	# Remove entry if count reaches 0
+	if materials[material_id] <= 0:
+		materials.erase(material_id)
+	
+	inventory_changed.emit()
+	return true
+
+## Get quantity of specific material
+func get_material_quantity(material_id: String) -> int:
+	return materials.get(material_id, 0)
+
+## Check if player has enough materials for crafting
+func has_materials(requirements: Dictionary) -> bool:
+	for material_id in requirements:
+		var needed = requirements[material_id]
+		var has = get_material_quantity(material_id)
+		if has < needed:
+			return false
+	return true
+
+## Consume materials for crafting (returns success)
+func consume_materials(requirements: Dictionary) -> bool:
+	if not has_materials(requirements):
+		return false
+	
+	for material_id in requirements:
+		remove_material(material_id, requirements[material_id])
+	
+	return true
+
+## Get all materials as dictionary
+func get_all_materials() -> Dictionary:
+	return materials.duplicate()
+
+## Get material inventory size (unique types)
+func get_material_inventory_count() -> int:
+	return materials.size()
+
+## Clear all materials (debug only)
+func clear_materials() -> void:
+	materials.clear()
+	inventory_changed.emit()
+
+# =============================================================================
 # SERIALIZATION
 # =============================================================================
 
@@ -411,7 +483,8 @@ func get_save_data() -> Dictionary:
 	
 	return {
 		"inventory": inv_data,
-		"equipment": equip_data
+		"equipment": equip_data,
+		"materials": materials.duplicate()
 	}
 
 
@@ -437,3 +510,7 @@ func load_save_data(data: Dictionary, item_database: Dictionary) -> void:
 			if item_database.has(item_id):
 				var item = item_database[item_id].duplicate_item()
 				equip_item(item)
+	
+	# Load materials
+	if data.has("materials"):
+		materials = data.materials.duplicate()

@@ -363,7 +363,88 @@ SaveNetworkManager (Save sync)
 - `spell_network_manager.gd` - Spell state sync
 - `save_network_manager.gd` - Save validation and sync
 
-### 9. Save System
+### 9. Weapon Leveling System (Phase 1)
+
+Weapons gain experience from spellcasting and increase in power through leveling.
+
+**Features:**
+- **Weapon Levels:** 1-50, capped at player level
+- **XP Scaling:** Exponential XP requirements (50 XP for level 1 → ~5000 XP for level 50)
+- **XP Sources:** Spell casting (by default, enemy kills ready for integration)
+- **Level Bonuses:** +2% damage per level (cumulative)
+- **Key Files:**
+  - `scripts/systems/weapon_leveling_system.gd` - Core leveling logic
+  - Integration in `spell_caster.gd`, `staff.gd`, `wand.gd`
+
+**Example Usage:**
+```gdscript
+# Weapon gains XP when spell cast
+var staff = player.primary_weapon
+staff.grant_xp(10)  # +10 XP toward next level
+
+# Check weapon level
+var current_level = staff.get_level()  # 1-50
+var damage_bonus = staff.get_level_bonus()  # 1.0x + (level * 0.02)
+```
+
+### 10. Refinement System (Phase 1)
+
+Enhance weapons with rare materials for increased power and special properties.
+
+**Features:**
+- **Refinement Tiers:** +0 to +10 (each +3% damage multiplier)
+- **Success Rates:** 100% at +0-+4, declining to 50% at +10
+- **Downgrade Risk:** Failure can downgrade by 1 tier (+5 onwards)
+- **Material Requirements:** Scale exponentially (e.g., +3: 10 materials → +10: 1000+ materials)
+- **Cost:** Gold per refinement attempt
+- **Key Files:**
+  - `scripts/systems/refinement_system.gd` - Refinement logic
+  - `scripts/systems/material_drop_system.gd` - Material loot generation
+  - `scenes/ui/menus/refinement_ui.gd` - UI integration
+
+**Refinement Progression:**
+```
++0 (Base)        → 100% success, no cost
++1 to +4 (Safe)  → 100% success, scaling material cost
++5 to +7 (Risk)  → 80-90% success, downgrade risk
++8 to +10 (High) → 50-70% success, severe downgrade penalty
+```
+
+**Example Usage:**
+```gdscript
+# Attempt refinement
+var result = RefinementSystem.attempt_refinement(
+    weapon,
+    refinement_tier + 1,
+    materials_available
+)
+
+if result.success:
+    print("Weapon refined to +", weapon.refinement_tier)
+else:
+    print("Refinement failed! Lost materials.")
+```
+
+### 11. Material System (Phase 1)
+
+48 unique materials for weapon refinement, drop from enemies.
+
+**Material Types:**
+- **Ore** (6 rarities) - Primary refinement material
+- **Essence** (36 variants by rarity & element) - Element-specific bonuses
+- **Shard** (6 rarities) - Secondary component
+
+**Rarity-Based Drops:**
+- Basic enemies → Basic/Uncommon materials
+- Rare enemies → Rare/Mythic materials  
+- Unique enemies → Primordial/Unique materials
+
+**Key Files:**
+- `scripts/systems/material_drop_system.gd` - Intelligent loot generation
+- `scripts/systems/crafting_material.gd` - Material data class
+- `resources/items/materials/` - 48 material resource files
+
+### 12. Save System
 
 Persistent save game with validation.
 
@@ -1163,6 +1244,27 @@ func take_damage(amount):
 - Confirm part multipliers are loaded from resource files
 - Test with console: `weapon.get_total_damage()` should include all modifiers
 
+**Q: Weapon leveling not progressing**
+- A: Verify `weapon_leveling_system.gd` is loaded
+- Check weapon has valid XP property
+- Ensure spells are calling `grant_xp()` after casting
+- Confirm weapon level cap matches player level
+- Test with console: `weapon.get_experience()` should increase after spells
+
+**Q: Refinement system not working**
+- A: Verify refinement UI scene is instantiated in crafting menu
+- Check materials exist in inventory with correct type/rarity
+- Ensure RefinementSystem has valid materials array
+- Confirm weapon has refinement_tier property
+- Test: Attempt +0 refinement (should always succeed)
+
+**Q: Materials not dropping from enemies**
+- A: Verify `material_drop_system.gd` is called in enemy death handler
+- Check enemy rarity matches material drop tables
+- Confirm materials are registered in ItemDatabase
+- Test by killing different enemy rarities
+- Check console for material drop debug logs
+
 ## Documentation Index
 
 | Document | Purpose |
@@ -1178,29 +1280,65 @@ func take_damage(amount):
 | [DIAGNOSTIC_REPORT.md](DIAGNOSTIC_REPORT.md) | Pre-fix code issues (resolved) |
 | [FIXES_APPLIED.md](FIXES_APPLIED.md) | Post-fix verification |
 | [NEXT_PHASE_PLAN.md](NEXT_PHASE_PLAN.md) | Roadmap for future development |
+| [PHASE1_COMPLETION.md](PHASE1_COMPLETION.md) | Phase 1 completion summary (weapon leveling & refinement) |
+| [PHASE1_IMPLEMENTATION_SUMMARY.md](PHASE1_IMPLEMENTATION_SUMMARY.md) | Phase 1 implementation details |
+| [PHASE1_QUICK_REFERENCE.md](PHASE1_QUICK_REFERENCE.md) | Phase 1 quick reference guide |
+| [PHASE1_ARCHITECTURE_OVERVIEW.md](PHASE1_ARCHITECTURE_OVERVIEW.md) | Phase 1 architecture documentation |
+
+## Phase 1: Weapon Leveling & Refinement (✅ COMPLETE)
+
+Phase 1 of the crafting system expansion is **production-ready**. New systems include:
+
+### New Features
+- **Weapon Leveling System** (1-50 levels with exponential XP scaling)
+- **Refinement System** (+0 to +10 tiers with success rates and material costs)
+- **Material System** (48 material variants across 3 types and 6 rarities)
+- **Material Drop System** (intelligent loot generation by enemy rarity)
+- **Refinement UI** (integrated into crafting interface)
+
+### Key Files Added
+- `scripts/systems/weapon_leveling_system.gd` - XP tracking and leveling
+- `scripts/systems/refinement_system.gd` - Refinement tier progression
+- `scripts/systems/material_drop_system.gd` - Material loot generation
+- `scripts/systems/crafting_material.gd` - Material data class
+- `scenes/ui/menus/refinement_ui.gd` - Refinement UI panel
+- `resources/items/materials/` - 48 material resource files
+
+### Key Balancing
+- **Weapon Levels:** 1-50, capped at player level
+- **Refinement Tiers:** +0 (safe) to +10 (high risk/reward)
+- **Success Rates:** 100% at +0, declining to 50% at +10
+- **Damage Scaling:** +3% damage per refinement level
+- **Material Requirements:** Scale exponentially from +5 onwards
+
+For full details, see [PHASE1_COMPLETION.md](PHASE1_COMPLETION.md).
+
+---
 
 ## Statistics
 
 | Metric | Value |
 |--------|-------|
-| **Total Files** | 300+ |
-| **GDScript Files** | 121 |
-| **Lines of Code** | ~33,000 |
-| **Scenes** | 58 (.tscn files) |
-| **Resources** | 84+ (.tres files) |
+| **Total Files** | 350+ |
+| **GDScript Files** | 126 |
+| **Lines of Code** | ~36,000 |
+| **Scenes** | 60 (.tscn files) |
+| **Resources** | 132+ (.tres files) |
 | **Autoload Managers** | 12 |
-| **Game Systems** | 35+ |
+| **Game Systems** | 38+ |
 | **Components** | 6 |
 | **Magic Elements** | 6 (Fire, Water, Earth, Air, Light, Dark) |
 | **Spell Cores** | 36 (6 elements × 6 rarities) |
 | **Modifier Parts** | 5 types (Exterior, Interior, Handle, Head, Charm) |
 | **Part Variants** | 30+ (6 variants per type) |
 | **Rarity Tiers** | 6 (Basic → Unique with 1.0x-2.5x multipliers) |
+| **Material Types** | 3 (Ore, Essence, Shard) with 6 rarities each |
+| **Material Variants** | 48 total |
 | **Enemy Types** | 8 base + 15 variants |
 | **Skills** | 4+ implemented |
 | **UI Screens** | 15+ |
 | **Dungeons** | 5 procedural |
-| **Documentation** | 2,500+ lines |
+| **Documentation** | 3,500+ lines |
 
 ## License
 
@@ -1215,8 +1353,9 @@ func take_damage(amount):
 
 ---
 
-**Status:** ✅ Production Ready  
-**Last Updated:** December 19, 2025  
-**Maintainer(s):** [Project maintainers]
+**Status:** ✅ Production Ready (Phase 1 Complete)  
+**Phase 1 Completion:** December 20, 2025  
+**Last Updated:** December 20, 2025  
+**Project Phase:** Weapon Leveling & Refinement (Complete) → Next: Gem Evolution & Fusion
 
 For questions or contributions, please open an issue or pull request on GitHub!

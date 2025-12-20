@@ -475,3 +475,16 @@ func apply_sync_data(data: Dictionary) -> void:
 		velocity = data.velocity
 	if data.has("state"):
 		player_state = data.state
+
+# =============================================================================
+# WEAPON PROGRESSION
+# =============================================================================
+
+## Grant experience points to currently equipped weapon
+func grant_weapon_xp(amount: float) -> void:
+	if not current_weapon:
+		return
+	
+	# Pass through to weapon's leveling system if it exists
+	if current_weapon.has_method("gain_experience"):
+		current_weapon.gain_experience(amount)

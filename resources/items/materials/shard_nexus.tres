@@ -1,0 +1,11 @@
+[gd_resource type="CraftingMaterial" format=3]
+
+[resource]
+material_id = "shard_nexus"
+material_name = "Primordial Shard Nexus"
+material_type = 2
+material_tier = 4
+element = 0
+description = "Primordial-tier shard for gem evolution and transmutation"
+weight = 1.0
+stack_limit = 999

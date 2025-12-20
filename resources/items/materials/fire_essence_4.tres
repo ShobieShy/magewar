@@ -1,0 +1,11 @@
+[gd_resource type="CraftingMaterial" format=3]
+
+[resource]
+material_id = "fire_essence_4"
+material_name = "Primordial Fire Essence"
+material_type = 1
+material_tier = 4
+element = 1
+description = "Primordial-tier fire essence for element-specific bonuses"
+weight = 1.0
+stack_limit = 999

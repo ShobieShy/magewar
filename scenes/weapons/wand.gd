@@ -34,6 +34,10 @@ var spell_caster: SpellCaster
 var _computed_stats: Dictionary = {}
 var _current_spell: SpellData
 
+# Weapon progression
+var leveling_system: WeaponLevelingSystem = null
+var refinement_system: RefinementSystem = null
+
 # =============================================================================
 # BUILT-IN CALLBACKS
 # =============================================================================
@@ -59,6 +63,10 @@ func initialize(player: Player) -> void:
 		player.add_child(spell_caster)
 	
 	spell_caster.projectile_spawn_point = get_node_or_null("SpawnPoint")
+	
+	# Initialize progression systems
+	leveling_system = WeaponLevelingSystem.new(player)
+	refinement_system = RefinementSystem.new()
 
 # =============================================================================
 # PART MANAGEMENT
@@ -210,3 +218,38 @@ func get_save_data() -> Dictionary:
 		"handle": handle.item_id if handle else "",
 		"gem": equipped_gem.item_id if equipped_gem else ""
 	}
+
+# =============================================================================
+# WEAPON PROGRESSION
+# =============================================================================
+
+## Grant experience to this weapon
+func gain_experience(amount: float) -> void:
+	if leveling_system:
+		leveling_system.add_experience(amount)
+
+## Get current weapon level
+func get_weapon_level() -> int:
+	if leveling_system:
+		return leveling_system.weapon_level
+	return 1
+
+## Get weapon refinement level
+func get_refinement_level() -> int:
+	if refinement_system:
+		return refinement_system.refinement_level
+	return 0
+
+## Get total damage with all bonuses applied
+func get_total_damage() -> float:
+	var base_damage = get_stat("damage")
+	var level_bonus = 0.0
+	var refinement_bonus = 1.0
+	
+	if leveling_system:
+		level_bonus = leveling_system.get_damage_bonus()
+	
+	if refinement_system:
+		refinement_bonus = refinement_system.get_damage_multiplier()
+	
+	return (base_damage + level_bonus) * refinement_bonus

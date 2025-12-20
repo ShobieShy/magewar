@@ -272,6 +272,34 @@ enum ObjectiveType {
 # SKILL SYSTEM
 # =============================================================================
 
+# =============================================================================
+# CRAFTING MATERIALS & WEAPON PROGRESSION
+# =============================================================================
+
+enum MaterialType {
+	ORE,           ## Weapon durability and refinement
+	ESSENCE,       ## Element-specific bonuses
+	SHARD          ## Gem evolution and transmutation
+}
+
+enum RefinementTier {
+	TIER_0,        ## Base (+0)
+	TIER_1,        ## +1
+	TIER_2,        ## +2
+	TIER_3,        ## +3
+	TIER_4,        ## +4
+	TIER_5,        ## +5
+	TIER_6,        ## +6
+	TIER_7,        ## +7
+	TIER_8,        ## +8
+	TIER_9,        ## +9
+	TIER_10        ## +10 (max)
+}
+
+# =============================================================================
+# SKILL SYSTEM
+# =============================================================================
+
 enum SkillType {
 	PASSIVE,       ## Always active stat boost
 	ACTIVE,        ## Usable ability with cooldown
@@ -284,3 +312,56 @@ enum SkillCategory {
 	UTILITY,       ## Movement, resource management
 	ELEMENTAL      ## Element-specific augments
 }
+
+# =============================================================================
+# UTILITY FUNCTIONS
+# =============================================================================
+
+## Convert rarity enum to display string
+static func rarity_to_string(rarity: Rarity) -> String:
+	match rarity:
+		Rarity.BASIC:
+			return "Basic"
+		Rarity.UNCOMMON:
+			return "Uncommon"
+		Rarity.RARE:
+			return "Rare"
+		Rarity.MYTHIC:
+			return "Mythic"
+		Rarity.PRIMORDIAL:
+			return "Primordial"
+		Rarity.UNIQUE:
+			return "Unique"
+	return "Unknown"
+
+## Convert material type enum to display string
+static func material_type_to_string(material_type: MaterialType) -> String:
+	match material_type:
+		MaterialType.ORE:
+			return "Ore"
+		MaterialType.ESSENCE:
+			return "Essence"
+		MaterialType.SHARD:
+			return "Shard"
+	return "Unknown"
+
+## Convert refinement tier to +X display
+static func refinement_tier_to_string(tier: RefinementTier) -> String:
+	return "+%d" % tier
+
+## Get element name from element enum
+static func element_to_string(element: Element) -> String:
+	match element:
+		Element.FIRE:
+			return "Fire"
+		Element.WATER:
+			return "Water"
+		Element.EARTH:
+			return "Earth"
+		Element.WIND:
+			return "Wind"
+		Element.LIGHT:
+			return "Light"
+		Element.DARK:
+			return "Dark"
+	return "None"

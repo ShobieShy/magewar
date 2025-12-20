@@ -22,6 +22,12 @@ var gems: Array[GemData] = []
 var weapon_level: int = 1
 var crafting_difficulty: String = "normal"
 
+# Weapon progression
+var current_weapon_level: int = 1           ## Weapon level (1 to player level)
+var weapon_experience: float = 0.0          ## Current XP towards next level
+var weapon_total_experience: float = 0.0    ## Lifetime XP
+var refinement_level: int = 0               ## Refinement tier (0-10)
+
 # Requirements
 var require_all_parts: bool = false
 var require_head: bool = true

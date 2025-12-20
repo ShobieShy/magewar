@@ -1,0 +1,11 @@
+[gd_resource type="CraftingMaterial" format=3]
+
+[resource]
+material_id = "shard_transcendent"
+material_name = "Unique Shard Transcendent"
+material_type = 2
+material_tier = 5
+element = 0
+description = "Unique-tier shard for gem evolution and transmutation"
+weight = 1.0
+stack_limit = 999

@@ -1,0 +1,11 @@
+[gd_resource type="CraftingMaterial" format=3]
+
+[resource]
+material_id = "fire_essence_2"
+material_name = "Rare Fire Essence"
+material_type = 1
+material_tier = 2
+element = 1
+description = "Rare-tier fire essence for element-specific bonuses"
+weight = 1.0
+stack_limit = 999

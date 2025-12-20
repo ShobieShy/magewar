@@ -1,0 +1,11 @@
+[gd_resource type="CraftingMaterial" format=3]
+
+[resource]
+material_id = "shard_core"
+material_name = "Mythic Shard Core"
+material_type = 2
+material_tier = 3
+element = 0
+description = "Mythic-tier shard for gem evolution and transmutation"
+weight = 1.0
+stack_limit = 999

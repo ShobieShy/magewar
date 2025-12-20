@@ -1,0 +1,11 @@
+[gd_resource type="CraftingMaterial" format=3]
+
+[resource]
+material_id = "shard_chunk"
+material_name = "Rare Shard Chunk"
+material_type = 2
+material_tier = 2
+element = 0
+description = "Rare-tier shard for gem evolution and transmutation"
+weight = 1.0
+stack_limit = 999

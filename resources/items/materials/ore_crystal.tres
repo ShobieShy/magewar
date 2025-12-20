@@ -1,0 +1,11 @@
+[gd_resource type="CraftingMaterial" format=3]
+
+[resource]
+material_id = "ore_crystal"
+material_name = "Unique Ore Crystal"
+material_type = 0
+material_tier = 5
+element = 0
+description = "Unique-tier ore material for weapon crafting and refinement"
+weight = 1.0
+stack_limit = 999
