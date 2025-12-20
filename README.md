@@ -4,7 +4,7 @@
 
 ## Overview
 
-Magewar is a co-op looter fantasy RPG built with **Godot 4.5** that combines the humor and absurdity of Konosuba with the loot-driven gameplay of Borderlands. Players are summoned as weak misfits to a fractured realm and must grow stronger by defeating monsters, crafting powerful weapons, and uncovering the mystery behind the Dungeon Fracture.
+Magewar is a co-op looter fantasy RPG built with **Godot 4.5** where Players are summoned as weak misfits to a fractured realm and must grow stronger by defeating monsters, crafting powerful weapons, and uncovering the mystery behind the Dungeon Fracture.
 
 ### Key Features
 
