@@ -12,7 +12,7 @@ Magewar is a co-op looter fantasy RPG built with **Godot 4.5** where Players are
 - **Deep Crafting System:** Customize staffs/wands with rarity-based spell cores + modular parts
 - **6-Element Magic System:** Fire, Water, Earth, Air, Light, Dark with rock-paper-scissors balance
 - **Loot-Driven:** 6-tier rarity system (Basic → Unique) with randomized stats
-- **Procedural Dungeons:** 5 dynamically populated dungeons with varied enemy spawns
+- **Procedural Dungeons:** 5 dynamically populated dungeons with with up to 100 floors and varied enemy spawns
 - **Specialized Elements:** Light heals allies, Dark corrupts enemies into summons
 - **Quest Framework:** 10+ objective types with branching paths
 - **Skill Progression:** Customizable skill trees with 4+ active systems
