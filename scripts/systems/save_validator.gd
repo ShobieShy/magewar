@@ -134,13 +134,17 @@ func sanitize_player_data(data: Dictionary) -> Dictionary:
 			if value != null:
 				sanitized[field_name] = value
 				continue
-
+		
 		if value == null:
 			continue
 		
 		# Type conversion if needed
 		if schema.has("type"):
+			var original_type = typeof(value)
 			value = _coerce_type(value, schema.type)
+			# Ensure conversion happened (especially for float->int)
+			if original_type != typeof(value) and schema.type == "int" and value is float:
+				value = int(round(value))
 		
 		# Clamp numeric values
 		if schema.has("min"):
@@ -305,13 +309,15 @@ func _sanitize_equipment(equipment: Dictionary) -> Dictionary:
 
 
 func _is_type_match(value: Variant, expected_type: String) -> bool:
-	"""Check if value matches expected type."""
+	"""Check if value matches expected type or can be coerced."""
 	match expected_type:
 		"string": return value is String
-		"int": return value is int
-		"float": return value is float
+		"int": 
+			# Allow float->int coercion
+			return value is int or value is float
+		"float": return value is float or value is int
 		"bool": return value is bool
-		"Vector3": return value is Vector3
+		"Vector3": return value is Vector3 or value is String
 		"Dictionary": return value is Dictionary
 		"Array": return value is Array
 		_: return true
@@ -324,7 +330,10 @@ func _coerce_type(value: Variant, expected_type: String) -> Variant:
 	
 	match expected_type:
 		"string": return str(value)
-		"int": return int(value) if value is float else int(value)
+		"int": 
+			if value is float:
+				return int(round(value))
+			return int(value)
 		"float": return float(value)
 		"bool": return bool(value)
 		"Vector3": 

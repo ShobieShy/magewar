@@ -1,6 +1,5 @@
 ## CraftingRecipeManager - Manages crafting recipes
 ## Handles recipe discovery, matching, and database operations
-class_name CraftingRecipeManager
 extends Node
 
 signal recipe_discovered(recipe: CraftingRecipe)
@@ -280,7 +279,7 @@ func _load_default_recipes() -> void:
 	basic_staff.recipe_name = "Basic Staff"
 	basic_staff.description = "A simple staff for novice mages"
 	basic_staff.weapon_type = "staff"
-	basic_staff.required_parts = ["basic_staff_head", "basic_staff_exterior", "basic_staff_interior", "basic_staff_handle"]
+	basic_staff.required_parts = ["basic_staff_head", "basic_staff_exterior", "basic_staff_interior", "basic_staff_handle"] as Array[String]
 	basic_staff.result_item_id = "basic_staff_result"
 	basic_staff.result_rarity = Enums.Rarity.UNCOMMON
 	basic_staff.discovery_difficulty = 0.8
@@ -294,8 +293,8 @@ func _load_default_recipes() -> void:
 	basic_wand.recipe_name = "Basic Wand"
 	basic_wand.description = "A simple wand for quick casting"
 	basic_wand.weapon_type = "wand"
-	basic_wand.required_parts = ["basic_wand_head", "basic_wand_exterior"]
-	basic_wand.optional_parts = ["basic_wand_handle"]
+	basic_wand.required_parts = ["basic_wand_head", "basic_wand_exterior"] as Array[String]
+	basic_wand.optional_parts = ["basic_wand_handle"] as Array[String]
 	basic_wand.result_item_id = "basic_wand_result"
 	basic_wand.result_rarity = Enums.Rarity.UNCOMMON
 	basic_wand.discovery_difficulty = 0.8
@@ -309,8 +308,8 @@ func _load_default_recipes() -> void:
 	fire_staff.recipe_name = "Fire Staff"
 	fire_staff.description = "A staff imbued with fire magic"
 	fire_staff.weapon_type = "staff"
-	fire_staff.required_parts = ["fire_staff_head", "reinforced_staff_exterior", "fire_staff_interior", "oak_staff_handle"]
-	fire_staff.required_gems = ["ruby_gem"]
+	fire_staff.required_parts = ["fire_staff_head", "reinforced_staff_exterior", "fire_staff_interior", "oak_staff_handle"] as Array[String]
+	fire_staff.required_gems = ["ruby_gem"] as Array[String]
 	fire_staff.result_item_id = "fire_staff_result"
 	fire_staff.result_rarity = Enums.Rarity.RARE
 	fire_staff.discovery_difficulty = 0.5
@@ -324,8 +323,8 @@ func _load_default_recipes() -> void:
 	ice_wand.recipe_name = "Ice Wand"
 	ice_wand.description = "A wand that channels ice magic"
 	ice_wand.weapon_type = "wand"
-	ice_wand.required_parts = ["frost_wand_head", "crystal_wand_exterior"]
-	ice_wand.required_gems = ["sapphire_gem"]
+	ice_wand.required_parts = ["frost_wand_head", "crystal_wand_exterior"] as Array[String]
+	ice_wand.required_gems = ["sapphire_gem"] as Array[String]
 	ice_wand.result_item_id = "ice_wand_result"
 	ice_wand.result_rarity = Enums.Rarity.RARE
 	ice_wand.discovery_difficulty = 0.5

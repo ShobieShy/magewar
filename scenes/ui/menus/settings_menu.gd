@@ -1,5 +1,6 @@
 ## SettingsMenu - In-game settings interface
 ## Provides audio, video, gameplay, and control configuration
+class_name SettingsMenu
 extends Control
 
 # =============================================================================

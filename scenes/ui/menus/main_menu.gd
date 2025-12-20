@@ -20,6 +20,10 @@ extends Control
 # =============================================================================
 
 var _available_lobbies: Array = []
+var _settings_menu: Control = null
+
+# Settings menu script class
+const SettingsMenuScript = preload("res://scenes/ui/menus/settings_menu.gd")
 
 # =============================================================================
 # BUILT-IN CALLBACKS
@@ -27,6 +31,11 @@ var _available_lobbies: Array = []
 
 func _ready() -> void:
 	_update_steam_status()
+	
+	# Create settings menu
+	_settings_menu = SettingsMenuScript.new()
+	add_child(_settings_menu)
+	_settings_menu.settings_closed.connect(_on_settings_closed)
 	
 	# Connect signals
 	SteamManager.steam_initialized.connect(_on_steam_initialized)
@@ -110,8 +119,8 @@ func _on_join_pressed() -> void:
 
 
 func _on_settings_pressed() -> void:
-	# TODO: Open settings menu
-	print("Settings not yet implemented")
+	if _settings_menu:
+		_settings_menu.open()
 
 
 func _on_quit_pressed() -> void:
@@ -216,6 +225,11 @@ func _on_player_disconnected(peer_id: int) -> void:
 func _on_game_start() -> void:
 	# Transition to game scene
 	GameManager.start_game()
+
+
+func _on_settings_closed() -> void:
+	# Restore input mode when settings close
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
 @rpc("any_peer", "call_local", "reliable")

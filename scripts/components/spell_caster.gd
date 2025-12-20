@@ -251,11 +251,23 @@ func _execute_projectile(spell: SpellData, aim_point: Vector3, direction: Vector
 		
 		# Spawn projectile
 		var projectile: Node3D
+		var scene_to_use: PackedScene = null
+		
 		if spell.projectile_scene:
-			projectile = spell.projectile_scene.instantiate()
+			scene_to_use = spell.projectile_scene
 		else:
-			# Use default projectile
-			projectile = preload("res://scenes/spells/projectile.tscn").instantiate()
+			# Use default projectile - load dynamically
+			scene_to_use = load("res://scenes/spells/projectile.tscn")
+			if not scene_to_use:
+				push_error("Failed to load default projectile scene: res://scenes/spells/projectile.tscn")
+				continue
+		
+		projectile = scene_to_use.instantiate()
+		
+		# Validate projectile was created
+		if not projectile:
+			push_error("Failed to instantiate projectile for spell: %s - instantiate() returned null" % spell.spell_name)
+			continue
 		
 		# Add to scene tree FIRST, then configure
 		var current_scene = get_tree().current_scene

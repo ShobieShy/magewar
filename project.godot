@@ -35,6 +35,7 @@ EnemySpawnSystem="*res://scripts/systems/enemy_spawn_system.gd"
 DungeonTemplateSystem="*res://scripts/systems/dungeon_template_system.gd"
 SpellNetworkManager="*res://scripts/systems/spell_network_manager.gd"
 SaveNetworkManager="*res://scripts/systems/save_network_manager.gd"
+CraftingRecipeManager="*res://scripts/systems/crafting_recipe_manager.gd"
 
 [display]
 

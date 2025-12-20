@@ -153,8 +153,15 @@ func load_scene(scene_path: String) -> void:
 
 
 func _switch_to_scene(scene: PackedScene) -> bool:
-	# Remove current scene
+	# Remove current scene - ensure it's completely removed from rendering
 	if current_scene:
+		# First hide it immediately to prevent any rendering
+		current_scene.visible = false
+		# Remove from tree to ensure it's not rendered
+		var parent = current_scene.get_parent()
+		if parent:
+			parent.remove_child(current_scene)
+		# Then queue for deletion to clean up resources
 		current_scene.queue_free()
 		current_scene = null
 	
@@ -203,13 +210,13 @@ func _handle_scene_load_error(scene_path: String) -> void:
 
 func go_to_main_menu() -> void:
 	NetworkManager.disconnect_from_game()
-	load_scene("res://scenes/ui/menus/main_menu.tscn")
 	current_state = Enums.GameState.MAIN_MENU
+	get_tree().change_scene_to_file("res://scenes/ui/menus/main_menu.tscn")
 
 
 func start_game() -> void:
-	load_scene("res://scenes/main/game.tscn")
 	current_state = Enums.GameState.PLAYING
+	get_tree().change_scene_to_file("res://scenes/main/game.tscn")
 
 # =============================================================================
 # PLAYER MANAGEMENT

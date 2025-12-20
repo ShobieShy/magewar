@@ -1,5 +1,6 @@
 ## CraftingManager - Global access point for crafting systems
 ## Provides easy access to all crafting-related functionality
+class_name CraftingManager
 extends Node
 
 signal crafting_started(config: WeaponConfiguration)

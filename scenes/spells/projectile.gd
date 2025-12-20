@@ -41,9 +41,6 @@ func _ready() -> void:
 	
 	body_entered.connect(_on_body_entered)
 	area_entered.connect(_on_area_entered)
-	
-	# Initialize velocity
-	_velocity = direction * speed
 
 
 func _physics_process(delta: float) -> void:
@@ -96,6 +93,9 @@ func initialize(config: Dictionary) -> void:
 	
 	lifetime = config.get("lifetime", 5.0)
 	effects = config.get("effects", [])
+	
+	# Initialize velocity based on the direction and speed
+	_velocity = direction * speed
 	
 	# Apply visual based on spell element if available
 	if spell:

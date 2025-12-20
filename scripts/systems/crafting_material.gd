@@ -22,12 +22,10 @@ extends Resource
 # VALIDATION
 # =============================================================================
 
-func _validate_property(property: StringName) -> bool:
-	match property:
-		"element":
-			# Element only relevant for essence materials
-			return material_type == Enums.MaterialType.ESSENCE
-	return true
+func _validate_property(property: Dictionary) -> void:
+	# This method is called by Godot's inspector when validating properties
+	# In Godot 4.x, this is used to hide/show properties based on other properties
+	pass
 
 # =============================================================================
 # UTILITY METHODS

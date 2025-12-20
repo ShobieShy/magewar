@@ -25,6 +25,9 @@ signal weapon_stats_changed()
 @export_group("Base Spell")
 @export var base_spell: SpellData
 
+# Default fallback spell for when base_spell isn't set
+const DEFAULT_SPELL_PATH = "res://resources/spells/presets/arcane_bolt.tres"
+
 # =============================================================================
 # PROPERTIES
 # =============================================================================
@@ -159,10 +162,16 @@ func _recompute_stats() -> void:
 
 
 func _update_current_spell() -> void:
-	if base_spell == null:
-		return
+	var spell_to_use = base_spell
 	
-	_current_spell = base_spell.duplicate(true)
+	# Use default spell if none is assigned
+	if spell_to_use == null:
+		spell_to_use = load(DEFAULT_SPELL_PATH)
+		if spell_to_use == null:
+			push_error("Failed to load default spell for wand")
+			return
+	
+	_current_spell = spell_to_use.duplicate(true)
 	
 	_current_spell.damage_multiplier *= _computed_stats.damage
 	_current_spell.cost_multiplier *= _computed_stats.magika_cost
@@ -242,7 +251,7 @@ func get_refinement_level() -> int:
 
 ## Get total damage with all bonuses applied
 func get_total_damage() -> float:
-	var base_damage = get_stat("damage")
+	var base_damage = _computed_stats.get("damage", 0.7)
 	var level_bonus = 0.0
 	var refinement_bonus = 1.0
 	

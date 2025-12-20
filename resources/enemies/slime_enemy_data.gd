@@ -190,8 +190,9 @@ func get_loot_table() -> Array:
 	
 	# Special elemental drops
 	if element != Enums.Element.NONE:
+		var element_name = Enums.element_to_string(element).to_lower()
 		loot_table.append({
-			"item": element.to_string().to_lower() + "_essence",
+			"item": element_name + "_essence",
 			"weight": 25,
 			"min": 1,
 			"max": 1
@@ -201,7 +202,21 @@ func get_loot_table() -> Array:
 
 func should_split() -> bool:
 	## Check if slime can split
-	return can_split and health > (split_threshold * get_max_health())
+	# Get max health from variant modifiers
+	var max_health = health
+	match variant:
+		SlimeVariant.BASIC:
+			max_health = 30.0
+		SlimeVariant.FIRE:
+			max_health = 35.0
+		SlimeVariant.ICE:
+			max_health = 35.0
+		SlimeVariant.POISON:
+			max_health = 40.0
+		SlimeVariant.ELECTRIC:
+			max_health = 30.0
+	
+	return can_split and health > (split_threshold * max_health)
 
 func should_trigger_elemental_effect() -> bool:
 	## Check if slime should trigger elemental effect
