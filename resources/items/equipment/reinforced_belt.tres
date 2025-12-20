@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EquipmentData" load_steps=2 format=3 uid="uid://equip_reinforced_belt"]
+
+[ext_resource type="Script" path="res://resources/items/equipment_data.gd" id="1_equip"]
+
+[resource]
+script = ExtResource("1_equip")
+item_id = "reinforced_belt"
+item_name = "Reinforced Belt"
+description = "A sturdy belt reinforced with metal clasps. Provides additional carrying capacity and protection."
+item_type = 3
+rarity = 1
+base_value = 30
+level_required = 3
+slot = 3
+health_bonus = 10.0
+stamina_bonus = 10.0
+defense_bonus = 2.0

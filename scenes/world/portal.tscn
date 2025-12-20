@@ -1,0 +1,45 @@
+[gd_scene load_steps=5 format=3 uid="uid://portal_base"]
+
+[ext_resource type="Script" path="res://scenes/world/portal.gd" id="1_portal"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_1"]
+height = 3.0
+radius = 1.5
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_1"]
+top_radius = 1.2
+bottom_radius = 1.5
+height = 3.0
+radial_segments = 16
+
+[sub_resource type="TorusMesh" id="TorusMesh_1"]
+inner_radius = 1.2
+outer_radius = 1.5
+rings = 16
+ring_segments = 16
+
+[node name="Portal" type="Area3D"]
+collision_layer = 32
+collision_mask = 2
+script = ExtResource("1_portal")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("CylinderShape3D_1")
+
+[node name="PortalMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+mesh = SubResource("CylinderMesh_1")
+
+[node name="PortalRing" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+mesh = SubResource("TorusMesh_1")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+light_color = Color(0.4, 0.6, 1, 1)
+light_energy = 2.0
+omni_range = 5.0
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)

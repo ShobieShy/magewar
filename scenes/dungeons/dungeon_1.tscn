@@ -1,0 +1,380 @@
+[gd_scene load_steps=6 format=3 uid="uid://dungeon1"]
+
+[ext_resource type="PackedScene" path="res://scenes/enemies/troll.tscn" id="troll"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/wraith.tscn" id="wraith"]
+[ext_resource type="PackedScene" path="res://scenes/objects/dungeon_portal.tscn" id="portal"]
+[ext_resource type="PackedScene" path="res://scenes/world/storage_chest.tscn" id="chest"]
+[ext_resource type="Script" path="res://scenes/dungeons/dungeon_1.gd" id="dungeon_script"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(10, 0.5, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall"]
+size = Vector3(10, 4, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="Material_stone"]
+albedo_color = Color(0.3, 0.3, 0.3, 1)
+roughness = 0.8
+
+[sub_resource type="BoxMesh" id="BoxMesh_floor"]
+size = Vector3(10, 0.5, 10)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall"]
+size = Vector3(10, 4, 0.5)
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 1
+background_color = Color(0.1, 0.1, 0.15, 1)
+ambient_light_color = Color(0.2, 0.2, 0.3, 1)
+ambient_light_energy = 0.3
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_1"]
+vertices = PackedVector3Array(-5, 0, -5, 5, 0, -5, 5, 0, 5, -5, 0, 5, -5, 0, 10, 5, 0, 10, 5, 0, 20, -5, 0, 20, -10, 0, 10, 10, 0, 10, 10, 0, 20, -10, 0, 20, -5, 0, 25, 5, 0, 25, 5, 0, 30, -5, 0, 30, -5, 0, 40, 5, 0, 40, 5, 0, 45, -5, 0, 45)
+polygons = [PackedInt32Array(0, 1, 2, 3), PackedInt32Array(4, 5, 6, 7), PackedInt32Array(8, 9, 10, 11), PackedInt32Array(12, 13, 14, 15), PackedInt32Array(16, 17, 18, 19)]
+
+[node name="Dungeon1" type="Node3D"]
+script = ExtResource("dungeon_script")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 10, 0)
+light_color = Color(0.8, 0.8, 1, 1)
+light_energy = 0.5
+shadow_enabled = true
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_1")
+
+[node name="EntranceArea" type="Node3D" parent="."]
+
+[node name="Floor" type="StaticBody3D" parent="EntranceArea"]
+collision_layer = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="EntranceArea/Floor"]
+mesh = SubResource("BoxMesh_floor")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EntranceArea/Floor"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Walls" type="StaticBody3D" parent="EntranceArea"]
+collision_layer = 1
+
+[node name="NorthWall" type="MeshInstance3D" parent="EntranceArea/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -5)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="SouthWall" type="MeshInstance3D" parent="EntranceArea/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 5)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="EastWall" type="MeshInstance3D" parent="EntranceArea/Walls"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5, 2, 0)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="WestWall" type="MeshInstance3D" parent="EntranceArea/Walls"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5, 2, 0)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="EntrancePortal" parent="EntranceArea" instance=ExtResource("portal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.8)
+portal_type = 1
+dungeon_id = ""
+portal_name = "Exit to Overworld"
+
+[node name="MainCorridor" type="Node3D" parent="."]
+
+[node name="Floor" type="StaticBody3D" parent="MainCorridor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
+collision_layer = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MainCorridor/Floor"]
+mesh = SubResource("BoxMesh_floor")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MainCorridor/Floor"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Walls" type="StaticBody3D" parent="MainCorridor"]
+collision_layer = 1
+
+[node name="NorthWall" type="MeshInstance3D" parent="MainCorridor/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 10)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="SouthWall" type="MeshInstance3D" parent="MainCorridor/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 20)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="EastWall" type="MeshInstance3D" parent="MainCorridor/Walls"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5, 2, 15)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="WestWall" type="MeshInstance3D" parent="MainCorridor/Walls"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5, 2, 15)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="CorridorSpawn1" type="Node3D" parent="MainCorridor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 15)
+
+[node name="CorridorSpawn2" type="Node3D" parent="MainCorridor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 15)
+
+[node name="CorridorChest" parent="MainCorridor" instance=ExtResource("chest")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 18)
+
+[node name="EnemyRoom1" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, 15)
+
+[node name="Floor" type="StaticBody3D" parent="EnemyRoom1"]
+collision_layer = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="EnemyRoom1/Floor"]
+mesh = SubResource("BoxMesh_floor")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnemyRoom1/Floor"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Walls" type="StaticBody3D" parent="EnemyRoom1"]
+collision_layer = 1
+
+[node name="NorthWall" type="MeshInstance3D" parent="EnemyRoom1/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -5)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="SouthWall" type="MeshInstance3D" parent="EnemyRoom1/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 5)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="EastWall" type="MeshInstance3D" parent="EnemyRoom1/Walls"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5, 2, 0)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="WestWall" type="MeshInstance3D" parent="EnemyRoom1/Walls"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5, 2, 0)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="Troll1" parent="EnemyRoom1" instance=ExtResource("troll")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+patrol_points = [Vector3(-3, 0, -3), Vector3(3, 0, -3), Vector3(3, 0, 3), Vector3(-3, 0, 3)]
+
+[node name="Troll2" parent="EnemyRoom1" instance=ExtResource("troll")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 2)
+patrol_points = [Vector3(-4, 0, 2), Vector3(-2, 0, -2), Vector3(2, 0, -4)]
+
+[node name="GoblinSpawn1" type="Node3D" parent="EnemyRoom1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -3)
+
+[node name="GoblinSpawn2" type="Node3D" parent="EnemyRoom1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 3)
+
+[node name="SkeletonSpawn1" type="Node3D" parent="EnemyRoom1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 3)
+
+[node name="Room1Chest" parent="EnemyRoom1" instance=ExtResource("chest")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.5, -3)
+
+[node name="EnemyRoom2" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 15)
+
+[node name="Floor" type="StaticBody3D" parent="EnemyRoom2"]
+collision_layer = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="EnemyRoom2/Floor"]
+mesh = SubResource("BoxMesh_floor")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnemyRoom2/Floor"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Walls" type="StaticBody3D" parent="EnemyRoom2"]
+collision_layer = 1
+
+[node name="NorthWall" type="MeshInstance3D" parent="EnemyRoom2/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -5)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="SouthWall" type="MeshInstance3D" parent="EnemyRoom2/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 5)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="EastWall" type="MeshInstance3D" parent="EnemyRoom2/Walls"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5, 2, 0)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="WestWall" type="MeshInstance3D" parent="EnemyRoom2/Walls"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5, 2, 0)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="Wraith1" parent="EnemyRoom2" instance=ExtResource("wraith")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+patrol_points = [Vector3(-3, 0, -3), Vector3(3, 0, 3)]
+
+[node name="Wraith2" parent="EnemyRoom2" instance=ExtResource("wraith")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -3)
+patrol_points = [Vector3(3, 0, -3), Vector3(-3, 0, 3)]
+
+[node name="GoblinSpawn3" type="Node3D" parent="EnemyRoom2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -3)
+
+[node name="GoblinSpawn4" type="Node3D" parent="EnemyRoom2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 3)
+
+[node name="SkeletonSpawn2" type="Node3D" parent="EnemyRoom2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 3)
+
+[node name="BossArea" type="Node3D" parent="."]
+
+[node name="Floor" type="StaticBody3D" parent="BossArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 35)
+collision_layer = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="BossArea/Floor"]
+mesh = SubResource("BoxMesh_floor")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BossArea/Floor"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Walls" type="StaticBody3D" parent="BossArea"]
+collision_layer = 1
+
+[node name="NorthWall" type="MeshInstance3D" parent="BossArea/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 30)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="SouthWall" type="MeshInstance3D" parent="BossArea/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 40)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="EastWall" type="MeshInstance3D" parent="BossArea/Walls"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5, 2, 35)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="WestWall" type="MeshInstance3D" parent="BossArea/Walls"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5, 2, 35)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="BossAreaSpawn1" type="Node3D" parent="BossArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 32)
+
+[node name="BossAreaSpawn2" type="Node3D" parent="BossArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 32)
+
+[node name="AncientTroll" parent="BossArea" instance=ExtResource("troll")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 35)
+variant = 4
+level = 5
+
+[node name="TreasureRoom" type="Node3D" parent="."]
+
+[node name="Floor" type="StaticBody3D" parent="TreasureRoom"]
+collision_layer = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TreasureRoom/Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 50)
+mesh = SubResource("BoxMesh_floor")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TreasureRoom/Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 50)
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Walls" type="StaticBody3D" parent="TreasureRoom"]
+collision_layer = 1
+
+[node name="NorthWall" type="MeshInstance3D" parent="TreasureRoom/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 45)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="SouthWall" type="MeshInstance3D" parent="TreasureRoom/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 55)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="EastWall" type="MeshInstance3D" parent="TreasureRoom/Walls"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5, 2, 50)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="WestWall" type="MeshInstance3D" parent="TreasureRoom/Walls"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5, 2, 50)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Material_stone")
+
+[node name="TreasureChest" parent="TreasureRoom" instance=ExtResource("chest")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 50)
+
+[node name="ExitPortal" parent="TreasureRoom" instance=ExtResource("portal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 54.8)
+portal_type = 1
+dungeon_id = ""
+portal_name = "Exit to Overworld"
+
+[node name="Lights" type="Node3D" parent="."]
+
+[node name="EntranceLight" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+light_color = Color(1, 0.8, 0.6, 1)
+light_energy = 1.5
+omni_range = 8.0
+shadow_enabled = true
+
+[node name="CorridorLight" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 15)
+light_color = Color(1, 0.8, 0.6, 1)
+light_energy = 1.5
+omni_range = 8.0
+shadow_enabled = true
+
+[node name="Room1Light" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 3, 15)
+light_color = Color(1, 0.8, 0.6, 1)
+light_energy = 1.5
+omni_range = 8.0
+shadow_enabled = true
+
+[node name="Room2Light" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 3, 15)
+light_color = Color(1, 0.8, 0.6, 1)
+light_energy = 1.5
+omni_range = 8.0
+shadow_enabled = true
+
+[node name="BossLight" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 35)
+light_color = Color(1, 0.2, 0.1, 1)
+light_energy = 2.0
+omni_range = 10.0
+shadow_enabled = true
+
+[node name="TreasureLight" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 50)
+light_color = Color(1, 0.9, 0.3, 1)
+light_energy = 2.0
+omni_range = 8.0
+shadow_enabled = true

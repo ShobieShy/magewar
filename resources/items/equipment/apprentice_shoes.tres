@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EquipmentData" load_steps=2 format=3 uid="uid://equip_apprentice_shoes"]
+
+[ext_resource type="Script" path="res://resources/items/equipment_data.gd" id="1_equip"]
+
+[resource]
+script = ExtResource("1_equip")
+item_id = "apprentice_shoes"
+item_name = "Apprentice's Shoes"
+description = "Soft leather shoes that allow for quiet movement through the halls of magical academies."
+item_type = 3
+rarity = 0
+base_value = 12
+level_required = 1
+slot = 4
+move_speed_bonus = 0.05
+stamina_regen_bonus = 0.5

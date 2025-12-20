@@ -1,0 +1,15 @@
+[gd_scene load_steps=7 format=3 uid="uid://weapon_starter_staff"]
+
+[ext_resource type="PackedScene" uid="uid://bvn8h3kmyxqtj" path="res://scenes/weapons/staff.tscn" id="1_staff"]
+[ext_resource type="Resource" uid="uid://part_head_basic" path="res://resources/items/parts/heads/cracked_crystal.tres" id="2_head"]
+[ext_resource type="Resource" uid="uid://part_ext_basic" path="res://resources/items/parts/exteriors/rough_wood.tres" id="3_exterior"]
+[ext_resource type="Resource" uid="uid://part_int_basic" path="res://resources/items/parts/interiors/iron_conduit.tres" id="4_interior"]
+[ext_resource type="Resource" uid="uid://part_handle_basic" path="res://resources/items/parts/handles/leather_wrap.tres" id="5_handle"]
+[ext_resource type="Resource" uid="uid://spell_arcane_bolt" path="res://resources/spells/presets/arcane_bolt.tres" id="6_spell"]
+
+[node name="StarterStaff" instance=ExtResource("1_staff")]
+head = ExtResource("2_head")
+exterior = ExtResource("3_exterior")
+interior = ExtResource("4_interior")
+handle = ExtResource("5_handle")
+base_spell = ExtResource("6_spell")

@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="ConsumableData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/items/consumable_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+item_id = "stamina_potion_small"
+item_name = "Small Stamina Potion"
+description = "A basic stamina potion that restores a small amount of energy."
+item_type = 5
+rarity = 0
+stackable = true
+max_stack = 99
+base_value = 20
+level_required = 1
+consumable_type = 2
+health_restore = 0.0
+health_restore_percent = 0.0
+magika_restore = 0.0
+magika_restore_percent = 0.0
+stamina_restore = 50.0
+stamina_restore_percent = 0.0
+apply_status = 0
+status_duration = 0.0
+cooldown = 1.0
+use_time = 0.0
+can_use_in_combat = true

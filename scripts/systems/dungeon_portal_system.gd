@@ -1,0 +1,325 @@
+## DungeonPortalSystem - Manages dungeon entrances, exits, and transitions
+extends Node
+
+# =============================================================================
+# SIGNALS
+# =============================================================================
+
+signal dungeon_entered(dungeon_id: String, portal: DungeonPortal)
+signal dungeon_exited(dungeon_id: String, portal: DungeonPortal)
+signal transition_started()
+signal transition_completed()
+signal portal_discovered(portal_id: String)
+
+# =============================================================================
+# CONSTANTS
+# =============================================================================
+
+const TRANSITION_FADE_TIME: float = 1.0
+const PORTAL_SAVE_KEY: String = "discovered_portals"
+
+# =============================================================================
+# PROPERTIES
+# =============================================================================
+
+var active_portals: Dictionary = {}  # portal_id -> DungeonPortal
+var discovered_portals: Array[String] = []
+var current_dungeon: String = ""
+var is_transitioning: bool = false
+var return_position: Vector3 = Vector3.ZERO
+var return_scene: String = ""
+
+# Scene paths
+var dungeon_scenes: Dictionary = {
+	"dungeon_1": "res://scenes/dungeons/dungeon_1.tscn",
+	"dungeon_2": "res://scenes/dungeons/dungeon_2.tscn",
+	"crystal_cave": "res://scenes/dungeons/crystal_cave.tscn",
+	"ancient_ruins": "res://scenes/dungeons/ancient_ruins.tscn"
+}
+
+var overworld_scene: String = "res://scenes/world/overworld.tscn"
+
+# =============================================================================
+# BUILT-IN CALLBACKS
+# =============================================================================
+
+func _ready() -> void:
+	# Load discovered portals from save
+	_load_discovered_portals()
+	
+	# Connect to scene tree for scene changes
+	get_tree().node_added.connect(_on_node_added)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		_save_discovered_portals()
+
+# =============================================================================
+# PORTAL MANAGEMENT
+# =============================================================================
+
+func register_portal(portal: DungeonPortal) -> void:
+	"""Register a portal in the system"""
+	if not portal.portal_id.is_empty():
+		active_portals[portal.portal_id] = portal
+		
+		# Connect to portal signals
+		if not portal.player_entered.is_connected(_on_portal_entered):
+			portal.player_entered.connect(_on_portal_entered)
+		
+		# Check if already discovered
+		if portal.portal_id in discovered_portals:
+			portal.is_discovered = true
+
+func unregister_portal(portal_id: String) -> void:
+	"""Remove a portal from the system"""
+	if portal_id in active_portals:
+		var portal = active_portals[portal_id]
+		if portal.player_entered.is_connected(_on_portal_entered):
+			portal.player_entered.disconnect(_on_portal_entered)
+		active_portals.erase(portal_id)
+
+func discover_portal(portal_id: String) -> void:
+	"""Mark a portal as discovered"""
+	if portal_id not in discovered_portals:
+		discovered_portals.append(portal_id)
+		portal_discovered.emit(portal_id)
+		_save_discovered_portals()
+		
+		# Update the actual portal if it exists
+		if portal_id in active_portals:
+			active_portals[portal_id].is_discovered = true
+
+# =============================================================================
+# DUNGEON TRANSITIONS
+# =============================================================================
+
+func enter_dungeon(dungeon_id: String, portal: DungeonPortal) -> void:
+	"""Transition into a dungeon"""
+	if is_transitioning or current_dungeon == dungeon_id:
+		return
+
+	if dungeon_id not in dungeon_scenes:
+		push_error("Unknown dungeon: " + dungeon_id)
+		return
+
+	is_transitioning = true
+	transition_started.emit()
+
+	# Mark portal as discovered
+	if portal:
+		discover_portal(portal.portal_id)
+
+	# Save return information
+	var player = get_tree().get_first_node_in_group("player")
+	if player:
+		return_position = player.global_position
+	return_scene = get_tree().current_scene.scene_file_path
+
+	# Start transition
+	_transition_to_scene(dungeon_scenes[dungeon_id], dungeon_id, portal)
+
+	# Initialize enemy spawn system for the dungeon
+	if EnemySpawnSystem:
+		# EnemySpawnSystem will be initialized when the scene loads
+		pass
+
+func exit_dungeon(portal: DungeonPortal) -> void:
+	"""Exit from current dungeon"""
+	if is_transitioning or current_dungeon.is_empty():
+		return
+	
+	is_transitioning = true
+	transition_started.emit()
+	
+	# Determine return scene
+	var target_scene = return_scene if not return_scene.is_empty() else overworld_scene
+	
+	# Start transition
+	_transition_to_scene(target_scene, "", portal)
+
+func _transition_to_scene(scene_path: String, dungeon_id: String, portal: DungeonPortal) -> void:
+	"""Handle the actual scene transition"""
+	# Fade out
+	if get_node_or_null("/root/CutsceneManager"):
+		await get_node("/root/CutsceneManager").fade_out(TRANSITION_FADE_TIME)
+	
+	# Save current game state
+	if SaveManager:
+		SaveManager.save_game()
+	
+	# Load new scene
+	var result = get_tree().change_scene_to_file(scene_path)
+	if result != OK:
+		push_error("Failed to load scene: " + scene_path)
+		is_transitioning = false
+		return
+	
+	# Wait for scene to be ready
+	await get_tree().create_timer(0.1).timeout
+	
+	# Update dungeon state
+	var old_dungeon = current_dungeon
+	current_dungeon = dungeon_id
+	
+	# Emit appropriate signal
+	if not dungeon_id.is_empty():
+		dungeon_entered.emit(dungeon_id, portal)
+	else:
+		dungeon_exited.emit(old_dungeon, portal)
+	
+	# Position player at spawn point
+	_position_player_at_spawn(portal)
+	
+	# Fade in
+	if get_node_or_null("/root/CutsceneManager"):
+		await get_node("/root/CutsceneManager").fade_in(TRANSITION_FADE_TIME)
+	
+	is_transitioning = false
+	transition_completed.emit()
+
+func _position_player_at_spawn(portal: DungeonPortal) -> void:
+	"""Position the player at the appropriate spawn point"""
+	var player = get_tree().get_first_node_in_group("player")
+	if not player:
+		return
+	
+	# Find spawn point in new scene
+	var spawn_point: Node3D = null
+	
+	if current_dungeon.is_empty():
+		# Returning to overworld - use return position
+		if return_position != Vector3.ZERO:
+			player.global_position = return_position
+			return
+	
+	# Look for matching spawn point
+	if portal and portal.has_method("get_spawn_point"):
+		spawn_point = portal.get_spawn_point()
+	
+	if not spawn_point:
+		# Find any spawn point
+		var spawn_points = get_tree().get_nodes_in_group("spawn_points")
+		if spawn_points.size() > 0:
+			spawn_point = spawn_points[0]
+	
+	if spawn_point:
+		player.global_position = spawn_point.global_position
+		if spawn_point.has("rotation"):
+			player.rotation = spawn_point.rotation
+
+# =============================================================================
+# PORTAL QUERIES
+# =============================================================================
+
+func get_nearest_portal(position: Vector3, max_distance: float = INF) -> DungeonPortal:
+	"""Find the nearest portal to a position"""
+	var nearest_portal: DungeonPortal = null
+	var nearest_distance: float = max_distance
+	
+	for portal in active_portals.values():
+		if not is_instance_valid(portal):
+			continue
+		
+		var distance = position.distance_to(portal.global_position)
+		if distance < nearest_distance:
+			nearest_distance = distance
+			nearest_portal = portal
+	
+	return nearest_portal
+
+func is_portal_discovered(portal_id: String) -> bool:
+	"""Check if a portal has been discovered"""
+	return portal_id in discovered_portals
+
+func get_discovered_dungeons() -> Array[String]:
+	"""Get list of discovered dungeon IDs"""
+	var dungeons: Array[String] = []
+	for portal_id in discovered_portals:
+		if portal_id in active_portals:
+			var portal = active_portals[portal_id]
+			if portal.dungeon_id not in dungeons:
+				dungeons.append(portal.dungeon_id)
+	return dungeons
+
+# =============================================================================
+# SAVE/LOAD
+# =============================================================================
+
+func _save_discovered_portals() -> void:
+	"""Save discovered portals to SaveManager"""
+	if SaveManager:
+		SaveManager.set_data(PORTAL_SAVE_KEY, discovered_portals)
+
+func _load_discovered_portals() -> void:
+	"""Load discovered portals from SaveManager"""
+	if SaveManager:
+		var saved_portals = SaveManager.get_data(PORTAL_SAVE_KEY, [])
+		if saved_portals is Array:
+			# Ensure all elements are strings
+			discovered_portals = []
+			for portal_id in saved_portals:
+				if portal_id is String:
+					discovered_portals.append(portal_id)
+
+# =============================================================================
+# SIGNAL CALLBACKS
+# =============================================================================
+
+func _on_portal_entered(player: Node, portal: DungeonPortal) -> void:
+	"""Handle player entering a portal"""
+	if portal.portal_type == DungeonPortal.PortalType.ENTRANCE:
+		enter_dungeon(portal.dungeon_id, portal)
+	elif portal.portal_type == DungeonPortal.PortalType.EXIT:
+		exit_dungeon(portal)
+
+func _on_node_added(node: Node) -> void:
+	"""Automatically register portals when they're added to the scene"""
+	if node is DungeonPortal:
+		register_portal(node)
+
+# =============================================================================
+# UTILITY
+# =============================================================================
+
+func get_dungeon_info(dungeon_id: String) -> Dictionary:
+	"""Get information about a dungeon"""
+	var info = {
+		"id": dungeon_id,
+		"name": dungeon_id.replace("_", " ").capitalize(),
+		"discovered": false,
+		"completed": false,
+		"level_range": [1, 5],
+		"description": ""
+	}
+	
+	# Check if discovered
+	for portal_id in discovered_portals:
+		if portal_id.begins_with(dungeon_id):
+			info.discovered = true
+			break
+	
+	# Add specific dungeon info
+	match dungeon_id:
+		"dungeon_1":
+			info.name = "Abandoned Mine"
+			info.level_range = [1, 5]
+			info.description = "An old mine overrun by goblins and trolls."
+		"dungeon_2":
+			info.name = "Haunted Catacombs"
+			info.level_range = [5, 10]
+			info.description = "Ancient burial grounds filled with undead."
+		"crystal_cave":
+			info.name = "Crystal Cave"
+			info.level_range = [3, 7]
+			info.description = "A mystical cave filled with magical crystals."
+		"ancient_ruins":
+			info.name = "Ancient Ruins"
+			info.level_range = [10, 15]
+			info.description = "Ruins of an ancient civilization."
+	
+	return info
+
+func is_in_dungeon() -> bool:
+	"""Check if currently in a dungeon"""
+	return not current_dungeon.is_empty()

@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://resources/quests/quest_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/quests/quest_objective.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+objective_id = "reach_home_tree"
+description = "Travel to the Old Oak tree, your new home"
+objective_type = 4  ; DISCOVER_AREA
+target_id = "home_tree_interior"
+target_count = 1
+is_optional = false
+is_hidden = false
+required_location = ""
+
+[resource]
+script = ExtResource("1")
+quest_id = "prologue_home_tree"
+quest_name = "A Humble Beginning"
+description = "Make your way to the Old Oak tree on the outskirts of town. This ancient, hollow tree has been granted to you as residence - though no one has lived there for centuries due to rumors of it being haunted."
+quest_giver = "automatic"
+is_main_quest = true
+chapter = 0
+objectives = [SubResource("1")]
+require_all_objectives = true
+required_level = 1
+required_quests = ["prologue_expulsion"]
+required_items = []
+required_location = ""
+reward_experience = 100
+reward_gold = 0
+reward_items = ["basic_bed_roll"]
+reward_skill_points = 0
+unlock_location = ""
+unlock_portal = "home_tree"
+auto_complete = true
+turn_in_npc = ""
+next_quest = "chapter1_bob_arrival"
+dialogue_on_accept = ""
+dialogue_on_progress = ""
+dialogue_on_complete = ""

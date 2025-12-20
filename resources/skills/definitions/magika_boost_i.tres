@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SkillData" load_steps=2 format=3 uid="uid://bvnvn8qkrx6ra"]
+
+[ext_resource type="Script" path="res://resources/skills/skill_data.gd" id="1_0cd8o"]
+
+[resource]
+script = ExtResource("1_0cd8o")
+skill_id = "magika_boost_i"
+skill_name = "Magika Boost I"
+description = "Increases maximum magika by 15 points."
+skill_type = 0
+category = 2
+required_level = 1
+skill_points_cost = 1
+stat_modifiers = {
+"MAGIKA": 15.0
+}
+is_percentage = false
+tree_position = Vector2(100, 200)

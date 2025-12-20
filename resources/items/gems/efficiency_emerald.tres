@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="GemData" load_steps=2 format=3 uid="uid://gem_efficiency_emerald"]
+
+[ext_resource type="Script" path="res://resources/spells/gem_data.gd" id="1_gem"]
+
+[resource]
+script = ExtResource("1_gem")
+gem_name = "Efficiency Emerald"
+description = "An emerald attuned to magical flow. Reduces magika cost of spells."
+rarity = 1
+element = 0
+converts_element = false
+damage_multiplier = 1.0
+cost_multiplier = 0.8
+cooldown_multiplier = 1.0
+range_multiplier = 1.0
+aoe_multiplier = 1.0
+projectile_speed_multiplier = 1.0
+projectile_count_bonus = 0
+additional_effects = []
+adds_pierce = 0
+adds_bounce = 0
+adds_chain = 0
+adds_homing = 0.0
+reduces_gravity = 0.0

@@ -1,0 +1,180 @@
+[gd_scene load_steps=8 format=3 uid="uid://starting_town_square"]
+
+[ext_resource type="Script" path="res://scenes/world/starting_town/town_square.gd" id="1_town"]
+[ext_resource type="PackedScene" uid="uid://portal_base" path="res://scenes/world/portal.tscn" id="2_portal"]
+
+[sub_resource type="StandardMaterial3D" id="mat_cobblestone"]
+albedo_color = Color(0.45, 0.42, 0.4, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_grass"]
+albedo_color = Color(0.3, 0.5, 0.25, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_building"]
+albedo_color = Color(0.55, 0.5, 0.45, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_wood"]
+albedo_color = Color(0.4, 0.3, 0.2, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_tree"]
+albedo_color = Color(0.35, 0.25, 0.15, 1)
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 1
+background_color = Color(0.5, 0.65, 0.85, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.8, 0.85, 0.9, 1)
+ambient_light_energy = 0.6
+tonemap_mode = 2
+
+[node name="TownSquare" type="Node3D"]
+script = ExtResource("1_town")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.354, 0.354, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 10, 30, 10)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 1.2
+shadow_enabled = true
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+
+[node name="Ground" type="Node3D" parent="NavigationRegion3D"]
+
+[node name="CentralSquare" type="CSGBox3D" parent="NavigationRegion3D/Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+use_collision = true
+size = Vector3(30, 0.2, 30)
+material = SubResource("mat_cobblestone")
+
+[node name="GrassNorth" type="CSGBox3D" parent="NavigationRegion3D/Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, -25)
+use_collision = true
+size = Vector3(60, 0.1, 20)
+material = SubResource("mat_grass")
+
+[node name="GrassSouth" type="CSGBox3D" parent="NavigationRegion3D/Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 25)
+use_collision = true
+size = Vector3(60, 0.1, 20)
+material = SubResource("mat_grass")
+
+[node name="GrassEast" type="CSGBox3D" parent="NavigationRegion3D/Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, -0.15, 0)
+use_collision = true
+size = Vector3(20, 0.1, 30)
+material = SubResource("mat_grass")
+
+[node name="GrassWest" type="CSGBox3D" parent="NavigationRegion3D/Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, -0.15, 0)
+use_collision = true
+size = Vector3(20, 0.1, 30)
+material = SubResource("mat_grass")
+
+[node name="Buildings" type="Node3D" parent="NavigationRegion3D"]
+
+[node name="MageAssociationBuilding" type="CSGBox3D" parent="NavigationRegion3D/Buildings"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -22)
+use_collision = true
+size = Vector3(16, 10, 12)
+material = SubResource("mat_building")
+
+[node name="MageAssociationRoof" type="CSGBox3D" parent="NavigationRegion3D/Buildings/MageAssociationBuilding"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+use_collision = true
+size = Vector3(18, 2, 14)
+material = SubResource("mat_wood")
+
+[node name="ShopBuilding" type="CSGBox3D" parent="NavigationRegion3D/Buildings"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 3.5, -8)
+use_collision = true
+size = Vector3(10, 7, 8)
+material = SubResource("mat_building")
+
+[node name="InnBuilding" type="CSGBox3D" parent="NavigationRegion3D/Buildings"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 4, 0)
+use_collision = true
+size = Vector3(12, 8, 10)
+material = SubResource("mat_building")
+
+[node name="HomeTree" type="Node3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
+
+[node name="Trunk" type="CSGCylinder3D" parent="NavigationRegion3D/HomeTree"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0)
+use_collision = true
+radius = 4.0
+height = 16.0
+material = SubResource("mat_tree")
+
+[node name="Canopy" type="CSGSphere3D" parent="NavigationRegion3D/HomeTree"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18, 0)
+use_collision = true
+radius = 10.0
+material = SubResource("mat_grass")
+
+[node name="CentralFountain" type="Node3D" parent="NavigationRegion3D"]
+
+[node name="Base" type="CSGCylinder3D" parent="NavigationRegion3D/CentralFountain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+use_collision = true
+radius = 3.0
+height = 0.6
+
+[node name="Column" type="CSGCylinder3D" parent="NavigationRegion3D/CentralFountain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+use_collision = true
+radius = 0.5
+height = 2.4
+
+[node name="Decorations" type="Node3D" parent="NavigationRegion3D"]
+
+[node name="Bench1" type="CSGBox3D" parent="NavigationRegion3D/Decorations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.3, 5)
+use_collision = true
+size = Vector3(2, 0.6, 0.8)
+material = SubResource("mat_wood")
+
+[node name="Bench2" type="CSGBox3D" parent="NavigationRegion3D/Decorations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.3, 5)
+use_collision = true
+size = Vector3(2, 0.6, 0.8)
+material = SubResource("mat_wood")
+
+[node name="PlayerSpawn" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 12)
+
+[node name="NPCSpawns" type="Node3D" parent="."]
+
+[node name="CrazyJoeSpawn" type="Marker3D" parent="NPCSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.5, 0)
+
+[node name="BobSpawn" type="Marker3D" parent="NPCSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.5, -5)
+
+[node name="ShopkeeperSpawn" type="Marker3D" parent="NPCSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0.5, -2)
+
+[node name="Portals" type="Node3D" parent="."]
+
+[node name="PortalLandfill" parent="Portals" instance=ExtResource("2_portal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -15)
+portal_id = "landfill"
+portal_name = "Landfill"
+destination_scene = "res://scenes/world/landfill/landfill.tscn"
+is_active = false
+
+[node name="MageAssociationEntrance" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -16)
+collision_layer = 64
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MageAssociationEntrance"]
+
+[node name="HomeTreeEntrance" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 16)
+collision_layer = 64
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HomeTreeEntrance"]

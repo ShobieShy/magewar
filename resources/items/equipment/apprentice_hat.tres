@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EquipmentData" load_steps=2 format=3 uid="uid://equip_apprentice_hat"]
+
+[ext_resource type="Script" path="res://resources/items/equipment_data.gd" id="1_equip"]
+
+[resource]
+script = ExtResource("1_equip")
+item_id = "apprentice_hat"
+item_name = "Apprentice's Hat"
+description = "A simple pointed hat worn by novice mages. Provides minor magical protection."
+item_type = 3
+rarity = 0
+base_value = 15
+level_required = 1
+slot = 1
+magika_bonus = 10.0
+magika_regen_bonus = 0.5

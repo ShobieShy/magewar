@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SkillData" load_steps=2 format=3 uid="uid://bvnvn8qkrx6rc"]
+
+[ext_resource type="Script" path="res://resources/skills/skill_data.gd" id="1_0cd8o"]
+
+[resource]
+script = ExtResource("1_0cd8o")
+skill_id = "cast_speed_i"
+skill_name = "Cast Speed I"
+description = "Increases spell casting speed by 15%."
+skill_type = 0
+category = 2
+required_level = 3
+skill_points_cost = 1
+stat_modifiers = {
+"CAST_SPEED": 0.15
+}
+is_percentage = true
+tree_position = Vector2(200, 200)

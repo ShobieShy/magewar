@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="EquipmentData" load_steps=2 format=3 uid="uid://equip_mystic_robes"]
+
+[ext_resource type="Script" path="res://resources/items/equipment_data.gd" id="1_equip"]
+
+[resource]
+script = ExtResource("1_equip")
+item_id = "mystic_robes"
+item_name = "Mystic Robes"
+description = "Ancient robes infused with mystical energies. Provides powerful magical enhancements."
+item_type = 3
+rarity = 2
+base_value = 85
+level_required = 8
+slot = 2
+health_bonus = 30.0
+magika_bonus = 30.0
+defense_bonus = 5.0
+magika_regen_bonus = 1.0
+health_regen_bonus = 0.5

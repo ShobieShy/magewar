@@ -1,0 +1,59 @@
+[gd_resource type="Resource" script_class="PotionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/items/potion_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+item_id = "health_potion_small"
+item_name = "Minor Health Potion"
+description = "A small vial of red liquid that restores health when consumed."
+icon_path = "res://assets/icons/items/potion_health_small.png"
+rarity = 0  ; COMMON
+item_type = 6  ; CONSUMABLE
+stackable = true
+max_stack = 99
+base_value = 25
+weight = 0.2
+
+# Instant Effects
+instant_health = 50
+instant_mana = 0
+instant_stamina = 0
+
+# Over Time Effects
+buff_duration = 0.0
+health_regen_per_second = 0.0
+mana_regen_per_second = 0.0
+stamina_regen_per_second = 0.0
+
+# Stat Modifiers
+damage_multiplier = 1.0
+defense_multiplier = 1.0
+movement_speed_multiplier = 1.0
+attack_speed_multiplier = 1.0
+
+# Resistances
+physical_resistance_buff = 0.0
+magical_resistance_buff = 0.0
+fire_resistance_buff = 0.0
+ice_resistance_buff = 0.0
+lightning_resistance_buff = 0.0
+poison_resistance_buff = 0.0
+
+# Special Effects
+remove_debuffs = false
+grant_immunity_duration = 0.0
+can_revive = false
+revive_health_percent = 0.25
+
+# Potion Properties
+cooldown = 5.0
+usable_in_combat = true
+usable_while_moving = true
+cast_time = 0.0
+consume_animation = "drink_potion"
+
+# Visual Effects
+liquid_color = Color(0.8, 0.1, 0.1, 1.0)
+effect_scene_path = ""
+consume_sound_path = "res://assets/audio/sfx/potion_drink.ogg"

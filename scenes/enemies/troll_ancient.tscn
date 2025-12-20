@@ -1,0 +1,92 @@
+[gd_scene load_steps=10 format=3 uid="uid://btroll_ancient"]
+
+[ext_resource type="PackedScene" uid="uid://cvqn3h8x2m7pk" path="res://scenes/enemies/enemy_base.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scenes/enemies/troll.gd" id="2_troll"]
+[ext_resource type="Script" path="res://resources/enemies/troll_enemy_data.gd" id="3_data"]
+
+[sub_resource type="Resource" id="Resource_troll_ancient"]
+script = ExtResource("3_data")
+variant = 4
+level = 2
+health = 300.0
+damage = 40.0
+speed = 1.2
+attack_range = 3.5
+detection_range = 15.0
+patrol_speed = 1.5
+regeneration_rate = 6.0
+special_ability = "elder_roar"
+rage_threshold = 0.5
+rage_damage_bonus = 2.0
+rage_speed_bonus = 0.75
+stun_duration = 3.0
+environmental_resistance = "magic_resistance"
+terrain_bonus = "primordial_power"
+mesh_color = Color(0.5, 0.35, 0.15, 1)
+mesh_scale = Vector3(1.5, 1.5, 1.0)
+armor_color = Color(0.3, 0.2, 0.1, 1)
+weapon_color = Color(0.6, 0.5, 0.3, 1)
+gold_drop_min = 50
+gold_drop_max = 100
+item_drops = ["healing_potion", "troll_heart", "ancient_rune", "strength_rune"]
+drop_chance = 0.85
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ancient"]
+radius = 1.0
+height = 3.0
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ancient"]
+radius = 1.0
+height = 3.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ancient"]
+albedo_color = Color(0.5, 0.35, 0.15, 1)
+roughness = 0.75
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_detect_ancient"]
+radius = 15.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_attack_ancient"]
+radius = 3.5
+
+[node name="TrollAncient" instance=ExtResource("1_base")]
+script = ExtResource("2_troll")
+troll_data = SubResource("Resource_troll_ancient")
+variant = 4
+
+[node name="CollisionShape3D" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("CapsuleShape3D_ancient")
+
+[node name="MeshInstance3D" parent="." index="1"]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1, 0, 1.5, 0)
+mesh = SubResource("CapsuleMesh_ancient")
+surface_material_override/0 = SubResource("StandardMaterial3D_ancient")
+
+[node name="StatsComponent" parent="." index="2"]
+max_health = 300.0
+
+[node name="NavigationAgent3D" parent="." index="3"]
+path_max_distance = 20.0
+avoidance_enabled = true
+radius = 1.0
+neighbor_distance = 10.0
+max_neighbors = 6
+
+[node name="DetectionArea" parent="." index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
+
+[node name="CollisionShape3D" parent="DetectionArea" index="0"]
+shape = SubResource("SphereShape3D_detect_ancient")
+
+[node name="AttackArea" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
+
+[node name="CollisionShape3D" parent="AttackArea" index="0"]
+shape = SubResource("SphereShape3D_attack_ancient")
+
+[node name="HealthBar3D" parent="." index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.3, 0)
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." index="7"]
+max_distance = 20.0

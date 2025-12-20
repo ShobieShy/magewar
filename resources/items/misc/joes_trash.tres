@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://item_joes_trash"]
+
+[ext_resource type="Script" path="res://resources/items/item_data.gd" id="1_item"]
+
+[resource]
+script = ExtResource("1_item")
+item_id = "joes_trash"
+item_name = "Joe's Trash"
+description = "A peculiar collection of magical refuse. Crazy Joe seems to have been experimenting with something. Bob might know what to do with this."
+item_type = 7
+rarity = 5
+stackable = false
+max_stack = 1
+base_value = 0
+level_required = 1

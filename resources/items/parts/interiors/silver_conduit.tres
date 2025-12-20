@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="StaffPartData" load_steps=2 format=3 uid="uid://part_int_uncommon"]
+
+[ext_resource type="Script" path="res://resources/items/staff_part_data.gd" id="1_part"]
+
+[resource]
+script = ExtResource("1_part")
+item_id = "interior_silver_conduit"
+item_name = "Silver Conduit"
+description = "A silver core that efficiently channels magic, boosting damage and reducing waste."
+item_type = 1
+rarity = 1
+stackable = false
+max_stack = 1
+base_value = 75
+level_required = 5
+part_type = 2
+is_wand_part = false
+gem_slots = 0
+damage_modifier = 0.15
+magika_efficiency = 0.1

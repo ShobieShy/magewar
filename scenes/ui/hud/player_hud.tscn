@@ -1,0 +1,143 @@
+[gd_scene load_steps=2 format=3 uid="uid://dh7k2mv8qn3xp"]
+
+[ext_resource type="Script" path="res://scenes/ui/hud/player_hud.gd" id="1_hud"]
+
+[node name="PlayerHUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_hud")
+
+[node name="Crosshair" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CrosshairDot" type="ColorRect" parent="Crosshair"]
+custom_minimum_size = Vector2(4, 4)
+layout_mode = 2
+color = Color(1, 1, 1, 0.8)
+
+[node name="StatBars" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -120.0
+offset_right = 250.0
+offset_bottom = -20.0
+grow_vertical = 0
+
+[node name="HealthBar" type="HBoxContainer" parent="StatBars"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="StatBars/HealthBar"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "HP"
+
+[node name="ProgressBar" type="ProgressBar" parent="StatBars/HealthBar"]
+custom_minimum_size = Vector2(150, 20)
+layout_mode = 2
+size_flags_horizontal = 3
+value = 100.0
+show_percentage = false
+
+[node name="Value" type="Label" parent="StatBars/HealthBar"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "100/100"
+horizontal_alignment = 2
+
+[node name="MagikaBar" type="HBoxContainer" parent="StatBars"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="StatBars/MagikaBar"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "MP"
+
+[node name="ProgressBar" type="ProgressBar" parent="StatBars/MagikaBar"]
+custom_minimum_size = Vector2(150, 20)
+layout_mode = 2
+size_flags_horizontal = 3
+value = 100.0
+show_percentage = false
+
+[node name="Value" type="Label" parent="StatBars/MagikaBar"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "100/100"
+horizontal_alignment = 2
+
+[node name="StaminaBar" type="HBoxContainer" parent="StatBars"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="StatBars/StaminaBar"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "SP"
+
+[node name="ProgressBar" type="ProgressBar" parent="StatBars/StaminaBar"]
+custom_minimum_size = Vector2(150, 20)
+layout_mode = 2
+size_flags_horizontal = 3
+value = 100.0
+show_percentage = false
+
+[node name="Value" type="Label" parent="StatBars/StaminaBar"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "100/100"
+horizontal_alignment = 2
+
+[node name="SpellInfo" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -100.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="SpellName" type="Label" parent="SpellInfo"]
+layout_mode = 2
+text = "Arcane Bolt"
+horizontal_alignment = 2
+
+[node name="CooldownBar" type="ProgressBar" parent="SpellInfo"]
+layout_mode = 2
+value = 100.0
+show_percentage = false
+
+[node name="InteractPrompt" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = 50.0
+offset_right = 100.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "[E] Interact"
+horizontal_alignment = 1

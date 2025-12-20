@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SkillData" load_steps=3 format=3 uid="uid://bvnvn8qkrx6rf"]
+
+[ext_resource type="Script" path="res://resources/skills/skill_data.gd" id="1_0cd8o"]
+[ext_resource type="Script" path="res://resources/spells/effects/shield_effect.gd" id="2_x4k8n"]
+
+[resource]
+script = ExtResource("1_0cd8o")
+skill_id = "arcane_barrier"
+skill_name = "Arcane Barrier"
+description = "Create a barrier that absorbs 75 damage for 8 seconds."
+skill_type = 1
+category = 1
+required_level = 3
+skill_points_cost = 1
+ability_effect = ExtResource("2_x4k8n")
+cooldown = 25.0
+magika_cost = 30.0
+duration = 8.0
+tree_position = Vector2(300, 250)

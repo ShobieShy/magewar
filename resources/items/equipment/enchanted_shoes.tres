@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="EquipmentData" load_steps=2 format=3 uid="uid://equip_enchanted_shoes"]
+
+[ext_resource type="Script" path="res://resources/items/equipment_data.gd" id="1_equip"]
+
+[resource]
+script = ExtResource("1_equip")
+item_id = "enchanted_shoes"
+item_name = "Enchanted Shoes"
+description = "Shoes imbued with magical energy. Greatly enhances movement speed and provides magical protection."
+item_type = 3
+rarity = 2
+base_value = 60
+level_required = 5
+slot = 4
+move_speed_bonus = 0.2
+stamina_regen_bonus = 1.0
+magika_bonus = 10.0
+defense_bonus = 3.0
+health_regen_bonus = 0.3

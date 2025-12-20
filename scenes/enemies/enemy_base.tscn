@@ -1,0 +1,79 @@
+[gd_scene load_steps=5 format=3 uid="uid://cvqn3h8x2m7pk"]
+
+[ext_resource type="Script" path="res://scenes/enemies/enemy_base.gd" id="1_enemy"]
+[ext_resource type="Script" path="res://scripts/components/stats_component.gd" id="2_stats"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
+radius = 0.5
+height = 2.0
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_1"]
+radius = 0.5
+height = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
+albedo_color = Color(0.8, 0.2, 0.2, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1"]
+radius = 15.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_2"]
+radius = 2.0
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_1"]
+viewport_path = NodePath("../SubViewport")
+
+[node name="EnemyBase" type="CharacterBody3D" groups=["enemies"]]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_enemy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_1")
+surface_material_override/0 = SubResource("StandardMaterial3D_1")
+
+[node name="StatsComponent" type="Node" parent="."]
+script = ExtResource("2_stats")
+max_health = 50.0
+health_regen_rate = 0.0
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.5
+target_desired_distance = 1.0
+
+[node name="DetectionArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea"]
+shape = SubResource("SphereShape3D_1")
+
+[node name="AttackArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AttackArea"]
+shape = SubResource("SphereShape3D_2")
+
+[node name="HealthBar3D" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+
+[node name="SubViewport" type="SubViewport" parent="HealthBar3D"]
+transparent_bg = true
+size = Vector2i(100, 10)
+
+[node name="ProgressBar" type="ProgressBar" parent="HealthBar3D/SubViewport"]
+offset_right = 100.0
+offset_bottom = 10.0
+value = 100.0
+show_percentage = false
+
+[node name="Sprite3D" type="Sprite3D" parent="HealthBar3D"]
+pixel_size = 0.01
+billboard = 1
+texture = SubResource("ViewportTexture_1")

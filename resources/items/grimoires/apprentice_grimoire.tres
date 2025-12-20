@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="GrimoireData" load_steps=2 format=3 uid="uid://grimoire_apprentice"]
+
+[ext_resource type="Script" path="res://resources/items/grimoire_data.gd" id="1_grimoire"]
+
+[resource]
+script = ExtResource("1_grimoire")
+item_id = "apprentice_grimoire"
+item_name = "Apprentice's Grimoire"
+description = "A basic spell book containing fundamental arcane knowledge. Every mage starts their journey with one of these."
+item_type = 5
+rarity = 0
+base_value = 30
+level_required = 1
+grimoire_name = "Arcane Fundamentals"
+grimoire_element = 9
+spell_damage_percent = 0.05
+magika_cost_reduction = 0.05

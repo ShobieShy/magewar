@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="StaffPartData" load_steps=2 format=3 uid="uid://part_handle_rare"]
+
+[ext_resource type="Script" path="res://resources/items/staff_part_data.gd" id="1_part"]
+
+[resource]
+script = ExtResource("1_part")
+item_id = "handle_masters_grip"
+item_name = "Master's Grip"
+description = "A handle crafted by master artisans. Provides exceptional control and precision."
+item_type = 1
+rarity = 2
+stackable = false
+max_stack = 1
+base_value = 120
+level_required = 8
+part_type = 3
+is_wand_part = true
+gem_slots = 0
+handling = 15.0
+stability = 10.0
+accuracy = 10.0

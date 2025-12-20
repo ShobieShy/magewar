@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="StaffPartData" load_steps=3 format=3 uid="uid://part_charm_ice"]
+
+[ext_resource type="Script" path="res://resources/items/staff_part_data.gd" id="1_part"]
+[ext_resource type="Script" path="res://resources/spells/effects/status_effect.gd" id="2_status"]
+
+[sub_resource type="Resource" id="chill_effect"]
+script = ExtResource("2_status")
+effect_type = 2
+effect_name = "Frost Chill"
+description = "Slows the target"
+target_type = 0
+delay = 0.0
+duration = 0.0
+status = 3
+status_duration = 2.0
+status_strength = 0.3
+stat_to_modify = 6
+stat_modifier = -0.3
+is_percentage = true
+dot_damage = 0.0
+dot_interval = 0.0
+dot_element = 0
+
+[resource]
+script = ExtResource("1_part")
+item_id = "charm_frost"
+item_name = "Frost Charm"
+description = "A charm containing frozen essence. Adds a slowing effect to spells."
+item_type = 1
+rarity = 1
+stackable = false
+max_stack = 1
+base_value = 60
+level_required = 3
+part_type = 4
+is_wand_part = false
+gem_slots = 0
+charm_effect = SubResource("chill_effect")
+charm_element = 2

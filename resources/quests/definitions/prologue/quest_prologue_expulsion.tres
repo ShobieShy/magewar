@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/quests/quest_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/quests/quest_objective.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+objective_id = "witness_expulsion"
+description = "Witness Crazy Joe's expulsion from the Mage Association"
+objective_type = 9  ; CUSTOM
+target_id = "prologue_expulsion_cutscene"
+target_count = 1
+is_optional = false
+is_hidden = false
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+objective_id = "receive_amenities"
+description = "Receive basic amenities from the Association"
+objective_type = 9  ; CUSTOM
+target_id = "receive_starting_items"
+target_count = 1
+is_optional = false
+is_hidden = false
+
+[resource]
+script = ExtResource("1")
+quest_id = "prologue_expulsion"
+quest_name = "Cast Out"
+description = "Crazy Joe has been expelled for his recklessness in summoning you. The Mage Association, disappointed by your apparent weakness, grants you minimal aid - some gold and residency in an old abandoned tree."
+quest_giver = "automatic"
+is_main_quest = true
+chapter = 0
+objectives = [SubResource("1"), SubResource("2")]
+require_all_objectives = true
+required_level = 1
+required_quests = ["prologue_summoning"]
+required_items = []
+required_location = ""
+reward_experience = 50
+reward_gold = 50
+reward_items = []
+reward_skill_points = 0
+unlock_location = "home_tree"
+unlock_portal = ""
+auto_complete = true
+turn_in_npc = ""
+next_quest = "prologue_home_tree"
+dialogue_on_accept = ""
+dialogue_on_progress = ""
+dialogue_on_complete = ""

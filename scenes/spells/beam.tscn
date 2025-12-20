@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://spell_beam"]
+
+[ext_resource type="Script" path="res://scripts/components/spell_beam.gd" id="1_beam"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_1"]
+radius = 0.1
+height = 50.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
+transparency = 1
+albedo_color = Color(0.5, 0.7, 1, 0.6)
+emission_enabled = true
+emission = Color(0.5, 0.7, 1, 1)
+emission_energy_multiplier = 1.0
+
+[node name="SpellBeam" type="Node3D"]
+script = ExtResource("1_beam")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 25, 0)
+mesh = SubResource("CylinderMesh_1")
+material_override = SubResource("StandardMaterial3D_1")
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 4
+collision_mask = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 25, 0)
+shape = CapsuleShape3D.new()

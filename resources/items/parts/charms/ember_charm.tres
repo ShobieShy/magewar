@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="StaffPartData" load_steps=3 format=3 uid="uid://part_charm_fire"]
+
+[ext_resource type="Script" path="res://resources/items/staff_part_data.gd" id="1_part"]
+[ext_resource type="Script" path="res://resources/spells/effects/status_effect.gd" id="2_status"]
+
+[sub_resource type="Resource" id="burn_effect"]
+script = ExtResource("2_status")
+effect_type = 4
+effect_name = "Ember Burn"
+description = "Burns the target"
+target_type = 0
+delay = 0.0
+duration = 0.0
+status = 1
+status_duration = 3.0
+status_strength = 1.0
+stat_to_modify = 0
+stat_modifier = 0.0
+is_percentage = false
+dot_damage = 5.0
+dot_interval = 1.0
+dot_element = 1
+
+[resource]
+script = ExtResource("1_part")
+item_id = "charm_ember"
+item_name = "Ember Charm"
+description = "A small charm containing a trapped ember. Adds burning damage to spells."
+item_type = 1
+rarity = 1
+stackable = false
+max_stack = 1
+base_value = 60
+level_required = 3
+part_type = 4
+is_wand_part = false
+gem_slots = 0
+charm_effect = SubResource("burn_effect")
+charm_element = 1

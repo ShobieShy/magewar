@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="StaffPartData" load_steps=2 format=3 uid="uid://part_head_mythic"]
+
+[ext_resource type="Script" path="res://resources/items/staff_part_data.gd" id="1_part"]
+
+[resource]
+script = ExtResource("1_part")
+item_id = "head_primordial_core"
+item_name = "Primordial Core"
+description = "An ancient crystalline core pulsing with raw magical energy. Supports three gem slots."
+item_type = 1
+rarity = 3
+stackable = false
+max_stack = 1
+base_value = 500
+level_required = 15
+part_type = 0
+is_wand_part = false
+gem_slots = 3
+gem_slot_types = []

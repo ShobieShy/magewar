@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=4 format=3 uid="uid://quest_tutorial_landfill"]
+
+[ext_resource type="Script" path="res://resources/quests/quest_data.gd" id="1_quest"]
+[ext_resource type="Script" path="res://resources/quests/quest_objective.gd" id="2_objective"]
+
+[sub_resource type="Resource" id="obj_defeat_filth"]
+script = ExtResource("2_objective")
+objective_id = "defeat_the_filth"
+description = "Defeat The Filth"
+objective_type = 4
+target_id = "the_filth"
+target_count = 1
+required_location = "landfill"
+
+[sub_resource type="Resource" id="obj_collect_trash"]
+script = ExtResource("2_objective")
+objective_id = "collect_joes_trash"
+description = "Collect Joe's Trash"
+objective_type = 1
+target_id = "joes_trash"
+target_count = 1
+
+[resource]
+script = ExtResource("1_quest")
+quest_id = "tutorial_landfill"
+quest_name = "Crazy Joe's Lost Treasure"
+description = "Help Crazy Joe retrieve his precious 'trash' from the Landfill. Defeat The Filth, the monster that has claimed the area, and bring back what Joe has lost."
+quest_giver = "crazy_joe"
+is_main_quest = true
+chapter = 1
+objectives = [SubResource("obj_defeat_filth"), SubResource("obj_collect_trash")]
+require_all_objectives = true
+required_level = 1
+reward_experience = 100
+reward_gold = 50
+reward_items = ["starter_staff_part"]
+unlock_portal = "landfill"
+turn_in_npc = "crazy_joe"
+dialogue_on_accept = "crazy_joe_quest_accept"
+dialogue_on_progress = "crazy_joe_quest_progress"
+dialogue_on_complete = "crazy_joe_quest_complete"

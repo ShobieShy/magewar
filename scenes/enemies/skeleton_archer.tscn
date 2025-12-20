@@ -1,0 +1,91 @@
+[gd_scene load_steps=10 format=3 uid="uid://bskeleton_archer"]
+
+[ext_resource type="PackedScene" uid="uid://cvqn3h8x2m7pk" path="res://scenes/enemies/enemy_base.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scenes/enemies/skeleton.gd" id="2_skeleton"]
+[ext_resource type="Script" path="res://resources/enemies/skeleton_enemy_data.gd" id="3_data"]
+
+[sub_resource type="Resource" id="Resource_skeleton_archer"]
+script = ExtResource("3_data")
+variant = 1
+level = 2
+health = 45.0
+damage = 15.0
+speed = 3.5
+attack_range = 8.0
+detection_range = 12.0
+patrol_speed = 2.5
+special_ability = "multi_shot"
+coordination_bonus = 1.2
+formation_preference = "ranked_back"
+resistance_type = "piercing"
+mesh_color = Color(1, 1, 1, 1)
+mesh_scale = Vector3(0.9, 1.05, 0.9)
+armor_color = Color(0.6, 0.6, 0.6, 1)
+weapon_color = Color(0.39, 0.27, 0.16, 1)
+gold_drop_min = 25
+gold_drop_max = 45
+item_drops = ["bone_arrows", "ranger_bow"]
+drop_chance = 0.6
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_archer"]
+radius = 0.4
+height = 2.0
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_archer"]
+radius = 0.4
+height = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_archer"]
+albedo_color = Color(0.9, 0.9, 0.9, 1)
+roughness = 0.85
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_detect"]
+radius = 12.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_attack"]
+radius = 8.0
+
+[node name="SkeletonArcher" instance=ExtResource("1_base")]
+script = ExtResource("2_skeleton")
+skeleton_data = SubResource("Resource_skeleton_archer")
+variant = 1
+enemy_name = "Skeleton Archer"
+enemy_type = 4
+level = 2
+max_health = 45.0
+damage = 15.0
+move_speed = 3.5
+attack_range = 8.0
+detection_range = 12.0
+experience_value = 27
+
+[node name="CollisionShape3D" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_archer")
+
+[node name="MeshInstance3D" parent="." index="1"]
+transform = Transform3D(0.9, 0, 0, 0, 1.05, 0, 0, 0, 0.9, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_archer")
+surface_material_override/0 = SubResource("StandardMaterial3D_archer")
+
+[node name="StatsComponent" parent="." index="2"]
+max_health = 45.0
+
+[node name="NavigationAgent3D" parent="." index="3"]
+path_max_distance = 15.0
+avoidance_enabled = true
+radius = 0.4
+neighbor_distance = 12.0
+max_neighbors = 5
+
+[node name="DetectionArea" parent="." index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="CollisionShape3D" parent="DetectionArea" index="0"]
+shape = SubResource("SphereShape3D_detect")
+
+[node name="AttackArea" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="CollisionShape3D" parent="AttackArea" index="0"]
+shape = SubResource("SphereShape3D_attack")

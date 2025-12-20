@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="SpellData" load_steps=3 format=3 uid="uid://spell_healing_wave"]
+
+[ext_resource type="Script" path="res://resources/spells/spell_data.gd" id="1_spell"]
+[ext_resource type="Script" path="res://resources/spells/effects/heal_effect.gd" id="2_heal"]
+
+[sub_resource type="Resource" id="heal_effect_1"]
+script = ExtResource("2_heal")
+effect_type = 1
+effect_name = "Healing"
+description = "Restores health"
+target_type = 2
+delay = 0.0
+duration = 0.0
+base_heal = 40.0
+heal_variance = 0.1
+restore_magika = 0.0
+restore_stamina = 0.0
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Healing Wave"
+description = "Channel restorative water magic to heal yourself."
+element = 6
+magika_cost = 20.0
+cooldown = 3.0
+cast_time = 0.0
+can_move_while_casting = true
+can_be_interrupted = true
+delivery_type = 4
+range = 0.0
+target_type = 2
+projectile_speed = 0.0
+projectile_count = 0
+projectile_spread = 0.0
+projectile_gravity = 0.0
+projectile_homing = 0.0
+projectile_pierce = 0
+projectile_bounce = 0
+projectile_lifetime = 0.0
+aoe_radius = 0.0
+effects = [SubResource("heal_effect_1")]
+damage_multiplier = 1.0
+cost_multiplier = 1.0
+cooldown_multiplier = 1.0
+range_multiplier = 1.0
+aoe_multiplier = 1.0

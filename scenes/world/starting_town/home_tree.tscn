@@ -1,0 +1,185 @@
+[gd_scene load_steps=7 format=3 uid="uid://home_tree"]
+
+[ext_resource type="Script" path="res://scenes/world/starting_town/home_tree.gd" id="1_home"]
+[ext_resource type="Script" path="res://scenes/world/storage_chest.gd" id="2_storage"]
+[ext_resource type="Script" path="res://scenes/world/assembly_station.gd" id="3_assembly"]
+
+[sub_resource type="StandardMaterial3D" id="mat_wood"]
+albedo_color = Color(0.35, 0.25, 0.18, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_floor"]
+albedo_color = Color(0.4, 0.32, 0.25, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_fabric"]
+albedo_color = Color(0.5, 0.35, 0.25, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_leaves"]
+albedo_color = Color(0.25, 0.4, 0.2, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1"]
+radius = 2.0
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 1
+background_color = Color(0.18, 0.15, 0.12, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.6, 0.55, 0.45, 1)
+ambient_light_energy = 0.4
+
+[node name="HomeTree" type="Node3D"]
+script = ExtResource("1_home")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+light_color = Color(1, 0.85, 0.6, 1)
+light_energy = 1.2
+omni_range = 8.0
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 2, 0)
+light_color = Color(0.8, 0.7, 0.5, 1)
+light_energy = 0.5
+omni_range = 4.0
+
+[node name="OmniLight3D3" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 2, 0)
+light_color = Color(0.8, 0.7, 0.5, 1)
+light_energy = 0.5
+omni_range = 4.0
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+
+[node name="Interior" type="Node3D" parent="NavigationRegion3D"]
+
+[node name="Floor" type="CSGCylinder3D" parent="NavigationRegion3D/Interior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+use_collision = true
+radius = 6.0
+height = 0.2
+material = SubResource("mat_floor")
+
+[node name="WallCurve" type="CSGCylinder3D" parent="NavigationRegion3D/Interior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+use_collision = true
+radius = 6.5
+height = 5.0
+sides = 16
+material = SubResource("mat_wood")
+
+[node name="WallInner" type="CSGCylinder3D" parent="NavigationRegion3D/Interior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+operation = 2
+radius = 6.0
+height = 5.5
+sides = 16
+
+[node name="Doorway" type="CSGBox3D" parent="NavigationRegion3D/Interior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 6)
+operation = 2
+size = Vector3(2, 2.5, 2)
+
+[node name="Ceiling" type="CSGCylinder3D" parent="NavigationRegion3D/Interior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+use_collision = true
+radius = 6.5
+height = 0.3
+sides = 16
+material = SubResource("mat_wood")
+
+[node name="RootDecor1" type="CSGCylinder3D" parent="NavigationRegion3D/Interior"]
+transform = Transform3D(0.866, -0.5, 0, 0.5, 0.866, 0, 0, 0, 1, -4, 1, 3)
+use_collision = true
+radius = 0.3
+height = 3.0
+material = SubResource("mat_wood")
+
+[node name="RootDecor2" type="CSGCylinder3D" parent="NavigationRegion3D/Interior"]
+transform = Transform3D(0.94, 0, 0.342, 0, 1, 0, -0.342, 0, 0.94, 4, 0.8, 2)
+use_collision = true
+radius = 0.25
+height = 2.5
+material = SubResource("mat_wood")
+
+[node name="Furniture" type="Node3D" parent="NavigationRegion3D"]
+
+[node name="BedFrame" type="CSGBox3D" parent="NavigationRegion3D/Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -4)
+use_collision = true
+size = Vector3(2.5, 0.6, 3)
+material = SubResource("mat_wood")
+
+[node name="BedMattress" type="CSGBox3D" parent="NavigationRegion3D/Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -4)
+use_collision = true
+size = Vector3(2.3, 0.2, 2.8)
+material = SubResource("mat_fabric")
+
+[node name="ChestVisual" type="CSGBox3D" parent="NavigationRegion3D/Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.4, 0)
+use_collision = true
+size = Vector3(1.5, 0.8, 1)
+material = SubResource("mat_wood")
+
+[node name="WorkbenchVisual" type="CSGBox3D" parent="NavigationRegion3D/Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.5, 0)
+use_collision = true
+size = Vector3(2, 1, 1.2)
+material = SubResource("mat_wood")
+
+[node name="Shelf" type="CSGBox3D" parent="NavigationRegion3D/Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2.5, -5.5)
+use_collision = true
+size = Vector3(3, 0.2, 0.5)
+material = SubResource("mat_wood")
+
+[node name="Table" type="CSGCylinder3D" parent="NavigationRegion3D/Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.4, 2)
+use_collision = true
+radius = 0.8
+height = 0.8
+material = SubResource("mat_wood")
+
+[node name="Stool" type="CSGCylinder3D" parent="NavigationRegion3D/Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.25, 3)
+use_collision = true
+radius = 0.3
+height = 0.5
+material = SubResource("mat_wood")
+
+[node name="PlayerSpawn" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 3)
+
+[node name="StorageChest" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
+script = ExtResource("2_storage")
+chest_name = "Home Storage"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StorageChest"]
+shape = SubResource("SphereShape3D_1")
+
+[node name="AssemblyStation" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 0)
+script = ExtResource("3_assembly")
+station_name = "Home Workbench"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AssemblyStation"]
+shape = SubResource("SphereShape3D_1")
+
+[node name="Bed" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -4)
+collision_layer = 64
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Bed"]
+shape = SubResource("SphereShape3D_1")
+
+[node name="ExitArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 6.5)
+collision_layer = 64
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ExitArea"]
+shape = SubResource("SphereShape3D_1")

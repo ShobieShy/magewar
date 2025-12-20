@@ -1,0 +1,88 @@
+[gd_resource type="Resource" script_class="SpellData" load_steps=5 format=3 uid="uid://spell_healing_light"]
+
+[ext_resource type="Script" path="res://resources/spells/spell_data.gd" id="1_spell"]
+[ext_resource type="Script" path="res://resources/spells/effects/heal_effect.gd" id="2_heal"]
+[ext_resource type="Script" path="res://resources/spells/effects/status_effect.gd" id="3_regen"]
+[ext_resource type="Script" path="res://resources/spells/effects/status_effect.gd" id="4_cleanse"]
+
+[sub_resource type="Resource" id="heal_effect_1"]
+script = ExtResource("2_heal")
+effect_type = 4  ; HEAL
+effect_name = "Divine Light"
+description = "Instant health restoration"
+target_type = 3  ; ALLY
+delay = 0.0
+duration = 0.0
+base_heal = 75.0
+heal_variance = 0.1
+can_crit = true
+crit_multiplier = 1.5
+heal_type = 0  ; INSTANT
+
+[sub_resource type="Resource" id="regen_effect_1"]
+script = ExtResource("3_regen")
+effect_type = 3  ; BUFF
+effect_name = "Regeneration"
+description = "Heals over time"
+target_type = 3  ; ALLY
+delay = 0.0
+duration = 0.0
+status = 5  ; REGENERATING
+status_duration = 8.0
+status_strength = 1.0
+stat_to_modify = 0  ; HEALTH
+stat_modifier = 10.0
+is_percentage = false
+dot_damage = -10.0  ; Negative damage = healing
+dot_interval = 0.5
+dot_element = 5  ; HOLY
+
+[sub_resource type="Resource" id="cleanse_effect_1"]
+script = ExtResource("4_cleanse")
+effect_type = 5  ; CLEANSE
+effect_name = "Purify"
+description = "Removes debuffs and negative effects"
+target_type = 3  ; ALLY
+delay = 0.0
+duration = 0.0
+status = 10  ; CLEANSED
+status_duration = 0.1
+status_strength = 1.0
+stat_to_modify = 0
+stat_modifier = 0.0
+is_percentage = false
+dot_damage = 0.0
+dot_interval = 0.0
+dot_element = 0
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Healing Light"
+description = "Channels divine energy to restore health, grant regeneration, and cleanse negative effects from allies."
+element = 5  ; HOLY
+magika_cost = 45.0
+cooldown = 8.0
+cast_time = 1.5
+can_move_while_casting = false
+can_be_interrupted = true
+delivery_type = 6  ; TARGETED
+range = 30.0
+target_type = 3  ; ALLY
+projectile_speed = 0.0
+projectile_count = 0
+projectile_spread = 0.0
+projectile_gravity = 0.0
+projectile_homing = 0.0
+projectile_pierce = 0
+projectile_bounce = 0
+projectile_lifetime = 0.0
+aoe_radius = 5.0  ; Heals in area around target
+aoe_falloff = true
+aoe_delay = 0.0
+aoe_persist_duration = 0.0
+effects = [SubResource("heal_effect_1"), SubResource("regen_effect_1"), SubResource("cleanse_effect_1")]
+damage_multiplier = 1.0
+cost_multiplier = 1.0
+cooldown_multiplier = 1.0
+range_multiplier = 1.0
+aoe_multiplier = 1.0

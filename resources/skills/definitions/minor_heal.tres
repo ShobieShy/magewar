@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SkillData" load_steps=3 format=3 uid="uid://bvnvn8qkrx6re"]
+
+[ext_resource type="Script" path="res://resources/skills/skill_data.gd" id="1_0cd8o"]
+[ext_resource type="Script" path="res://resources/spells/effects/heal_effect.gd" id="2_x4k8n"]
+
+[resource]
+script = ExtResource("1_0cd8o")
+skill_id = "minor_heal"
+skill_name = "Minor Heal"
+description = "Instantly restore 40 health."
+skill_type = 1
+category = 2
+required_level = 1
+skill_points_cost = 1
+ability_effect = ExtResource("2_x4k8n")
+cooldown = 15.0
+magika_cost = 20.0
+tree_position = Vector2(300, 150)

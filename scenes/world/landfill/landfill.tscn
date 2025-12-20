@@ -1,0 +1,148 @@
+[gd_scene load_steps=5 format=3 uid="uid://level_landfill"]
+
+[ext_resource type="Script" path="res://scenes/world/landfill/landfill.gd" id="1_landfill"]
+[ext_resource type="Script" path="res://scripts/systems/enemy_spawner.gd" id="2_spawner"]
+[ext_resource type="PackedScene" uid="uid://portal_base" path="res://scenes/world/portal.tscn" id="3_portal"]
+
+[sub_resource type="StandardMaterial3D" id="mat_ground"]
+albedo_color = Color(0.25, 0.22, 0.18, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_wall"]
+albedo_color = Color(0.3, 0.28, 0.25, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_trash"]
+albedo_color = Color(0.35, 0.3, 0.25, 1)
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 1
+background_color = Color(0.15, 0.12, 0.1, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.3, 0.25, 0.2, 1)
+ambient_light_energy = 0.4
+fog_enabled = true
+fog_light_color = Color(0.25, 0.2, 0.15, 1)
+fog_density = 0.02
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.03
+
+[node name="Landfill" type="Node3D"]
+script = ExtResource("1_landfill")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.354, 0.354, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 10, 20, 10)
+light_color = Color(0.9, 0.8, 0.7, 1)
+light_energy = 0.6
+shadow_enabled = true
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+
+[node name="Arena" type="Node3D" parent="NavigationRegion3D"]
+
+[node name="Floor" type="CSGBox3D" parent="NavigationRegion3D/Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(50, 1, 50)
+material = SubResource("mat_ground")
+
+[node name="WallNorth" type="CSGBox3D" parent="NavigationRegion3D/Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -25)
+use_collision = true
+size = Vector3(50, 6, 2)
+material = SubResource("mat_wall")
+
+[node name="WallSouth" type="CSGBox3D" parent="NavigationRegion3D/Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 25)
+use_collision = true
+size = Vector3(50, 6, 2)
+material = SubResource("mat_wall")
+
+[node name="WallEast" type="CSGBox3D" parent="NavigationRegion3D/Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 2.5, 0)
+use_collision = true
+size = Vector3(2, 6, 50)
+material = SubResource("mat_wall")
+
+[node name="WallWest" type="CSGBox3D" parent="NavigationRegion3D/Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 2.5, 0)
+use_collision = true
+size = Vector3(2, 6, 50)
+material = SubResource("mat_wall")
+
+[node name="TrashPile1" type="CSGBox3D" parent="NavigationRegion3D/Arena"]
+transform = Transform3D(0.966, 0, 0.259, 0, 1, 0, -0.259, 0, 0.966, 8, 1, 5)
+use_collision = true
+size = Vector3(4, 2, 3)
+material = SubResource("mat_trash")
+
+[node name="TrashPile2" type="CSGBox3D" parent="NavigationRegion3D/Arena"]
+transform = Transform3D(0.94, 0, -0.342, 0, 1, 0, 0.342, 0, 0.94, -6, 1.5, 8)
+use_collision = true
+size = Vector3(5, 3, 4)
+material = SubResource("mat_trash")
+
+[node name="TrashPile3" type="CSGBox3D" parent="NavigationRegion3D/Arena"]
+transform = Transform3D(0.985, 0, 0.174, 0, 1, 0, -0.174, 0, 0.985, -10, 1, -8)
+use_collision = true
+size = Vector3(3, 2, 5)
+material = SubResource("mat_trash")
+
+[node name="TrashPile4" type="CSGBox3D" parent="NavigationRegion3D/Arena"]
+transform = Transform3D(0.906, 0, -0.423, 0, 1, 0, 0.423, 0, 0.906, 12, 1.2, -6)
+use_collision = true
+size = Vector3(4, 2.4, 3)
+material = SubResource("mat_trash")
+
+[node name="TrashPile5" type="CSGBox3D" parent="NavigationRegion3D/Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 12)
+use_collision = true
+size = Vector3(6, 1.5, 4)
+material = SubResource("mat_trash")
+
+[node name="TrashPileLarge" type="CSGBox3D" parent="NavigationRegion3D/Arena"]
+transform = Transform3D(0.94, 0, 0.342, 0, 1, 0, -0.342, 0, 0.94, -15, 2, -15)
+use_collision = true
+size = Vector3(8, 4, 6)
+material = SubResource("mat_trash")
+
+[node name="BossArena" type="Node3D" parent="NavigationRegion3D/Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12)
+
+[node name="Platform" type="CSGCylinder3D" parent="NavigationRegion3D/Arena/BossArena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+use_collision = true
+radius = 10.0
+height = 0.2
+
+[node name="PlayerSpawn" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 20)
+
+[node name="BossSpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -12)
+
+[node name="EnemySpawner" type="Node3D" parent="."]
+script = ExtResource("2_spawner")
+auto_start = false
+
+[node name="SpawnPoint1" type="Marker3D" parent="EnemySpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 1, 0)
+
+[node name="SpawnPoint2" type="Marker3D" parent="EnemySpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1, 0)
+
+[node name="SpawnPoint3" type="Marker3D" parent="EnemySpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 5)
+
+[node name="SpawnPoint4" type="Marker3D" parent="EnemySpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 1, 10)
+
+[node name="SpawnPoint5" type="Marker3D" parent="EnemySpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 1, 10)
+
+[node name="Portal" parent="." instance=ExtResource("3_portal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 20)
+portal_id = "landfill"
+is_active = false
+requires_boss_defeat = true

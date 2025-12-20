@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="EquipmentData" load_steps=2 format=3 uid="uid://equip_master_hat"]
+
+[ext_resource type="Script" path="res://resources/items/equipment_data.gd" id="1_equip"]
+
+[resource]
+script = ExtResource("1_equip")
+item_id = "master_hat"
+item_name = "Master's Hat"
+description = "A legendary hat worn by master mages. Grants immense magical power and protection."
+item_type = 3
+rarity = 3
+base_value = 150
+level_required = 12
+slot = 1
+magika_bonus = 40.0
+magika_regen_bonus = 2.0
+health_bonus = 20.0
+defense_bonus = 2.0
+crit_chance_bonus = 0.05

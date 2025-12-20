@@ -1,0 +1,72 @@
+[gd_resource type="Resource" script_class="GrimoireData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/equipment/grimoire_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+item_id = "elemental_codex"
+item_name = "Codex of Elements"
+description = "An ancient tome containing the secrets of elemental magic. Its pages shimmer with raw elemental energy."
+icon_path = "res://assets/icons/items/grimoire_elemental.png"
+rarity = 3  ; EPIC
+item_type = 7  ; GRIMOIRE
+stackable = false
+max_stack = 1
+base_value = 2500
+weight = 3.0
+equipment_slot = 7  ; GRIMOIRE
+required_level = 15
+
+# Stats
+bonus_health = 0
+bonus_mana = 100
+bonus_stamina = 0
+bonus_damage = 0
+bonus_defense = 0
+bonus_magic_power = 25
+bonus_attack_speed = 0.0
+bonus_move_speed = 0.0
+bonus_crit_chance = 5.0
+bonus_crit_damage = 0.2
+
+# Resistances
+physical_resistance = 0.0
+fire_resistance = 15.0
+ice_resistance = 15.0
+lightning_resistance = 15.0
+poison_resistance = 0.0
+holy_resistance = 0.0
+dark_resistance = 0.0
+
+# Grimoire Properties
+bonus_spell_slots = 1
+mana_cost_reduction = 15.0
+spell_damage_multiplier = 1.25
+cooldown_reduction = 10.0
+cast_time_reduction = 10.0
+
+# Element Affinity
+fire_damage_bonus = 20.0
+ice_damage_bonus = 20.0
+lightning_damage_bonus = 20.0
+earth_damage_bonus = 10.0
+arcane_damage_bonus = 5.0
+
+# Special Effects
+free_cast_chance = 5.0
+double_cast_chance = 3.0
+spell_lifesteal = 0.0
+spell_penetration = 15.0
+
+# Knowledge Bonuses
+experience_multiplier = 1.15
+bonus_skill_points = 0
+spell_learn_chance = 2.0
+
+# Spells
+unlocked_spells = ["fireball", "ice_shard", "lightning_bolt"]
+spell_modifications = {
+	"fireball": {"damage": 1.3, "aoe_radius": 1.2},
+	"ice_shard": {"damage": 1.3, "pierce_count": 2},
+	"lightning_bolt": {"damage": 1.3, "chain_count": 1}
+}

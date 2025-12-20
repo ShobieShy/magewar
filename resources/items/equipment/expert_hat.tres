@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="EquipmentData" load_steps=2 format=3 uid="uid://equip_expert_hat"]
+
+[ext_resource type="Script" path="res://resources/items/equipment_data.gd" id="1_equip"]
+
+[resource]
+script = ExtResource("1_equip")
+item_id = "expert_hat"
+item_name = "Expert's Hat"
+description = "A finely crafted hat worn by skilled mages. Provides significant magical enhancements."
+item_type = 3
+rarity = 2
+base_value = 75
+level_required = 7
+slot = 1
+magika_bonus = 25.0
+magika_regen_bonus = 1.5
+health_bonus = 10.0
+defense_bonus = 1.0

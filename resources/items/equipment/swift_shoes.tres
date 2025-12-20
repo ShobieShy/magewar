@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EquipmentData" load_steps=2 format=3 uid="uid://equip_swift_shoes"]
+
+[ext_resource type="Script" path="res://resources/items/equipment_data.gd" id="1_equip"]
+
+[resource]
+script = ExtResource("1_equip")
+item_id = "swift_shoes"
+item_name = "Swift Shoes"
+description = "Comfortable shoes designed for quick movement. Allows for faster travel and evasion."
+item_type = 3
+rarity = 1
+base_value = 25
+level_required = 2
+slot = 4
+move_speed_bonus = 0.1
+stamina_regen_bonus = 0.5
+defense_bonus = 1.0

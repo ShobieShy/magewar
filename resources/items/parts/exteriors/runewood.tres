@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="StaffPartData" load_steps=2 format=3 uid="uid://part_ext_rare"]
+
+[ext_resource type="Script" path="res://resources/items/staff_part_data.gd" id="1_part"]
+
+[resource]
+script = ExtResource("1_part")
+item_id = "exterior_runewood"
+item_name = "Runewood"
+description = "Ancient wood infused with magical runes. Significantly improves casting speed."
+item_type = 1
+rarity = 2
+stackable = false
+max_stack = 1
+base_value = 150
+level_required = 8
+part_type = 1
+is_wand_part = true
+gem_slots = 0
+fire_rate_modifier = 0.2
+projectile_speed_modifier = 0.1

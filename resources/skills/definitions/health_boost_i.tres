@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SkillData" load_steps=2 format=3 uid="uid://bvnvn8qkrx6rk"]
+
+[ext_resource type="Script" path="res://resources/skills/skill_data.gd" id="1_0cd8o"]
+
+[resource]
+script = ExtResource("1_0cd8o")
+skill_id = "health_boost_i"
+skill_name = "Health Boost I"
+description = "Increases maximum health by 20 points."
+skill_type = 0
+category = 1
+required_level = 1
+skill_points_cost = 1
+stat_modifiers = {
+"HEALTH": 20.0
+}
+is_percentage = false
+tree_position = Vector2(100, 100)

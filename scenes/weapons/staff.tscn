@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=3 uid="uid://bvn8h3kmyxqtj"]
+
+[ext_resource type="Script" path="res://scenes/weapons/staff.gd" id="1_staff"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_1"]
+top_radius = 0.03
+bottom_radius = 0.02
+height = 1.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
+albedo_color = Color(0.4, 0.3, 0.2, 1)
+emission_enabled = true
+emission = Color(0.5, 0.4, 1, 1)
+emission_energy_multiplier = 0.5
+
+[sub_resource type="SphereMesh" id="SphereMesh_1"]
+radius = 0.08
+height = 0.16
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2"]
+albedo_color = Color(0.3, 0.3, 0.5, 1)
+emission_enabled = true
+emission = Color(0.5, 0.5, 1, 1)
+emission_energy_multiplier = 1.0
+
+[node name="Staff" type="Node3D"]
+script = ExtResource("1_staff")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
+mesh = SubResource("CylinderMesh_1")
+surface_material_override/0 = SubResource("StandardMaterial3D_1")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.6)
+
+[node name="HeadMesh" type="MeshInstance3D" parent="Head"]
+mesh = SubResource("SphereMesh_1")
+surface_material_override/0 = SubResource("StandardMaterial3D_2")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Head"]
+light_color = Color(0.5, 0.5, 1, 1)
+light_energy = 0.3
+omni_range = 1.0
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.7)

@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://resources/quests/quest_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/quests/quest_objective.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+objective_id = "witness_crystal_creation"
+description = "Watch Bob create the Fast Travel Crystal"
+objective_type = 9  ; CUSTOM
+target_id = "bob_creates_crystal"
+target_count = 1
+is_optional = false
+is_hidden = false
+required_location = "home_tree"
+
+[resource]
+script = ExtResource("1")
+quest_id = "chapter1_fast_travel_crystal"
+quest_name = "Joe's Madness Has Its Uses"
+description = "Bob has examined the samples from the landfill and discovered something useful in Crazy Joe's discarded experiments. By fusing the samples together, he can create a Fast Travel Teleportation Crystal."
+quest_giver = "npc_bob"
+is_main_quest = true
+chapter = 1
+objectives = [SubResource("1")]
+require_all_objectives = true
+required_level = 1
+required_quests = ["chapter1_investigate_landfill"]
+required_items = []
+required_location = "home_tree"
+reward_experience = 200
+reward_gold = 0
+reward_items = ["fast_travel_crystal"]
+reward_skill_points = 1
+unlock_location = ""
+unlock_portal = "town_square"
+auto_complete = true
+turn_in_npc = ""
+next_quest = "main_quest_vague_intro"
+dialogue_on_accept = ""
+dialogue_on_progress = ""
+dialogue_on_complete = "dialogue_crystal_created"

@@ -1,0 +1,68 @@
+[gd_resource type="Resource" script_class="SpellData" load_steps=4 format=3 uid="uid://spell_ice_shard"]
+
+[ext_resource type="Script" path="res://resources/spells/spell_data.gd" id="1_spell"]
+[ext_resource type="Script" path="res://resources/spells/effects/damage_effect.gd" id="2_damage"]
+[ext_resource type="Script" path="res://resources/spells/effects/status_effect.gd" id="3_status"]
+
+[sub_resource type="Resource" id="damage_effect_1"]
+script = ExtResource("2_damage")
+effect_type = 0
+effect_name = "Ice Damage"
+description = "Deals ice damage"
+target_type = 0
+delay = 0.0
+duration = 0.0
+base_damage = 20.0
+damage_type = 1
+element = 2
+damage_variance = 0.1
+crit_multiplier = 1.5
+knockback_force = 0.0
+knockback_up = 0.0
+
+[sub_resource type="Resource" id="status_effect_1"]
+script = ExtResource("3_status")
+effect_type = 2
+effect_name = "Chill"
+description = "Slows the target"
+target_type = 0
+delay = 0.0
+duration = 0.0
+status = 3
+status_duration = 2.0
+status_strength = 0.3
+stat_to_modify = 6
+stat_modifier = -0.3
+is_percentage = true
+dot_damage = 0.0
+dot_interval = 0.0
+dot_element = 0
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Ice Shard"
+description = "Launches a sharp shard of ice that pierces enemies and slows them."
+element = 2
+magika_cost = 15.0
+cooldown = 0.8
+cast_time = 0.0
+can_move_while_casting = true
+can_be_interrupted = true
+delivery_type = 1
+range = 50.0
+target_type = 0
+projectile_speed = 50.0
+projectile_count = 1
+projectile_spread = 0.0
+projectile_gravity = 0.0
+projectile_homing = 0.0
+projectile_pierce = 1
+projectile_bounce = 0
+projectile_lifetime = 3.0
+aoe_radius = 0.0
+effects = [SubResource("damage_effect_1"), SubResource("status_effect_1")]
+damage_multiplier = 1.0
+cost_multiplier = 1.0
+cooldown_multiplier = 1.0
+range_multiplier = 1.0
+aoe_multiplier = 1.0

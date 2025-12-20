@@ -1,0 +1,100 @@
+[gd_scene load_steps=10 format=3 uid="uid://bgoblin_shaman"]
+
+[ext_resource type="PackedScene" uid="uid://cvqn3h8x2m7pk" path="res://scenes/enemies/enemy_base.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scenes/enemies/goblin.gd" id="2_goblin"]
+[ext_resource type="Script" path="res://resources/enemies/goblin_enemy_data.gd" id="3_data"]
+
+[sub_resource type="Resource" id="Resource_goblin_shaman"]
+script = ExtResource("3_data")
+variant = 3
+level = 2
+health = 70.0
+damage = 15.0
+speed = 3.0
+attack_range = 6.0
+detection_range = 10.0
+patrol_speed = 2.5
+group_size = 3
+aggression = 0.6
+special_ability = "elemental_bolt"
+element = 1
+elemental_power = 25.0
+uses_weapon = false
+weapon_type = ""
+prefers_range = true
+retreat_threshold = 0.35
+mesh_color = Color(0.502, 0, 0.502, 1)
+mesh_scale = Vector3(0.95, 1.05, 1)
+armor_color = Color(0.3, 0, 0.3, 1)
+weapon_color = Color(0.8, 0.4, 0.8, 1)
+gold_drop_min = 15
+gold_drop_max = 30
+item_drops = ["mana_potion", "magical_fragment"]
+drop_chance = 0.65
+group_coordination = true
+flanking_bonus = 1.3
+tactical_retreat = true
+calls_for_help = true
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_shaman"]
+radius = 0.38
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_shaman"]
+radius = 0.38
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shaman"]
+albedo_color = Color(0.502, 0, 0.502, 1)
+roughness = 0.7
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_detect"]
+radius = 10.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_attack"]
+radius = 6.0
+
+[node name="GoblinShaman" instance=ExtResource("1_base")]
+script = ExtResource("2_goblin")
+goblin_data = SubResource("Resource_goblin_shaman")
+variant = 3
+enemy_name = "Goblin Shaman"
+enemy_type = 2
+level = 2
+max_health = 70.0
+damage = 15.0
+move_speed = 3.0
+attack_range = 6.0
+detection_range = 10.0
+experience_value = 60
+
+[node name="CollisionShape3D" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_shaman")
+
+[node name="MeshInstance3D" parent="." index="1"]
+transform = Transform3D(0.95, 0, 0, 0, 1.05, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("CapsuleMesh_shaman")
+surface_material_override/0 = SubResource("StandardMaterial3D_shaman")
+
+[node name="StatsComponent" parent="." index="2"]
+max_health = 70.0
+
+[node name="NavigationAgent3D" parent="." index="3"]
+path_max_distance = 12.0
+avoidance_enabled = true
+radius = 0.38
+neighbor_distance = 8.0
+max_neighbors = 4
+
+[node name="DetectionArea" parent="." index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+
+[node name="CollisionShape3D" parent="DetectionArea" index="0"]
+shape = SubResource("SphereShape3D_detect")
+
+[node name="AttackArea" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+
+[node name="CollisionShape3D" parent="AttackArea" index="0"]
+shape = SubResource("SphereShape3D_attack")

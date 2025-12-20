@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="StaffPartData" load_steps=3 format=3 uid="uid://part_charm_vampire"]
+
+[ext_resource type="Script" path="res://resources/items/staff_part_data.gd" id="1_part"]
+[ext_resource type="Script" path="res://resources/spells/effects/heal_effect.gd" id="2_heal"]
+
+[sub_resource type="Resource" id="lifesteal_effect"]
+script = ExtResource("2_heal")
+effect_type = 1
+effect_name = "Life Steal"
+description = "Heals a portion of damage dealt"
+target_type = 2
+delay = 0.0
+duration = 0.0
+base_heal = 0.0
+heal_variance = 0.0
+restore_magika = 0.0
+restore_stamina = 0.0
+
+[resource]
+script = ExtResource("1_part")
+item_id = "charm_vampiric"
+item_name = "Vampiric Charm"
+description = "A dark charm that drains life from enemies. Heals you for 10% of damage dealt."
+item_type = 1
+rarity = 2
+stackable = false
+max_stack = 1
+base_value = 150
+level_required = 8
+part_type = 4
+is_wand_part = false
+gem_slots = 0
+charm_effect = SubResource("lifesteal_effect")
+charm_element = 8

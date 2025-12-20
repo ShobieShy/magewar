@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EquipmentData" load_steps=2 format=3 uid="uid://equip_apprentice_belt"]
+
+[ext_resource type="Script" path="res://resources/items/equipment_data.gd" id="1_equip"]
+
+[resource]
+script = ExtResource("1_equip")
+item_id = "apprentice_belt"
+item_name = "Apprentice's Belt"
+description = "A sturdy leather belt with pouches for reagents and small items."
+item_type = 3
+rarity = 0
+base_value = 10
+level_required = 1
+slot = 3
+stamina_bonus = 10.0
+stamina_regen_bonus = 1.0

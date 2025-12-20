@@ -1,0 +1,71 @@
+[gd_resource type="Resource" script_class="SpellData" load_steps=4 format=3 uid="uid://spell_earth_shield"]
+
+[ext_resource type="Script" path="res://resources/spells/spell_data.gd" id="1_spell"]
+[ext_resource type="Script" path="res://resources/spells/effects/status_effect.gd" id="2_shield"]
+[ext_resource type="Script" path="res://resources/spells/effects/status_effect.gd" id="3_armor"]
+
+[sub_resource type="Resource" id="shield_effect_1"]
+script = ExtResource("2_shield")
+effect_type = 3  ; BUFF
+effect_name = "Stone Skin"
+description = "Creates a protective barrier of earth"
+target_type = 2  ; SELF
+delay = 0.0
+duration = 0.0
+status = 6  ; SHIELDED
+status_duration = 10.0
+status_strength = 2.0  ; 200% shield strength
+stat_to_modify = 2  ; DEFENSE
+stat_modifier = 50.0
+is_percentage = false
+dot_damage = 0.0
+dot_interval = 0.0
+dot_element = 0
+
+[sub_resource type="Resource" id="armor_effect_1"]
+script = ExtResource("3_armor")
+effect_type = 3  ; BUFF
+effect_name = "Earth Armor"
+description = "Increases physical and magical resistance"
+target_type = 2  ; SELF
+delay = 0.0
+duration = 0.0
+status = 9  ; BUFFED
+status_duration = 10.0
+status_strength = 1.0
+stat_to_modify = 8  ; RESISTANCE
+stat_modifier = 0.3
+is_percentage = true
+dot_damage = 0.0
+dot_interval = 0.0
+dot_element = 0
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Earth Shield"
+description = "Encases yourself in protective stone armor, greatly increasing defense and providing damage absorption."
+element = 4  ; EARTH
+magika_cost = 50.0
+cooldown = 20.0
+cast_time = 1.0
+can_move_while_casting = false
+can_be_interrupted = true
+delivery_type = 5  ; SELF
+range = 0.0
+target_type = 2  ; SELF
+projectile_speed = 0.0
+projectile_count = 0
+projectile_spread = 0.0
+projectile_gravity = 0.0
+projectile_homing = 0.0
+projectile_pierce = 0
+projectile_bounce = 0
+projectile_lifetime = 0.0
+aoe_radius = 0.0
+aoe_falloff = false
+effects = [SubResource("shield_effect_1"), SubResource("armor_effect_1")]
+damage_multiplier = 1.0
+cost_multiplier = 1.0
+cooldown_multiplier = 1.0
+range_multiplier = 1.0
+aoe_multiplier = 1.0

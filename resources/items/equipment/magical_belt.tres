@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="EquipmentData" load_steps=2 format=3 uid="uid://equip_magical_belt"]
+
+[ext_resource type="Script" path="res://resources/items/equipment_data.gd" id="1_equip"]
+
+[resource]
+script = ExtResource("1_equip")
+item_id = "magical_belt"
+item_name = "Magical Belt"
+description = "A belt enchanted with mystical runes. Enhances magical abilities and provides protection."
+item_type = 3
+rarity = 2
+base_value = 65
+level_required = 6
+slot = 3
+magika_bonus = 20.0
+stamina_bonus = 15.0
+defense_bonus = 3.0
+magika_regen_bonus = 0.5

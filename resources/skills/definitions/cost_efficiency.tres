@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SkillData" load_steps=2 format=3 uid="uid://bvnvn8qkrx6rj"]
+
+[ext_resource type="Script" path="res://resources/skills/skill_data.gd" id="1_0cd8o"]
+
+[resource]
+script = ExtResource("1_0cd8o")
+skill_id = "cost_efficiency"
+skill_name = "Cost Efficiency"
+description = "Reduces magika cost of all spells by 25%."
+skill_type = 2
+category = 2
+required_level = 6
+skill_points_cost = 2
+cost_multiplier = 0.75
+tree_position = Vector2(300, 350)

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SkillData" load_steps=3 format=3 uid="uid://bvnvn8qkrx6rn"]
+
+[ext_resource type="Script" path="res://resources/skills/skill_data.gd" id="1_0cd8o"]
+[ext_resource type="Script" path="res://resources/spells/effects/damage_effect.gd" id="2_x4k8n"]
+
+[resource]
+script = ExtResource("1_0cd8o")
+skill_id = "arcane_burst"
+skill_name = "Arcane Burst"
+description = "Deal 50 arcane damage to nearby enemies."
+skill_type = 1
+category = 0
+required_level = 6
+skill_points_cost = 2
+ability_effect = ExtResource("2_x4k8n")
+cooldown = 20.0
+magika_cost = 40.0
+tree_position = Vector2(300, 50)

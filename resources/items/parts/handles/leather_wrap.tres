@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="StaffPartData" load_steps=2 format=3 uid="uid://part_handle_basic"]
+
+[ext_resource type="Script" path="res://resources/items/staff_part_data.gd" id="1_part"]
+
+[resource]
+script = ExtResource("1_part")
+item_id = "handle_leather_wrap"
+item_name = "Leather Wrap"
+description = "A simple leather-wrapped handle. Provides basic grip."
+item_type = 1
+rarity = 0
+stackable = false
+max_stack = 1
+base_value = 5
+level_required = 1
+part_type = 3
+is_wand_part = true
+gem_slots = 0
+handling = 5.0
+stability = 0.0
+accuracy = 0.0

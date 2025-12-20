@@ -1,0 +1,66 @@
+[gd_resource type="Resource" script_class="SpellData" load_steps=4 format=3 uid="uid://spell_earth_spike"]
+
+[ext_resource type="Script" path="res://resources/spells/spell_data.gd" id="1_spell"]
+[ext_resource type="Script" path="res://resources/spells/effects/damage_effect.gd" id="2_damage"]
+[ext_resource type="Script" path="res://resources/spells/effects/movement_effect.gd" id="3_movement"]
+
+[sub_resource type="Resource" id="damage_effect_1"]
+script = ExtResource("2_damage")
+effect_type = 0
+effect_name = "Earth Damage"
+description = "Deals earth damage"
+target_type = 0
+delay = 0.0
+duration = 0.0
+base_damage = 35.0
+damage_type = 1
+element = 4
+damage_variance = 0.1
+crit_multiplier = 1.5
+knockback_force = 0.0
+knockback_up = 0.0
+
+[sub_resource type="Resource" id="movement_effect_1"]
+script = ExtResource("3_movement")
+effect_type = 6
+effect_name = "Knockback"
+description = "Knocks enemies back"
+target_type = 0
+delay = 0.0
+duration = 0.0
+movement_type = 0
+force = 8.0
+vertical_force = 3.0
+teleport_distance = 0.0
+teleport_to_cursor = false
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Earth Spike"
+description = "Cause earthen spikes to erupt from the ground, damaging and knocking back enemies."
+element = 4
+magika_cost = 30.0
+cooldown = 2.5
+cast_time = 0.0
+can_move_while_casting = true
+can_be_interrupted = true
+delivery_type = 2
+range = 30.0
+target_type = 4
+projectile_speed = 0.0
+projectile_count = 0
+projectile_spread = 0.0
+projectile_gravity = 0.0
+projectile_homing = 0.0
+projectile_pierce = 0
+projectile_bounce = 0
+projectile_lifetime = 0.0
+aoe_radius = 4.0
+aoe_falloff = true
+aoe_delay = 0.3
+effects = [SubResource("damage_effect_1"), SubResource("movement_effect_1")]
+damage_multiplier = 1.0
+cost_multiplier = 1.0
+cooldown_multiplier = 1.0
+range_multiplier = 1.0
+aoe_multiplier = 1.0

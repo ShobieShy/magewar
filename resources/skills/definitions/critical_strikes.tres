@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SkillData" load_steps=2 format=3 uid="uid://bvnvn8qkrx6rs"]
+
+[ext_resource type="Script" path="res://resources/skills/skill_data.gd" id="1_0cd8o"]
+
+[resource]
+script = ExtResource("1_0cd8o")
+skill_id = "critical_strikes"
+skill_name = "Critical Strikes"
+description = "Increases critical chance by 5% and critical damage by 25%."
+skill_type = 0
+category = 0
+required_level = 7
+skill_points_cost = 2
+stat_modifiers = {
+"CRITICAL_CHANCE": 0.05,
+"CRITICAL_DAMAGE": 0.25
+}
+is_percentage = true
+tree_position = Vector2(200, 50)

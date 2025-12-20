@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://resources/quests/quest_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/quests/quest_objective.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+objective_id = "investigate_fracture"
+description = "Uncover the cause of the Dungeon Fracture"
+objective_type = 9  ; CUSTOM
+target_id = "complete_all_dungeons"
+target_count = 5
+is_optional = false
+is_hidden = false
+
+[resource]
+script = ExtResource("1")
+quest_id = "main_quest_vague_intro"
+quest_name = "The Fractured Realm"
+description = "The Dungeon Fracture has plagued Elyria for 10 years, releasing monsters into the world. Bob believes the answer lies somewhere out there - in ancient artifacts, corrupted dungeons, or perhaps something more sinister. Explore the realm, gather clues, and discover the truth."
+quest_giver = "npc_bob"
+is_main_quest = true
+chapter = 1
+objectives = [SubResource("1")]
+require_all_objectives = true
+required_level = 1
+required_quests = ["chapter1_fast_travel_crystal"]
+required_items = []
+required_location = ""
+reward_experience = 10000
+reward_gold = 5000
+reward_items = ["legendary_staff", "master_grimoire"]
+reward_skill_points = 10
+unlock_location = "demon_lord_lair"
+unlock_portal = ""
+auto_complete = false
+turn_in_npc = ""
+next_quest = "final_confrontation"
+dialogue_on_accept = "dialogue_main_quest_start"
+dialogue_on_progress = ""
+dialogue_on_complete = ""

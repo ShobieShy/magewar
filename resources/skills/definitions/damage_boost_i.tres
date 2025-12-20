@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SkillData" load_steps=2 format=3 uid="uid://bvnvn8qkrx6rb"]
+
+[ext_resource type="Script" path="res://resources/skills/skill_data.gd" id="1_0cd8o"]
+
+[resource]
+script = ExtResource("1_0cd8o")
+skill_id = "damage_boost_i"
+skill_name = "Damage Boost I"
+description = "Increases all damage dealt by 10%."
+skill_type = 0
+category = 0
+required_level = 2
+skill_points_cost = 1
+stat_modifiers = {
+"DAMAGE": 0.1
+}
+is_percentage = true
+tree_position = Vector2(200, 100)

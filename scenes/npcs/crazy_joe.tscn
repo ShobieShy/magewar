@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3 uid="uid://npc_crazy_joe"]
+
+[ext_resource type="Script" path="res://scripts/components/npc.gd" id="1_npc"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_1"]
+radius = 0.35
+height = 1.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
+albedo_color = Color(0.6, 0.45, 0.3, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1"]
+radius = 2.5
+
+[node name="CrazyJoe" type="Area3D"]
+collision_layer = 64
+collision_mask = 2
+script = ExtResource("1_npc")
+npc_name = "Crazy Joe"
+npc_title = "Eccentric Hermit"
+dialogue_lines = Array[String](["Hey there, young mage! You look like you could handle some REAL magic work!", "See, I lost something precious in the Landfill... my TRASH! Very important trash!", "Those slime creatures took it when The Filth showed up. Nasty business.", "Go defeat The Filth and bring back my trash, would ya? I'll make it worth your while!", "Oh, and watch out - The Filth is stronger than it looks. Bring friends if you can!"])
+dialogue_on_complete = "Did you find my trash yet? The Filth has it! Big blob monster in the Landfill!"
+give_quest_id = "tutorial_landfill"
+npc_id = "crazy_joe"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("CapsuleMesh_1")
+surface_material_override/0 = SubResource("StandardMaterial3D_1")
+
+[node name="InteractionArea" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("SphereShape3D_1")

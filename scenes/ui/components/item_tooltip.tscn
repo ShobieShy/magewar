@@ -1,0 +1,70 @@
+[gd_scene load_steps=2 format=3 uid="uid://bvnvn8qkrx6rp"]
+
+[ext_resource type="Script" path="res://scenes/ui/components/item_tooltip.gd" id="1_tooltip"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
+bg_color = Color(0.08, 0.08, 0.12, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.3, 0.35)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+corner_radius_detail = 6
+content_margin_left = 8
+content_margin_top = 8
+content_margin_right = 8
+content_margin_bottom = 8
+
+[node name="ItemTooltip" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -100.0
+offset_bottom = -20.0
+grow_vertical = 0
+size_flags_horizontal = 3
+script = ExtResource("1_tooltip")
+
+[node name="Content" type="VBoxContainer" parent="."]
+layout_mode = 2
+add_theme_constant_override("separation", 4)
+
+[node name="NameLabel" type="RichTextLabel" parent="Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "Item Name"
+fit_content = true
+
+[node name="TypeLabel" type="Label" parent="Content"]
+layout_mode = 2
+text = "Item Type"
+label_settings = SubResource("LabelSettings_q8cfx")
+
+[node name="DescriptionLabel" type="RichTextLabel" parent="Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "Description text"
+fit_content = true
+
+[node name="StatsContainer" type="VBoxContainer" parent="Content"]
+layout_mode = 2
+
+[node name="RequirementsLabel" type="Label" parent="Content"]
+layout_mode = 2
+modulate = Color(0.8, 0.8, 0.8, 1)
+text = "Requirements"
+
+[node name="ValueLabel" type="Label" parent="Content"]
+layout_mode = 2
+text = "Value: 0 Gold"
+
+[ sub_resource type="LabelSettings" id="LabelSettings_q8cfx" ]
+font_size = 12

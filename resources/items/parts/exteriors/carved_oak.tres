@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="StaffPartData" load_steps=2 format=3 uid="uid://part_ext_uncommon"]
+
+[ext_resource type="Script" path="res://resources/items/staff_part_data.gd" id="1_part"]
+
+[resource]
+script = ExtResource("1_part")
+item_id = "exterior_carved_oak"
+item_name = "Carved Oak"
+description = "Sturdy oak wood carved with magical runes that improve spell channeling speed."
+item_type = 1
+rarity = 1
+stackable = false
+max_stack = 1
+base_value = 50
+level_required = 3
+part_type = 1
+is_wand_part = true
+gem_slots = 0
+fire_rate_modifier = 0.1
+projectile_speed_modifier = 0.05

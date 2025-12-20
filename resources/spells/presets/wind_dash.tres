@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="SpellData" load_steps=3 format=3 uid="uid://spell_wind_dash"]
+
+[ext_resource type="Script" path="res://resources/spells/spell_data.gd" id="1_spell"]
+[ext_resource type="Script" path="res://resources/spells/effects/movement_effect.gd" id="2_movement"]
+
+[sub_resource type="Resource" id="movement_effect_1"]
+script = ExtResource("2_movement")
+effect_type = 8
+effect_name = "Wind Dash"
+description = "Quickly dash forward"
+target_type = 2
+delay = 0.0
+duration = 0.0
+movement_type = 4
+force = 20.0
+vertical_force = 0.0
+teleport_distance = 8.0
+teleport_to_cursor = false
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Wind Dash"
+description = "Harness the wind to dash forward at incredible speed."
+element = 5
+magika_cost = 15.0
+cooldown = 2.0
+cast_time = 0.0
+can_move_while_casting = true
+can_be_interrupted = false
+delivery_type = 4
+range = 0.0
+target_type = 2
+projectile_speed = 0.0
+projectile_count = 0
+projectile_spread = 0.0
+projectile_gravity = 0.0
+projectile_homing = 0.0
+projectile_pierce = 0
+projectile_bounce = 0
+projectile_lifetime = 0.0
+aoe_radius = 0.0
+effects = [SubResource("movement_effect_1")]
+damage_multiplier = 1.0
+cost_multiplier = 1.0
+cooldown_multiplier = 1.0
+range_multiplier = 1.0
+aoe_multiplier = 1.0

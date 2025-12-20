@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EquipmentData" load_steps=2 format=3 uid="uid://equip_arcane_robes"]
+
+[ext_resource type="Script" path="res://resources/items/equipment_data.gd" id="1_equip"]
+
+[resource]
+script = ExtResource("1_equip")
+item_id = "arcane_robes"
+item_name = "Arcane Robes"
+description = "Legendary robes woven from pure magical essence. Grants unmatched arcane power."
+item_type = 3
+rarity = 3
+base_value = 200
+level_required = 15
+slot = 2
+health_bonus = 50.0
+magika_bonus = 50.0
+defense_bonus = 8.0
+magika_regen_bonus = 2.0
+health_regen_bonus = 1.0
+crit_chance_bonus = 0.1
+crit_damage_bonus = 0.25

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SkillData" load_steps=2 format=3 uid="uid://bvnvn8qkrx6rh"]
+
+[ext_resource type="Script" path="res://resources/skills/skill_data.gd" id="1_0cd8o"]
+
+[resource]
+script = ExtResource("1_0cd8o")
+skill_id = "ice_mastery"
+skill_name = "Ice Mastery"
+description = "Increases damage of ice spells by 20% and adds +1 chain count."
+skill_type = 2
+category = 3
+required_level = 4
+skill_points_cost = 1
+augment_element = 2
+damage_multiplier = 1.2
+chain_bonus = 1
+tree_position = Vector2(400, 200)

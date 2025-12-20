@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="GemData" load_steps=2 format=3 uid="uid://gem_fire_ruby"]
+
+[ext_resource type="Script" path="res://resources/spells/gem_data.gd" id="1_gem"]
+
+[resource]
+script = ExtResource("1_gem")
+gem_name = "Fire Ruby"
+description = "A ruby infused with flame. Converts spells to fire and increases damage."
+rarity = 1
+element = 1
+converts_element = true
+damage_multiplier = 1.25
+cost_multiplier = 1.0
+cooldown_multiplier = 1.0
+range_multiplier = 1.0
+aoe_multiplier = 1.0
+projectile_speed_multiplier = 1.0
+projectile_count_bonus = 0
+additional_effects = []
+adds_pierce = 0
+adds_bounce = 0
+adds_chain = 0
+adds_homing = 0.0
+reduces_gravity = 0.0

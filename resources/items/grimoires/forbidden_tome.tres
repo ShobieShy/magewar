@@ -1,0 +1,71 @@
+[gd_resource type="Resource" script_class="GrimoireData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/equipment/grimoire_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+item_id = "forbidden_tome"
+item_name = "The Forbidden Tome"
+description = "A grimoire of immense power, sealed away for containing knowledge too dangerous for most mortals. Dark whispers emanate from its pages."
+icon_path = "res://assets/icons/items/grimoire_forbidden.png"
+rarity = 4  ; LEGENDARY
+item_type = 7  ; GRIMOIRE
+stackable = false
+max_stack = 1
+base_value = 10000
+weight = 5.0
+equipment_slot = 7  ; GRIMOIRE
+required_level = 30
+
+# Stats
+bonus_health = -50  ; Cursed - drains health
+bonus_mana = 200
+bonus_stamina = 0
+bonus_damage = 0
+bonus_defense = -10  ; Makes you more vulnerable
+bonus_magic_power = 50
+bonus_attack_speed = 0.0
+bonus_move_speed = 0.0
+bonus_crit_chance = 10.0
+bonus_crit_damage = 0.5
+
+# Resistances
+physical_resistance = -10.0  ; Cursed vulnerability
+fire_resistance = 25.0
+ice_resistance = 25.0
+lightning_resistance = 25.0
+poison_resistance = 0.0
+holy_resistance = -20.0  ; Weak to holy
+dark_resistance = 50.0  ; Strong dark affinity
+
+# Grimoire Properties
+bonus_spell_slots = 2
+mana_cost_reduction = 25.0
+spell_damage_multiplier = 1.5
+cooldown_reduction = 20.0
+cast_time_reduction = 15.0
+
+# Element Affinity
+fire_damage_bonus = 30.0
+ice_damage_bonus = 30.0
+lightning_damage_bonus = 30.0
+earth_damage_bonus = 20.0
+arcane_damage_bonus = 40.0
+
+# Special Effects
+free_cast_chance = 10.0
+double_cast_chance = 8.0
+spell_lifesteal = 15.0  ; Dark magic drains life
+spell_penetration = 30.0
+
+# Knowledge Bonuses
+experience_multiplier = 1.25
+bonus_skill_points = 1
+spell_learn_chance = 5.0
+
+# Spells
+unlocked_spells = ["meteor_storm", "chain_lightning", "blizzard", "life_drain", "time_warp"]
+spell_modifications = {
+	"all_spells": {"damage": 1.5, "mana_cost": 0.75},
+	"dark_spells": {"damage": 2.0, "lifesteal": 0.2}
+}

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="EquipmentData" load_steps=2 format=3 uid="uid://equip_flying_shoes"]
+
+[ext_resource type="Script" path="res://resources/items/equipment_data.gd" id="1_equip"]
+
+[resource]
+script = ExtResource("1_equip")
+item_id = "flying_shoes"
+item_name = "Flying Shoes"
+description = "Legendary shoes that allow brief periods of flight. Grants incredible speed and magical prowess."
+item_type = 3
+rarity = 3
+base_value = 250
+level_required = 18
+slot = 4
+move_speed_bonus = 0.4
+stamina_regen_bonus = 2.0
+magika_bonus = 25.0
+health_bonus = 15.0
+defense_bonus = 5.0
+health_regen_bonus = 1.0
+magika_regen_bonus = 1.0
+damage_bonus = 8.0
+crit_chance_bonus = 0.08

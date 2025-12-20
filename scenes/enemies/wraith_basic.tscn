@@ -1,0 +1,103 @@
+[gd_scene load_steps=10 format=3 uid="uid://bwraith_basic"]
+
+[ext_resource type="PackedScene" uid="uid://cvqn3h8x2m7pk" path="res://scenes/enemies/enemy_base.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scenes/enemies/wraith.gd" id="2_wraith"]
+[ext_resource type="Script" path="res://resources/enemies/wraith_enemy_data.gd" id="3_data"]
+
+[sub_resource type="Resource" id="Resource_wraith_basic"]
+script = ExtResource("3_data")
+variant = 0
+level = 1
+health = 60.0
+damage = 20.0
+speed = 4.0
+attack_range = 4.0
+detection_range = 15.0
+patrol_speed = 3.0
+special_ability = "life_drain"
+life_drain_rate = 5.0
+phase_duration = 2.0
+teleport_cooldown = 8.0
+invisibility_duration = 3.0
+element = 0
+elemental_power = 0.0
+mesh_color = Color(0.4, 0.2, 0.5, 0.7)
+mesh_scale = Vector3(1, 1, 1)
+armor_color = Color(0, 0, 0, 1)
+weapon_color = Color(0.5, 0.2, 0.8, 1)
+gold_drop_min = 25
+gold_drop_max = 50
+item_drops = ["shadow_essence", "wraith_cloak"]
+drop_chance = 0.4
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_basic"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_basic"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_basic"]
+transparency = 1
+albedo_color = Color(0.4, 0.2, 0.5, 0.7)
+emission_enabled = true
+emission = Color(0.3, 0.1, 0.4, 1)
+emission_energy = 0.5
+roughness = 0.2
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_detect_basic"]
+radius = 15.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_attack_basic"]
+radius = 4.0
+
+[node name="WraithBasic" instance=ExtResource("1_base")]
+script = ExtResource("2_wraith")
+wraith_data = SubResource("Resource_wraith_basic")
+variant = 0
+
+[node name="CollisionShape3D" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+shape = SubResource("CapsuleShape3D_basic")
+
+[node name="MeshInstance3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+mesh = SubResource("CapsuleMesh_basic")
+surface_material_override/0 = SubResource("StandardMaterial3D_basic")
+
+[node name="StatsComponent" parent="." index="2"]
+max_health = 60.0
+
+[node name="NavigationAgent3D" parent="." index="3"]
+path_max_distance = 20.0
+avoidance_enabled = true
+radius = 0.4
+neighbor_distance = 10.0
+max_neighbors = 8
+max_speed = 4.0
+
+[node name="DetectionArea" parent="." index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="CollisionShape3D" parent="DetectionArea" index="0"]
+shape = SubResource("SphereShape3D_detect_basic")
+
+[node name="AttackArea" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="CollisionShape3D" parent="AttackArea" index="0"]
+shape = SubResource("SphereShape3D_attack_basic")
+
+[node name="HealthBar3D" parent="." index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." index="7"]
+max_distance = 25.0
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." index="8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+light_color = Color(0.5, 0.2, 0.8, 1)
+light_energy = 0.3
+light_size = 0.2
+omni_range = 3.0

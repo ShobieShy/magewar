@@ -1,0 +1,88 @@
+[gd_resource type="Resource" script_class="SpellData" load_steps=5 format=3 uid="uid://spell_fireball_enhanced"]
+
+[ext_resource type="Script" path="res://resources/spells/spell_data.gd" id="1_spell"]
+[ext_resource type="Script" path="res://resources/spells/effects/damage_effect.gd" id="2_damage"]
+[ext_resource type="Script" path="res://resources/spells/effects/status_effect.gd" id="3_status"]
+[ext_resource type="Script" path="res://resources/spells/effects/damage_effect.gd" id="4_aoe_damage"]
+
+[sub_resource type="Resource" id="damage_effect_1"]
+script = ExtResource("2_damage")
+effect_type = 0
+effect_name = "Fire Blast"
+description = "Initial explosion damage"
+target_type = 0
+delay = 0.0
+duration = 0.0
+base_damage = 45.0
+damage_type = 1  ; MAGICAL
+element = 1  ; FIRE
+damage_variance = 0.15
+crit_multiplier = 1.75
+knockback_force = 5.0
+knockback_up = 1.0
+
+[sub_resource type="Resource" id="aoe_damage_1"]
+script = ExtResource("4_aoe_damage")
+effect_type = 0
+effect_name = "Explosion Damage"
+description = "AoE explosion damage to nearby enemies"
+target_type = 0
+delay = 0.0
+duration = 0.0
+base_damage = 30.0
+damage_type = 1  ; MAGICAL
+element = 1  ; FIRE
+damage_variance = 0.1
+crit_multiplier = 1.5
+knockback_force = 3.0
+knockback_up = 0.5
+
+[sub_resource type="Resource" id="status_effect_1"]
+script = ExtResource("3_status")
+effect_type = 1
+effect_name = "Burning"
+description = "Sets targets on fire, dealing damage over time"
+target_type = 0
+delay = 0.0
+duration = 0.0
+status = 1  ; BURNING
+status_duration = 5.0
+status_strength = 1.0
+stat_to_modify = 0
+stat_modifier = 0.0
+is_percentage = true
+dot_damage = 8.0
+dot_interval = 0.5
+dot_element = 1  ; FIRE
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Fireball"
+description = "Launches a blazing orb that explodes on impact, dealing massive fire damage in a large area and igniting all enemies caught in the blast."
+element = 1  ; FIRE
+magika_cost = 35.0
+cooldown = 2.5
+cast_time = 0.3
+can_move_while_casting = true
+can_be_interrupted = true
+delivery_type = 1  ; PROJECTILE
+range = 50.0
+target_type = 0  ; ENEMY
+projectile_speed = 30.0
+projectile_count = 1
+projectile_spread = 0.0
+projectile_gravity = 2.0
+projectile_homing = 0.0
+projectile_pierce = 0
+projectile_bounce = 0
+projectile_lifetime = 5.0
+aoe_radius = 6.0  ; Large explosion radius
+aoe_falloff = true
+aoe_delay = 0.0
+aoe_persist_duration = 0.0
+effects = [SubResource("damage_effect_1"), SubResource("aoe_damage_1"), SubResource("status_effect_1")]
+damage_multiplier = 1.0
+cost_multiplier = 1.0
+cooldown_multiplier = 1.0
+range_multiplier = 1.0
+aoe_multiplier = 1.0

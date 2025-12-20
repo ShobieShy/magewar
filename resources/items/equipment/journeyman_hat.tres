@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EquipmentData" load_steps=2 format=3 uid="uid://equip_journeyman_hat"]
+
+[ext_resource type="Script" path="res://resources/items/equipment_data.gd" id="1_equip"]
+
+[resource]
+script = ExtResource("1_equip")
+item_id = "journeyman_hat"
+item_name = "Journeyman's Hat"
+description = "A more refined hat worn by experienced mages. Provides better magical protection and focus."
+item_type = 3
+rarity = 1
+base_value = 35
+level_required = 3
+slot = 1
+magika_bonus = 15.0
+magika_regen_bonus = 1.0
+health_bonus = 5.0

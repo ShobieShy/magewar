@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="EquipmentData" load_steps=2 format=3 uid="uid://equip_enhanced_robes"]
+
+[ext_resource type="Script" path="res://resources/items/equipment_data.gd" id="1_equip"]
+
+[resource]
+script = ExtResource("1_equip")
+item_id = "enhanced_robes"
+item_name = "Enhanced Robes"
+description = "Robes reinforced with magical threads for better protection and mana efficiency."
+item_type = 3
+rarity = 1
+base_value = 45
+level_required = 4
+slot = 2
+health_bonus = 20.0
+magika_bonus = 15.0
+defense_bonus = 3.0
+magika_regen_bonus = 0.5

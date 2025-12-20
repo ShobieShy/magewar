@@ -1,0 +1,100 @@
+[gd_scene load_steps=10 format=3 uid="uid://bgoblin_brute"]
+
+[ext_resource type="PackedScene" uid="uid://cvqn3h8x2m7pk" path="res://scenes/enemies/enemy_base.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scenes/enemies/goblin.gd" id="2_goblin"]
+[ext_resource type="Script" path="res://resources/enemies/goblin_enemy_data.gd" id="3_data"]
+
+[sub_resource type="Resource" id="Resource_goblin_brute"]
+script = ExtResource("3_data")
+variant = 2
+level = 2
+health = 150.0
+damage = 20.0
+speed = 2.0
+attack_range = 1.5
+detection_range = 8.0
+patrol_speed = 1.5
+group_size = 2
+aggression = 0.9
+special_ability = "ground_slam"
+element = 0
+elemental_power = 0.0
+uses_weapon = true
+weapon_type = "heavy_hammer"
+prefers_range = false
+retreat_threshold = 0.2
+mesh_color = Color(0, 0.4, 0, 1)
+mesh_scale = Vector3(1.3, 1.3, 1)
+armor_color = Color(0, 0.2, 0, 1)
+weapon_color = Color(0.5, 0.5, 0.5, 1)
+gold_drop_min = 20
+gold_drop_max = 40
+item_drops = ["healing_potion", "heavy_armor_piece"]
+drop_chance = 0.7
+group_coordination = true
+flanking_bonus = 1.8
+tactical_retreat = false
+calls_for_help = false
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_brute"]
+radius = 0.52
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_brute"]
+radius = 0.52
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_brute"]
+albedo_color = Color(0, 0.4, 0, 1)
+roughness = 0.9
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_detect"]
+radius = 8.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_attack"]
+radius = 1.5
+
+[node name="GoblinBrute" instance=ExtResource("1_base")]
+script = ExtResource("2_goblin")
+goblin_data = SubResource("Resource_goblin_brute")
+variant = 2
+enemy_name = "Goblin Brute"
+enemy_type = 2
+level = 2
+max_health = 150.0
+damage = 20.0
+move_speed = 2.0
+attack_range = 1.5
+detection_range = 8.0
+experience_value = 75
+
+[node name="CollisionShape3D" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_brute")
+
+[node name="MeshInstance3D" parent="." index="1"]
+transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("CapsuleMesh_brute")
+surface_material_override/0 = SubResource("StandardMaterial3D_brute")
+
+[node name="StatsComponent" parent="." index="2"]
+max_health = 150.0
+
+[node name="NavigationAgent3D" parent="." index="3"]
+path_max_distance = 8.0
+avoidance_enabled = true
+radius = 0.52
+neighbor_distance = 6.0
+max_neighbors = 3
+
+[node name="DetectionArea" parent="." index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+
+[node name="CollisionShape3D" parent="DetectionArea" index="0"]
+shape = SubResource("SphereShape3D_detect")
+
+[node name="AttackArea" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+
+[node name="CollisionShape3D" parent="AttackArea" index="0"]
+shape = SubResource("SphereShape3D_attack")

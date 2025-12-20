@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/quests/quest_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/quests/quest_objective.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+objective_id = "witness_bob_arrival"
+description = "A mysterious visitor arrives"
+objective_type = 9  ; CUSTOM
+target_id = "bob_teleportation_entrance"
+target_count = 1
+is_optional = false
+is_hidden = false
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+objective_id = "talk_to_bob"
+description = "Speak with Bob about the Dungeon Fracture"
+objective_type = 3  ; TALK_TO_NPC
+target_id = "npc_bob"
+target_count = 1
+is_optional = false
+is_hidden = false
+
+[resource]
+script = ExtResource("1")
+quest_id = "chapter1_bob_arrival"
+quest_name = "The Unexpected Guest"
+description = "As you settle into your new home for the night, a surge of magical energy fills the air. A mysterious figure teleports into the tree - Bob, the true owner who has been secretly living here for decades."
+quest_giver = "automatic"
+is_main_quest = true
+chapter = 1
+objectives = [SubResource("1"), SubResource("2")]
+require_all_objectives = true
+required_level = 1
+required_quests = ["prologue_home_tree"]
+required_items = []
+required_location = "home_tree"
+reward_experience = 150
+reward_gold = 0
+reward_items = []
+reward_skill_points = 0
+unlock_location = "landfill"
+unlock_portal = ""
+auto_complete = false
+turn_in_npc = "npc_bob"
+next_quest = "chapter1_investigate_landfill"
+dialogue_on_accept = ""
+dialogue_on_progress = "dialogue_bob_investigation"
+dialogue_on_complete = "dialogue_bob_quest_given"

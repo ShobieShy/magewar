@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SkillData" load_steps=2 format=3 uid="uid://bvnvn8qkrx6rg"]
+
+[ext_resource type="Script" path="res://resources/skills/skill_data.gd" id="1_0cd8o"]
+
+[resource]
+script = ExtResource("1_0cd8o")
+skill_id = "fire_mastery"
+skill_name = "Fire Mastery"
+description = "Increases damage of fire spells by 20%."
+skill_type = 2
+category = 3
+required_level = 4
+skill_points_cost = 1
+augment_element = 1
+damage_multiplier = 1.2
+tree_position = Vector2(400, 100)

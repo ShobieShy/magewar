@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="StaffPartData" load_steps=2 format=3 uid="uid://part_head_rare"]
+
+[ext_resource type="Script" path="res://resources/items/staff_part_data.gd" id="1_part"]
+
+[resource]
+script = ExtResource("1_part")
+item_id = "head_polished_focus"
+item_name = "Polished Focus"
+description = "A carefully polished focusing crystal. Its clarity allows for two gem slots."
+item_type = 1
+rarity = 2
+stackable = false
+max_stack = 1
+base_value = 100
+level_required = 5
+part_type = 0
+is_wand_part = false
+gem_slots = 2
+gem_slot_types = []

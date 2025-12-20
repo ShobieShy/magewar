@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://resources/quests/quest_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/quests/quest_objective.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+objective_id = "witness_summoning"
+description = "Witness the summoning ritual at the Mage Association"
+objective_type = 9  ; CUSTOM
+target_id = "prologue_summoning_cutscene"
+target_count = 1
+is_optional = false
+is_hidden = false
+
+[resource]
+script = ExtResource("1")
+quest_id = "prologue_summoning"
+quest_name = "The Summoning"
+description = "You have been summoned to the realm of Elyria by Crazy Joe, a desperate mage seeking help against the monster invasion that has plagued the land for 10 years."
+quest_giver = "automatic"
+is_main_quest = true
+chapter = 0
+objectives = [SubResource("1")]
+require_all_objectives = true
+required_level = 1
+required_quests = []
+required_items = []
+required_location = ""
+reward_experience = 100
+reward_gold = 50
+reward_items = ["basic_staff", "basic_robes", "health_potion_small"]
+reward_skill_points = 1
+unlock_location = "town_square"
+unlock_portal = ""
+auto_complete = true
+turn_in_npc = ""
+next_quest = "prologue_expulsion"
+dialogue_on_accept = ""
+dialogue_on_progress = ""
+dialogue_on_complete = "dialogue_summoning_complete"

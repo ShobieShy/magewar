@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EquipmentData" load_steps=2 format=3 uid="uid://equip_legendary_belt"]
+
+[ext_resource type="Script" path="res://resources/items/equipment_data.gd" id="1_equip"]
+
+[resource]
+script = ExtResource("1_equip")
+item_id = "legendary_belt"
+item_name = "Legendary Belt"
+description = "A belt of legendary power, said to be forged by ancient mages. Grants immense magical and physical enhancement."
+item_type = 3
+rarity = 3
+base_value = 180
+level_required = 13
+slot = 3
+magika_bonus = 35.0
+stamina_bonus = 30.0
+health_bonus = 25.0
+defense_bonus = 6.0
+magika_regen_bonus = 1.5
+health_regen_bonus = 0.8
+damage_bonus = 5.0

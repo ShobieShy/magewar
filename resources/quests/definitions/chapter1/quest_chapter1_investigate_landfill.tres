@@ -1,0 +1,63 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://resources/quests/quest_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/quests/quest_objective.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+objective_id = "reach_landfill"
+description = "Travel to the Landfill outside town"
+objective_type = 4  ; DISCOVER_AREA
+target_id = "landfill_entrance"
+target_count = 1
+is_optional = false
+is_hidden = false
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+objective_id = "defeat_filth"
+description = "Defeat The Filth"
+objective_type = 5  ; DEFEAT_BOSS
+target_id = "boss_the_filth"
+target_count = 1
+is_optional = false
+is_hidden = false
+required_location = "landfill"
+
+[sub_resource type="Resource" id="3"]
+script = ExtResource("2")
+objective_id = "collect_joes_trash"
+description = "Retrieve samples of Joe's discarded experiments"
+objective_type = 2  ; COLLECT_ITEM
+target_id = "joes_trash"
+target_count = 3
+is_optional = false
+is_hidden = false
+required_location = "landfill"
+
+[resource]
+script = ExtResource("1")
+quest_id = "chapter1_investigate_landfill"
+quest_name = "Tutorial in Trash"
+description = "Bob has tasked you with investigating the town's landfill, where he's detected strange mana distortions. Defeat whatever lurks there and bring back samples of Crazy Joe's discarded magical experiments."
+quest_giver = "npc_bob"
+is_main_quest = true
+chapter = 1
+objectives = [SubResource("1"), SubResource("2"), SubResource("3")]
+require_all_objectives = true
+required_level = 1
+required_quests = ["chapter1_bob_arrival"]
+required_items = []
+required_location = ""
+reward_experience = 500
+reward_gold = 100
+reward_items = ["apprentice_staff", "health_potion", "magika_potion"]
+reward_skill_points = 2
+unlock_location = ""
+unlock_portal = ""
+auto_complete = false
+turn_in_npc = "npc_bob"
+next_quest = "chapter1_fast_travel_crystal"
+dialogue_on_accept = "dialogue_landfill_quest_start"
+dialogue_on_progress = "dialogue_landfill_in_progress"
+dialogue_on_complete = "dialogue_landfill_complete"

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EquipmentData" load_steps=2 format=3 uid="uid://equip_apprentice_robes"]
+
+[ext_resource type="Script" path="res://resources/items/equipment_data.gd" id="1_equip"]
+
+[resource]
+script = ExtResource("1_equip")
+item_id = "apprentice_robes"
+item_name = "Apprentice's Robes"
+description = "Simple but comfortable robes that allow free movement while providing light protection against magical harm."
+item_type = 3
+rarity = 0
+base_value = 25
+level_required = 1
+slot = 2
+health_bonus = 15.0
+magika_bonus = 10.0
+defense_bonus = 2.0

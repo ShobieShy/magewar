@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="StaffPartData" load_steps=2 format=3 uid="uid://part_int_rare"]
+
+[ext_resource type="Script" path="res://resources/items/staff_part_data.gd" id="1_part"]
+
+[resource]
+script = ExtResource("1_part")
+item_id = "interior_mithril_core"
+item_name = "Mithril Core"
+description = "A legendary mithril core. Dramatically amplifies magical power while minimizing energy loss."
+item_type = 1
+rarity = 2
+stackable = false
+max_stack = 1
+base_value = 250
+level_required = 10
+part_type = 2
+is_wand_part = false
+gem_slots = 0
+damage_modifier = 0.25
+magika_efficiency = 0.2
