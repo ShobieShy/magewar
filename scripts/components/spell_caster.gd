@@ -494,7 +494,7 @@ func _execute_chain(spell: SpellData, direction: Vector3) -> void:
 	
 	var chain_targets: Array = [result.collider]
 	var current_pos = result.position
-	var _damage_mult = 1.0  # Reserved for chain damage reduction
+	var damage_mult = 1.0  # Chain damage multiplier (currently unused but needed for falloff calculation)
 	
 	# Apply to first target
 	for effect in spell.effects:
