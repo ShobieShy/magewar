@@ -516,3 +516,10 @@ func grant_xp(amount: int) -> void:
 func take_damage(amount: float) -> void:
 	if stats and stats.has_method("take_damage"):
 		stats.take_damage(amount)
+
+## Add an item to the player's inventory
+## Returns the slot index where the item was added (-1 if failed)
+func add_item(item: ItemData) -> int:
+	if _inventory_system and _inventory_system.has_method("add_item"):
+		return _inventory_system.add_item(item)
+	return -1
