@@ -473,7 +473,7 @@ func get_exp_progress() -> Dictionary:
 # =============================================================================
 
 func add_gold(amount: int) -> void:
-	var old_gold = player_data.gold
+	# var _old_gold = player_data.gold  # Reserved for logging/history
 	player_data.gold += amount
 	gold_changed.emit(player_data.gold, amount)
 
@@ -482,7 +482,7 @@ func remove_gold(amount: int) -> bool:
 	## Returns false if not enough gold
 	if player_data.gold < amount:
 		return false
-	var old_gold = player_data.gold
+	# var _old_gold = player_data.gold  # Reserved for logging/history
 	player_data.gold -= amount
 	gold_changed.emit(player_data.gold, -amount)
 	return true

@@ -190,8 +190,8 @@ func can_start(player_level: int, completed_quests: Array, discovered_locations:
 	if player_level < required_level:
 		return false
 	
-	for quest_id in required_quests:
-		if quest_id not in completed_quests:
+	for required_quest_id in required_quests:
+		if required_quest_id not in completed_quests:
 			return false
 	
 	if not required_location.is_empty():

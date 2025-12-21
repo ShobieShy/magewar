@@ -104,8 +104,8 @@ func initialize(config: Dictionary) -> void:
 		_apply_element_visual(spell.element)
 
 
-func _check_collision_during_movement(from_pos: Vector3, to_pos: Vector3) -> void:
-	"""Check for collisions while moving from from_pos to to_pos"""
+func _check_collision_during_movement(_from_pos: Vector3, to_pos: Vector3) -> void:
+	"""Check for collisions while moving from _from_pos to to_pos"""
 	var space_state = get_world_3d().direct_space_state
 	if not space_state:
 		return
@@ -178,9 +178,9 @@ func _on_body_entered(body: Node3D) -> void:
 func _on_area_entered(area: Area3D) -> void:
 	# Handle area-based hitboxes
 	if area.is_in_group("hitbox"):
-		var owner = area.get_parent()
-		if owner:
-			_handle_hit(owner)
+		var target_owner = area.get_parent()
+		if target_owner:
+			_handle_hit(target_owner)
 
 
 func _handle_hit(target: Node) -> void:
@@ -296,12 +296,12 @@ func _get_surface_normal(_surface: Node) -> Vector3:
 	return Vector3.UP
 
 
-func _impact(position: Vector3) -> void:
+func _impact(impact_position: Vector3) -> void:
 	# Spawn impact effect
 	if spell and spell.impact_effect:
 		var effect = spell.impact_effect.instantiate()
 		if effect is Node3D:
-			effect.global_position = position
+			effect.global_position = impact_position
 		get_tree().current_scene.add_child(effect)
 	
 	_on_projectile_destroy()

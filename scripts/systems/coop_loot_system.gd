@@ -129,7 +129,7 @@ func notify_player_pickup_completed(player_id: int, items: Array) -> void:
 # PRIVATE METHODS
 # =============================================================================
 
-func _create_shared_loot_container(loot: Array, position: Vector3) -> Node3D:
+func _create_shared_loot_container(_loot: Array, position: Vector3) -> Node3D:
 	## Create a visual loot container that players can interact with
 	var container = Area3D.new()
 	container.name = "SharedLootContainer"

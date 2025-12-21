@@ -71,7 +71,7 @@ func _load_gems_from_path(path: String) -> void:
 		return
 	
 	var file_name = dir.get_next()
-	var loaded_count = 0
+	var _loaded_count = 0  # Tracked for potential logging/debugging
 	var failed_count = 0
 	
 	while file_name != "":
@@ -83,7 +83,7 @@ func _load_gems_from_path(path: String) -> void:
 				failed_count += 1
 			elif resource is GemData:
 				register_gem(resource)
-				loaded_count += 1
+				_loaded_count += 1
 			else:
 				push_warning("GemDatabase: Loaded file is not GemData: %s" % full_path)
 				failed_count += 1
@@ -97,9 +97,9 @@ func _load_gems_from_path(path: String) -> void:
 # SEARCH
 # =============================================================================
 
-func find_by_name(name: String) -> Array[GemData]:
+func find_by_name(gem_name: String) -> Array[GemData]:
 	var results: Array[GemData] = []
-	var search_lower = name.to_lower()
+	var search_lower = gem_name.to_lower()
 	
 	for gem in _gems.values():
 		if gem.item_name.to_lower().contains(search_lower):

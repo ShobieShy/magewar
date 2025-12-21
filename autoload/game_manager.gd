@@ -264,9 +264,9 @@ func get_all_player_ids() -> Array:
 	return players.keys()
 
 
-func set_player_ready(peer_id: int, ready: bool) -> void:
+func set_player_ready(peer_id: int, is_ready: bool) -> void:
 	if players.has(peer_id):
-		players[peer_id].is_ready = ready
+		players[peer_id].is_ready = is_ready
 
 
 func are_all_players_ready() -> bool:
