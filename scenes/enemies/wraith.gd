@@ -491,15 +491,20 @@ func _use_dimensional_shift() -> void:
 	# Become invisible
 	_enter_invisibility()
 	
+	# NOTE: Shadow copy summoning disabled - wraith_shadow_copy.tscn was removed
+	# TODO: Implement proper shadow copy system if needed in future
+	# For now, dimensional shift focuses on phasing and invisibility
+	# Uncomment below when shadow copy scene is properly implemented
+	#
 	# Summon shadow copies
-	for i in range(2):
-		var copy = preload("res://scenes/enemies/wraith_shadow_copy.tscn").instantiate()
-		get_tree().current_scene.add_child(copy)
-		
-		var offset_angle = deg_to_rad(120 * (i + 1))
-		var offset = Vector3(cos(offset_angle) * 3, 0, sin(offset_angle) * 3)
-		copy.global_position = global_position + offset
-		copy.setup(current_target, 10.0)  # Copies last 10 seconds
+	#for i in range(2):
+	#	var copy = preload("res://scenes/enemies/wraith_shadow_copy.tscn").instantiate()
+	#	get_tree().current_scene.add_child(copy)
+	#	
+	#	var offset_angle = deg_to_rad(120 * (i + 1))
+	#	var offset = Vector3(cos(offset_angle) * 3, 0, sin(offset_angle) * 3)
+	#	copy.global_position = global_position + offset
+	#	copy.setup(current_target, 10.0)  # Copies last 10 seconds
 
 # =============================================================================
 # SMART DODGING
