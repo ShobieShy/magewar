@@ -29,7 +29,7 @@ var materials_capacity: int = 50  # Max unique material types
 
 # Transaction system for preventing duplication during drag-drop
 var _transaction_counter: int = 0
-var _pending_transactions: Dictionary = {}  # transaction_id -> {source_slot, target_slot, item_id}
+# var _pending_transactions: Dictionary = {}  # Unused - reserved for transaction tracking
 
 # =============================================================================
 # BUILT-IN CALLBACKS
@@ -48,9 +48,9 @@ func _ready() -> void:
 # INITIALIZATION
 # =============================================================================
 
-func initialize(owner: Node) -> void:
-	owner_node = owner
-	stats_component = owner.get_node_or_null("StatsComponent")
+func initialize(player_owner: Node) -> void:
+	owner_node = player_owner
+	stats_component = player_owner.get_node_or_null("StatsComponent")
 
 # =============================================================================
 # INVENTORY OPERATIONS
@@ -505,7 +505,7 @@ func load_save_data(data: Dictionary, item_database: Dictionary) -> void:
 	# Load equipment
 	if data.has("equipment"):
 		for slot_str in data.equipment.keys():
-			var slot = int(slot_str)
+			var _slot = int(slot_str)  # slot index from save data (for future use)
 			var item_id = data.equipment[slot_str]
 			if item_database.has(item_id):
 				var item = item_database[item_id].duplicate_item()

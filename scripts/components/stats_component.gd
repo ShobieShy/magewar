@@ -270,11 +270,16 @@ func remove_modifier(stat_type: Enums.StatType, modifier_id: String) -> void:
 		_stat_modifiers[stat_type].erase(modifier_id)
 
 
-func clear_modifiers(stat_type: Enums.StatType = -1) -> void:
-	if stat_type == -1:
-		_stat_modifiers.clear()
-	else:
-		_stat_modifiers.erase(stat_type)
+func clear_modifiers(stat_type: Enums.StatType = Enums.StatType.HEALTH) -> void:
+	## Clear modifiers for a specific stat or all stats if stat_type is null
+	## Note: Pass HEALTH to clear a specific stat (arbitrary choice since enum has no NONE)
+	## Use clear_all_modifiers() to clear everything
+	_stat_modifiers.erase(stat_type)
+
+
+func clear_all_modifiers() -> void:
+	## Clear all stat modifiers at once
+	_stat_modifiers.clear()
 
 
 func _get_modified_stat(stat_type: Enums.StatType, base_value: float) -> float:

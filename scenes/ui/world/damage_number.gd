@@ -147,7 +147,7 @@ func _get_color() -> Color:
 
 static func spawn(
 	parent: Node,
-	position: Vector3,
+	spawn_position: Vector3,
 	damage: float,
 	critical: bool = false,
 	heal: bool = false,
@@ -158,7 +158,7 @@ static func spawn(
 	number.is_critical = critical
 	number.is_heal = heal
 	number.damage_element = element
-	number.global_position = position
+	number.global_position = spawn_position
 	
 	parent.add_child(number)
 	return number

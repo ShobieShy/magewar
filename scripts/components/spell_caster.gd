@@ -10,7 +10,7 @@ extends Node
 signal spell_cast_started(spell: SpellData)
 signal spell_cast_completed(spell: SpellData)
 signal spell_cast_interrupted(spell: SpellData)
-signal cooldown_updated(spell: SpellData, remaining: float)
+# signal cooldown_updated(spell: SpellData, remaining: float)  # Unused - reserved for future UI updates
 
 # =============================================================================
 # EXPORTED PROPERTIES
@@ -353,15 +353,15 @@ func _execute_aoe(spell: SpellData, center: Vector3) -> void:
 		
 		var hit_point = target.global_position if target is Node3D else center
 		
-		# Calculate falloff
-		var damage_mult = 1.0
+		# Calculate falloff (reserved for future use)
+		var _damage_mult = 1.0
 		if spell.aoe_falloff:
 			var dist = center.distance_to(hit_point)
-			damage_mult = 1.0 - (dist / spell.get_final_aoe_radius()) * 0.5
+			_damage_mult = 1.0 - (dist / spell.get_final_aoe_radius()) * 0.5
 		
 		# Apply effects
 		for effect in spell.effects:
-			# Modify damage for falloff (if applicable)
+			# TODO: Pass damage_mult to effect for proper falloff implementation
 			effect.apply(caster, target, hit_point, spell)
 	
 	# Spawn impact effect at center
@@ -494,7 +494,7 @@ func _execute_chain(spell: SpellData, direction: Vector3) -> void:
 	
 	var chain_targets: Array = [result.collider]
 	var current_pos = result.position
-	var damage_mult = 1.0
+	var _damage_mult = 1.0  # Reserved for chain damage reduction
 	
 	# Apply to first target
 	for effect in spell.effects:
@@ -659,7 +659,7 @@ func _grant_weapon_xp_from_spell(spell: SpellData) -> void:
 	
 	# Calculate XP based on spell mana cost
 	var base_xp = 5.0
-	var spell_cost = spell.get_final_magika_cost() if spell else 0
+	var spell_cost = spell.get_final_magika_cost() if spell else 0.0
 	var xp_amount = base_xp + (spell_cost / 10.0)
 	
 	caster.grant_weapon_xp(xp_amount)

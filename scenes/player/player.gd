@@ -4,7 +4,7 @@ class_name Player
 extends CharacterBody3D
 
 # Preload needed systems
-const InventorySystem = preload("res://scripts/systems/inventory_system.gd")
+const InventorySystemClass = preload("res://scripts/systems/inventory_system.gd")
 
 # =============================================================================
 # SIGNALS
@@ -135,7 +135,7 @@ func _process(delta: float) -> void:
 	
 	# Initialize inventory system if needed
 	if _inventory_system == null:
-		_inventory_system = InventorySystem.new()
+		_inventory_system = InventorySystemClass.new()
 		_inventory_system.initialize(self)
 		add_child(_inventory_system)
 

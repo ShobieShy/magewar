@@ -445,7 +445,7 @@ func _handle_equip_drop(source: ItemSlot, target: ItemSlot) -> void:
 				_inventory_system.equip_item(item_to_equip, source.slot_index)
 
 
-func _handle_unequip_drop(source: ItemSlot, target: ItemSlot) -> void:
+func _handle_unequip_drop(source: ItemSlot, _target: ItemSlot) -> void:
 	_inventory_system.unequip_to_inventory(source.slot_type)
 
 

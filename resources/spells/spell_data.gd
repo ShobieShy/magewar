@@ -22,7 +22,7 @@ extends Resource
 
 @export_group("Delivery")
 @export var delivery_type: Enums.SpellDelivery = Enums.SpellDelivery.PROJECTILE
-@export var range: float = 50.0
+@export var spell_range: float = 50.0
 @export var target_type: Enums.TargetType = Enums.TargetType.ENEMY
 
 @export_subgroup("Projectile Settings")
@@ -83,7 +83,7 @@ func get_final_cooldown() -> float:
 
 
 func get_final_range() -> float:
-	return range * range_multiplier
+	return spell_range * range_multiplier
 
 
 func get_final_aoe_radius() -> float:
