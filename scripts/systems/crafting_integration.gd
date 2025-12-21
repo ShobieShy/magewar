@@ -33,7 +33,7 @@ func initialize(assembly_ui_control: Control) -> void:
 		assembly_ui.item_crafted.connect(_on_assembly_item_crafted)
 
 ## Handle Assembly UI crafting request
-func _on_assembly_item_crafted(item_type: String) -> void:
+func _on_assembly_item_crafted(_item_type: String) -> void:
 	if not assembly_ui:
 		return
 	

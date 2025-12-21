@@ -224,13 +224,68 @@ func _create_controls_tab() -> void:
 	_tab_container.add_child(scroll)
 	
 	var vbox = VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 8)
+	vbox.add_theme_constant_override("separation", 12)
 	scroll.add_child(vbox)
 	
-	var info = Label.new()
-	info.text = "Control remapping coming in future update.\n\nCurrent controls:\n\nMovement: WASD\nJump: Space\nCrouch: Ctrl\nSprint: Shift\nInteract: E\n\nCombat:\nPrimary Fire: Left Click\nSecondary Fire: Right Click\nInventory: I\nSkills: K\nQuests: Q"
-	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	vbox.add_child(info)
+	# Title
+	var title = Label.new()
+	title.text = "Control Remapping"
+	title.add_theme_font_size_override("font_size", 16)
+	vbox.add_child(title)
+	
+	var note = Label.new()
+	note.text = "Control remapping coming in future update."
+	note.add_theme_font_size_override("font_size", 12)
+	note.modulate = Color(0.8, 0.8, 0.8, 1)
+	vbox.add_child(note)
+	
+	# Movement section
+	_add_controls_section(vbox, "Movement", [
+		["WASD", "Move Forward/Back/Left/Right"],
+		["Space", "Jump"],
+		["Ctrl", "Crouch"],
+		["Shift", "Sprint"],
+		["E", "Interact"]
+	])
+	
+	# Combat section
+	_add_controls_section(vbox, "Combat", [
+		["Left Click", "Primary Fire"],
+		["Right Click", "Secondary Fire"],
+		["I", "Inventory"],
+		["K", "Skills"],
+		["Q", "Quests"]
+	])
+
+
+func _add_controls_section(parent: VBoxContainer, section_title: String, controls: Array) -> void:
+	"""Add a section of controls with keybind and description."""
+	# Section title
+	var section_label = Label.new()
+	section_label.text = section_title
+	section_label.add_theme_font_size_override("font_size", 14)
+	section_label.modulate = Color(0.8, 0.8, 1, 1)
+	parent.add_child(section_label)
+	
+	# Add each control as a key-value pair
+	for control in controls:
+		var hbox = HBoxContainer.new()
+		hbox.add_theme_constant_override("separation", 16)
+		parent.add_child(hbox)
+		
+		# Key/Button
+		var key_label = Label.new()
+		key_label.text = control[0]
+		key_label.add_theme_font_size_override("font_size", 12)
+		key_label.custom_minimum_size = Vector2(120, 0)
+		key_label.modulate = Color(1, 1, 0.8, 1)
+		hbox.add_child(key_label)
+		
+		# Description
+		var desc_label = Label.new()
+		desc_label.text = control[1]
+		desc_label.add_theme_font_size_override("font_size", 12)
+		hbox.add_child(desc_label)
 
 
 func _create_slider_option(label_text: String, node_name: String) -> Control:

@@ -38,36 +38,50 @@ signal stat_depleted(stat_type: Enums.StatType)
 # =============================================================================
 
 var current_health: float = 0.0:
+	get:
+		return _current_health
 	set(value):
-		var old_value = current_health
-		current_health = clampf(value, 0.0, max_health)
-		if current_health != old_value:
-			health_changed.emit(current_health, max_health)
-			if current_health <= 0.0 and old_value > 0.0:
+		var old_value = _current_health
+		_current_health = clampf(value, 0.0, max_health)
+		if _current_health != old_value:
+			health_changed.emit(_current_health, max_health)
+			if _current_health <= 0.0 and old_value > 0.0:
 				died.emit()
 
 var current_magika: float = 0.0:
+	get:
+		return _current_magika
 	set(value):
-		var old_value = current_magika
-		current_magika = clampf(value, 0.0, max_magika)
-		if current_magika != old_value:
-			magika_changed.emit(current_magika, max_magika)
+		var old_value = _current_magika
+		_current_magika = clampf(value, 0.0, max_magika)
+		if _current_magika != old_value:
+			magika_changed.emit(_current_magika, max_magika)
 
 var current_stamina: float = 0.0:
+	get:
+		return _current_stamina
 	set(value):
-		var old_value = current_stamina
-		current_stamina = clampf(value, 0.0, max_stamina)
-		if current_stamina != old_value:
-			stamina_changed.emit(current_stamina, max_stamina)
-			if current_stamina <= 0.0 and old_value > 0.0:
+		var old_value = _current_stamina
+		_current_stamina = clampf(value, 0.0, max_stamina)
+		if _current_stamina != old_value:
+			stamina_changed.emit(_current_stamina, max_stamina)
+			if _current_stamina <= 0.0 and old_value > 0.0:
 				stat_depleted.emit(Enums.StatType.STAMINA)
 
 var is_dead: bool = false
+
+# Backing variables for properties
+var _current_health: float = 0.0
+var _current_magika: float = 0.0
+var _current_stamina: float = 0.0
 
 # Regen timers
 var _health_regen_timer: float = 0.0
 var _magika_regen_timer: float = 0.0
 var _stamina_regen_timer: float = 0.0
+
+# Track time since last damage for regeneration mechanics
+var time_since_last_damage: float = 0.0
 
 # Stat modifiers (from buffs, equipment, etc.)
 var _stat_modifiers: Dictionary = {}
@@ -122,6 +136,9 @@ func initialize_from_data(data: Dictionary) -> void:
 # =============================================================================
 
 func _process_regeneration(delta: float) -> void:
+	# Track time since last damage
+	time_since_last_damage += delta
+	
 	# Health regeneration
 	if _health_regen_timer <= 0.0 and current_health < max_health:
 		current_health += _get_modified_stat(Enums.StatType.HEALTH_REGEN, health_regen_rate) * delta
@@ -156,6 +173,7 @@ func take_damage(amount: float, damage_type: Enums.DamageType = Enums.DamageType
 	
 	current_health -= actual_damage
 	_health_regen_timer = health_regen_delay
+	time_since_last_damage = 0.0  # Reset damage timer
 	
 	if current_health <= 0.0:
 		is_dead = true

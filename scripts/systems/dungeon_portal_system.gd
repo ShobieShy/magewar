@@ -266,7 +266,7 @@ func _load_discovered_portals() -> void:
 # SIGNAL CALLBACKS
 # =============================================================================
 
-func _on_portal_entered(player: Node, portal: DungeonPortal) -> void:
+func _on_portal_entered(_player: Node, portal: DungeonPortal) -> void:
 	"""Handle player entering a portal"""
 	if portal.portal_type == DungeonPortal.PortalType.ENTRANCE:
 		enter_dungeon(portal.dungeon_id, portal)

@@ -184,16 +184,16 @@ func _on_back_pressed() -> void:
 # NETWORK CALLBACKS
 # =============================================================================
 
-func _on_steam_initialized(success: bool) -> void:
+func _on_steam_initialized(_success: bool) -> void:
 	_update_steam_status()
 
 
-func _on_lobby_created(lobby_id: int, result: int) -> void:
+func _on_lobby_created(_lobby_id: int, result: int) -> void:
 	if result == 1:  # Success
 		_show_lobby()
 
 
-func _on_lobby_joined(lobby_id: int, result: int) -> void:
+func _on_lobby_joined(_lobby_id: int, result: int) -> void:
 	if result == 1:  # Success
 		_show_lobby()
 
@@ -212,12 +212,12 @@ func _on_lobby_chat_update(_lobby_id: int, _changed_id: int, _making_change_id: 
 	_update_player_list()
 
 
-func _on_player_connected(peer_id: int) -> void:
+func _on_player_connected(_peer_id: int) -> void:
 	_update_player_list()
 	_update_lobby_buttons()
 
 
-func _on_player_disconnected(peer_id: int) -> void:
+func _on_player_disconnected(_peer_id: int) -> void:
 	_update_player_list()
 	_update_lobby_buttons()
 

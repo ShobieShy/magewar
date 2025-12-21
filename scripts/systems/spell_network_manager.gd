@@ -553,7 +553,7 @@ func _calculate_spell_cast_error(predicted: Dictionary, actual: Dictionary) -> D
 		"timing_error": abs(predicted.timestamp - actual.get("timestamp", 0.0))
 	}
 
-func _adjust_prediction_parameters(error: Dictionary) -> void:
+func _adjust_prediction_parameters(_error: Dictionary) -> void:
 	"""Adjust prediction parameters based on errors"""
 	# This could adjust network update rates, interpolation, etc.
 	# For now, just track errors for debugging

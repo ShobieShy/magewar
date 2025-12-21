@@ -59,8 +59,10 @@ func _physics_process(delta: float) -> void:
 	if homing_strength > 0.0:
 		_update_homing(delta)
 	
-	# Move projectile
-	global_position += _velocity * delta
+	# Move projectile with collision detection
+	var new_position = global_position + _velocity * delta
+	_check_collision_during_movement(global_position, new_position)
+	global_position = new_position
 	
 	# Update rotation to match velocity
 	if _velocity.length_squared() > 0.01:
@@ -100,6 +102,39 @@ func initialize(config: Dictionary) -> void:
 	# Apply visual based on spell element if available
 	if spell:
 		_apply_element_visual(spell.element)
+
+
+func _check_collision_during_movement(from_pos: Vector3, to_pos: Vector3) -> void:
+	"""Check for collisions while moving from from_pos to to_pos"""
+	var space_state = get_world_3d().direct_space_state
+	if not space_state:
+		return
+	
+	# Check the end position
+	_check_collision_at_position(space_state, to_pos)
+	
+	# Also check the current position to catch fast-moving projectiles
+	_check_collision_at_position(space_state, global_position)
+
+
+func _check_collision_at_position(space_state: PhysicsDirectSpaceState3D, pos: Vector3) -> void:
+	"""Check for collisions at a specific position"""
+	# Create shape query to detect objects at the given position
+	var shape = SphereShape3D.new()
+	shape.radius = 0.3  # Projectile collision radius
+	
+	var query = PhysicsShapeQueryParameters3D.new()
+	query.shape = shape
+	query.transform = Transform3D(Basis.IDENTITY, pos)
+	query.collision_mask = collision_mask
+	
+	var results = space_state.intersect_shape(query)
+	
+	# Check all collisions found
+	for result in results:
+		var target = result.collider
+		if target and target != self:  # Don't hit ourselves
+			_handle_hit(target)
 
 
 func _apply_element_visual(element: Enums.Element) -> void:
@@ -214,23 +249,7 @@ func _handle_hit(target: Node) -> void:
 	if is_enemy or is_player:
 		_hit_targets.append(target)
 		
-		# Apply damage if target has StatsComponent
-		if target.has_node("StatsComponent"):
-			var stats = target.get_node("StatsComponent")
-			if spell:
-				var damage = spell.damage
-				# Apply caster's spell power if available
-				if caster and caster.has_method("get_spell_power"):
-					damage *= caster.get_spell_power()
-				
-				# Determine damage type based on element
-				var damage_type = Enums.DamageType.MAGICAL
-				if spell.element != Enums.Element.NONE:
-					damage_type = Enums.DamageType.ELEMENTAL
-				
-				stats.take_damage(damage, damage_type)
-		
-		# Apply additional effects
+		# Apply spell effects (including damage)
 		for effect in effects:
 			if effect and effect.has_method("apply"):
 				effect.apply(caster, target, global_position, spell)
@@ -261,7 +280,7 @@ func _bounce(surface: Node) -> void:
 	global_position += surface_normal * 0.1
 
 
-func _get_surface_normal(surface: Node) -> Vector3:
+func _get_surface_normal(_surface: Node) -> Vector3:
 	## Determine surface normal using raycast
 	var space_state = get_world_3d().direct_space_state
 	var from_pos = global_position

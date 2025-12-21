@@ -137,7 +137,7 @@ func _attempt_attack() -> void:
 		_attack_timer = attack_cooldown
 
 
-func _maintain_formation_attack(delta: float) -> void:
+func _maintain_formation_attack(_delta: float) -> void:
 	"""Attack while maintaining formation with group"""
 	# Calculate formation position relative to commander
 	var formation_positions = skeleton_data.get_formation_positions(
@@ -226,7 +226,7 @@ func _use_rally_cry() -> void:
 # AI BEHAVIOR
 # =============================================================================
 
-func _process_chase(delta: float) -> void:
+func _process_chase(_delta: float) -> void:
 	"""Chase behavior with formation support"""
 	if not current_target:
 		_change_state(Enums.AIState.IDLE)

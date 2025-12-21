@@ -84,7 +84,7 @@ func _setup_exit() -> void:
 # QUEST BOARD
 # =============================================================================
 
-func _on_quest_board_interacted(player: Node) -> void:
+func _on_quest_board_interacted(_player: Node) -> void:
 	quest_board_accessed.emit()
 	_open_quest_board()
 

@@ -144,7 +144,7 @@ func _should_attempt_flanking() -> bool:
 	return false
 
 
-func _attempt_flanking_maneuver(delta: float) -> void:
+func _attempt_flanking_maneuver(_delta: float) -> void:
 	"""Execute flanking tactic"""
 	if not current_target:
 		return
@@ -217,7 +217,7 @@ func _use_elemental_bolt() -> void:
 # AI BEHAVIOR
 # =============================================================================
 
-func _process_chase(delta: float) -> void:
+func _process_chase(_delta: float) -> void:
 	"""Chase behavior with group tactics"""
 	if not current_target:
 		_change_state(Enums.AIState.IDLE)
@@ -248,7 +248,7 @@ func _process_chase(delta: float) -> void:
 		_change_state(Enums.AIState.ATTACK)
 
 
-func _process_flee(delta: float) -> void:
+func _process_flee(_delta: float) -> void:
 	"""Flee behavior"""
 	if not current_target:
 		_change_state(Enums.AIState.IDLE)

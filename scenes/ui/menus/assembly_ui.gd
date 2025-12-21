@@ -294,7 +294,7 @@ func _create_gem_slot(index: int) -> ItemSlot:
 	return slot
 
 
-func _on_gem_slot_dropped(slot: ItemSlot, data: Variant, index: int) -> void:
+func _on_gem_slot_dropped(_slot: ItemSlot, data: Variant, index: int) -> void:
 	if data is Dictionary and data.has("item"):
 		var item = data.item
 		if item is GemData:
@@ -787,7 +787,7 @@ func _on_assembly_slot_clicked(slot: ItemSlot, button: int, part_type: Enums.Sta
 		_update_preview()
 
 
-func _on_assembly_slot_dropped(slot: ItemSlot, data: Variant, part_type: Enums.StaffPart) -> void:
+func _on_assembly_slot_dropped(_slot: ItemSlot, data: Variant, part_type: Enums.StaffPart) -> void:
 	if data is Dictionary and data.has("item"):
 		var item = data.item
 		if item is StaffPartData:

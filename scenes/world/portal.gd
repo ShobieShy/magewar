@@ -117,7 +117,7 @@ func _perform_interaction(player: Node) -> void:
 	_open_travel_menu(player)
 
 
-func _open_travel_menu(player: Node) -> void:
+func _open_travel_menu(_player: Node) -> void:
 	## Opens the fast travel destination selection UI
 	var game = get_tree().current_scene
 	

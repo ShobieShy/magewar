@@ -27,7 +27,7 @@ func _init() -> void:
 # EFFECT APPLICATION
 # =============================================================================
 
-func apply(caster: Node, target: Node, hit_point: Vector3, spell_data: SpellData = null) -> void:
+func apply(caster: Node, target: Node, hit_point: Vector3, _spell_data: SpellData = null) -> void:
 	if not can_affect_target(caster, target):
 		return
 	

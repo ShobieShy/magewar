@@ -174,7 +174,8 @@ func _setup_visual_effects() -> void:
 	var beam_mesh = MeshInstance3D.new()
 	var cylinder = CylinderMesh.new()
 	cylinder.height = 1.0
-	cylinder.radius = 0.05
+	cylinder.top_radius = 0.05
+	cylinder.bottom_radius = 0.05
 	beam_mesh.mesh = cylinder
 	var beam_material = StandardMaterial3D.new()
 	beam_material.albedo_color = Color(0.8, 0.2, 0.8, 0.8)

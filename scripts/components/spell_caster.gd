@@ -233,7 +233,7 @@ func _execute_hitscan(spell: SpellData, direction: Vector3) -> void:
 		_spawn_impact(spell, hit_point, hit_normal)
 
 
-func _execute_projectile(spell: SpellData, aim_point: Vector3, direction: Vector3) -> void:
+func _execute_projectile(spell: SpellData, _aim_point: Vector3, direction: Vector3) -> void:
 	var caster = get_parent()
 	var start_pos = projectile_spawn_point.global_position if projectile_spawn_point else caster.global_position
 

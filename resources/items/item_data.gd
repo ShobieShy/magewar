@@ -61,7 +61,7 @@ func can_use() -> bool:
 	return false
 
 
-func use(user: Node) -> bool:
+func use(_user: Node) -> bool:
 	## Override in subclasses
 	return false
 

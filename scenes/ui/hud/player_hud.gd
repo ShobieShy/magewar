@@ -62,7 +62,7 @@ func _ready() -> void:
 	QuestManager.quest_started.connect(_on_quest_tracker_changed)
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if stats:
 		_update_stat_bars()
 	
@@ -220,7 +220,7 @@ func set_crosshair_color(color: Color) -> void:
 		dot.color = color
 
 
-func expand_crosshair(amount: float = 1.5) -> void:
+func expand_crosshair(_amount: float = 1.5) -> void:
 	var dot = crosshair.get_node_or_null("CrosshairDot")
 	if dot:
 		var tween = create_tween()
@@ -263,7 +263,7 @@ func _update_gold_display() -> void:
 		_gold_label.text = str(SaveManager.get_gold())
 
 
-func _on_gold_changed(new_amount: int, delta: int) -> void:
+func _on_gold_changed(_new_amount: int, delta: int) -> void:
 	_update_gold_display()
 	
 	# Flash gold color based on gain/loss

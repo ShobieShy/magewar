@@ -185,10 +185,14 @@ func _process_regeneration(delta: float) -> void:
 			
 			# Visual feedback for regeneration
 			if has_node("MeshInstance3D"):
-				var tween = create_tween()
 				var mesh = $MeshInstance3D
-				tween.tween_property(mesh, "modulate", Color.GREEN, 0.2)
-				tween.tween_property(mesh, "modulate", Color.WHITE, 0.3)
+				var material = mesh.get_surface_override_material(0)
+				if material:
+					var mat = material.duplicate()
+					var tween = create_tween()
+					tween.tween_property(mat, "albedo_color", Color.GREEN, 0.2)
+					tween.tween_property(mat, "albedo_color", Color(0.4, 0.3, 0.2, 1), 0.3)
+					mesh.set_surface_override_material(0, mat)
 
 # =============================================================================
 # RAGE MODE

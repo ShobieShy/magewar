@@ -448,7 +448,7 @@ func _on_skill_unlocked(_skill: SkillData) -> void:
 		_update_details()
 
 
-func _on_skill_points_changed(new_amount: int) -> void:
+func _on_skill_points_changed(_new_amount: int) -> void:
 	_update_points_display()
 	_refresh_skill_states()
 	if _selected_skill:

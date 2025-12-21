@@ -1,7 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://cvqn3h8x2m7pk"]
+[gd_scene load_steps=7 format=3 uid="uid://cvqn3h8x2m7pk"]
 
 [ext_resource type="Script" path="res://scenes/enemies/enemy_base.gd" id="1_enemy"]
 [ext_resource type="Script" path="res://scripts/components/stats_component.gd" id="2_stats"]
+[ext_resource type="Script" path="res://scripts/components/health_bar_3d.gd" id="3_healthbar"]
+[ext_resource type="Script" path="res://scripts/components/name_plate.gd" id="4_nameplate"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
 radius = 0.5
@@ -21,7 +23,7 @@ radius = 15.0
 radius = 2.0
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_1"]
-viewport_path = NodePath("../SubViewport")
+viewport_path = NodePath("HealthBar3D/SubViewport")
 
 [node name="EnemyBase" type="CharacterBody3D" groups=["enemies"]]
 collision_layer = 4
@@ -62,18 +64,26 @@ shape = SubResource("SphereShape3D_2")
 
 [node name="HealthBar3D" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+script = ExtResource("3_healthbar")
 
 [node name="SubViewport" type="SubViewport" parent="HealthBar3D"]
 transparent_bg = true
 size = Vector2i(100, 10)
+render_target_update_mode = 3
 
 [node name="ProgressBar" type="ProgressBar" parent="HealthBar3D/SubViewport"]
 offset_right = 100.0
 offset_bottom = 10.0
+min_value = 0.0
+max_value = 100.0
 value = 100.0
 show_percentage = false
 
 [node name="Sprite3D" type="Sprite3D" parent="HealthBar3D"]
 pixel_size = 0.01
 billboard = 1
+centered = true
 texture = SubResource("ViewportTexture_1")
+
+[node name="NamePlate" type="Node3D" parent="."]
+script = ExtResource("4_nameplate")

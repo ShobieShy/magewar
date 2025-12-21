@@ -35,7 +35,7 @@ func _init() -> void:
 # EFFECT APPLICATION
 # =============================================================================
 
-func apply(caster: Node, target: Node, hit_point: Vector3, spell_data: SpellData) -> void:
+func apply(caster: Node, target: Node, hit_point: Vector3, _spell_data: SpellData) -> void:
 	if not can_affect_target(caster, target):
 		return
 	
@@ -74,7 +74,7 @@ func _apply_pull(caster: Node, target: Node, hit_point: Vector3) -> void:
 		target.velocity += direction * force
 
 
-func _apply_teleport(caster: Node, target: Node, hit_point: Vector3) -> void:
+func _apply_teleport(_caster: Node, target: Node, hit_point: Vector3) -> void:
 	if target is Node3D:
 		if teleport_to_cursor and hit_point != Vector3.ZERO:
 			# Teleport to aimed location
@@ -90,7 +90,7 @@ func _apply_launch(target: Node) -> void:
 		target.velocity.y = force
 
 
-func _apply_dash(caster: Node, target: Node) -> void:
+func _apply_dash(_caster: Node, target: Node) -> void:
 	if target is CharacterBody3D:
 		var direction = -target.global_transform.basis.z
 		target.velocity += direction * force

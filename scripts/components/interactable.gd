@@ -146,7 +146,7 @@ func _hide_interact_prompt(player: Node) -> void:
 		hud.hide_interact_prompt()
 
 
-func _get_player_hud(player: Node) -> Node:
+func _get_player_hud(_player: Node) -> Node:
 	# Try to find HUD in the scene
 	var game = get_tree().current_scene
 	if game:

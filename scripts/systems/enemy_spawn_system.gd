@@ -322,7 +322,7 @@ func despawn_enemy(enemy: Node) -> void:
 # PATROL SYSTEM
 # =============================================================================
 
-func update_patrol_routes(delta: float) -> void:
+func update_patrol_routes(_delta: float) -> void:
 	"""Update patrol route assignments"""
 	# Assign patrols to enemies that don't have them
 	for enemy in active_enemies:

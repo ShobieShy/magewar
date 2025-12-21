@@ -30,7 +30,7 @@ func _init() -> void:
 # EFFECT APPLICATION
 # =============================================================================
 
-func apply(caster: Node, target: Node, hit_point: Vector3, spell_data: SpellData) -> void:
+func apply(caster: Node, _target: Node, hit_point: Vector3, _spell_data: SpellData) -> void:
 	if summon_scene == null:
 		push_error("SummonEffect: No summon_scene assigned")
 		return

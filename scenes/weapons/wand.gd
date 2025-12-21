@@ -49,7 +49,7 @@ func _ready() -> void:
 	_recompute_stats()
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if owner_player and owner_player.is_local_player:
 		_handle_input()
 

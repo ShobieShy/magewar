@@ -85,6 +85,11 @@ func _ready() -> void:
 	if navigation:
 		navigation.velocity_computed.connect(_on_velocity_computed)
 		navigation.target_reached.connect(_on_target_reached)
+	
+	# Set up name plate
+	var name_plate = get_node_or_null("NamePlate")
+	if name_plate:
+		name_plate.set_name_plate_text(enemy_name)
 
 
 func _physics_process(delta: float) -> void:
@@ -131,7 +136,7 @@ func _process_idle(delta: float) -> void:
 			_change_state(Enums.AIState.PATROL)
 
 
-func _process_patrol(delta: float) -> void:
+func _process_patrol(_delta: float) -> void:
 	if current_target:
 		_change_state(Enums.AIState.CHASE)
 		return
@@ -159,7 +164,7 @@ func _process_patrol(delta: float) -> void:
 		look_at(global_position + direction)
 
 
-func _process_chase(delta: float) -> void:
+func _process_chase(_delta: float) -> void:
 	if current_target == null or not is_instance_valid(current_target):
 		current_target = null
 		_change_state(Enums.AIState.IDLE)
@@ -222,7 +227,7 @@ func _process_attack(delta: float) -> void:
 		_attack_timer = attack_cooldown
 
 
-func _process_flee(delta: float) -> void:
+func _process_flee(_delta: float) -> void:
 	if current_target == null:
 		_change_state(Enums.AIState.IDLE)
 		return
@@ -236,7 +241,7 @@ func _process_flee(delta: float) -> void:
 
 
 func _change_state(new_state: Enums.AIState) -> void:
-	var old_state = ai_state
+	var _old_state = ai_state
 	ai_state = new_state
 	
 	# State enter logic

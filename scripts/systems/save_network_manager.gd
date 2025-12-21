@@ -128,7 +128,7 @@ func _release_save_lock(lock_key: String, notify: bool) -> void:
 		# Process next pending save
 		_process_next_pending_save(lock_key)
 
-func _check_expired_locks(delta: float) -> void:
+func _check_expired_locks(_delta: float) -> void:
 	"""Check for and clean up expired locks"""
 	var current_time = Time.get_unix_time_from_system()
 	var expired_locks = []

@@ -541,6 +541,6 @@ func _drop_item(slot: ItemSlot) -> void:
 # EVENT HANDLERS
 # =============================================================================
 
-func _on_gold_changed(new_amount: int, _delta: int) -> void:
+func _on_gold_changed(_new_amount: int, _delta: int) -> void:
 	if _is_open:
 		_refresh_gold()

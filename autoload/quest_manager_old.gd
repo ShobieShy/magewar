@@ -573,7 +573,7 @@ func _apply_progress_data(objective: QuestObjective, progress_data: Dictionary) 
 # CO-OP SHARING METHODS
 # =============================================================================
 
-func _process_coop_sharing(delta: float) -> void:
+func _process_coop_sharing(_delta: float) -> void:
 	## Handle co-op specific quest sharing logic
 	pass
 

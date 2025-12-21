@@ -26,7 +26,7 @@ extends Resource
 # VIRTUAL METHODS
 # =============================================================================
 
-func apply(caster: Node, target: Node, hit_point: Vector3, spell_data: SpellData) -> void:
+func apply(_caster: Node, _target: Node, _hit_point: Vector3, _spell_data: SpellData) -> void:
 	## Override in subclasses to implement effect logic
 	pass
 

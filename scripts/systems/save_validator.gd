@@ -199,7 +199,7 @@ func compare_saves(save1: Dictionary, save2: Dictionary) -> Dictionary:
 # PRIVATE METHODS
 # =============================================================================
 
-func _validate_field(field_name: String, value: Variant, schema: Dictionary) -> Dictionary:
+func _validate_field(_field_name: String, value: Variant, schema: Dictionary) -> Dictionary:
 	"""Validate a single field against its schema."""
 	var result = {"valid": true, "error": ""}
 	

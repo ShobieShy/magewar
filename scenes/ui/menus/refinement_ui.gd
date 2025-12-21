@@ -220,14 +220,14 @@ func _on_cancel_pressed() -> void:
 	refinement_cancelled.emit()
 	close_refinement()
 
-func _on_recovery_toggled(enabled: bool) -> void:
+func _on_recovery_toggled(_enabled: bool) -> void:
 	_update_display()
 
 # =============================================================================
 # UTILITY
 # =============================================================================
 
-func _update_button_state(refinement_system: RefinementSystem, cost: Dictionary, gold_cost: int) -> void:
+func _update_button_state(_refinement_system: RefinementSystem, cost: Dictionary, gold_cost: int) -> void:
 	var can_afford_gold = player_gold >= gold_cost
 	var can_afford_materials = true
 	

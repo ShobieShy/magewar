@@ -38,7 +38,7 @@ func apply(caster: Node, target: Node, hit_point: Vector3, spell_data: SpellData
 	
 	# Calculate damage and check for crit
 	var is_crit = _roll_crit(caster)
-	var final_damage = calculate_damage(caster, target, is_crit)
+	var final_damage = calculate_damage(caster, target, is_crit, spell_data)
 	
 	# Apply damage
 	if target.has_node("StatsComponent"):
@@ -65,8 +65,12 @@ func _roll_crit(caster: Node) -> bool:
 	return randf() < crit_chance
 
 
-func calculate_damage(caster: Node, target: Node, is_crit: bool = false) -> float:
+func calculate_damage(caster: Node, target: Node, is_crit: bool = false, spell_data: SpellData = null) -> float:
 	var damage = base_damage
+	
+	# Apply spell's damage multiplier (from gems, weapon, etc.)
+	if spell_data:
+		damage *= spell_data.damage_multiplier
 	
 	# Apply variance
 	if damage_variance > 0.0:

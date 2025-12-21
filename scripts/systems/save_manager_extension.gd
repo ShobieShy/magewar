@@ -55,7 +55,7 @@ func get_gold() -> int:
 		return SaveManager.player_data.get("gold", 0)
 	return 0
 
-func has_item(item_id: String) -> bool:
+func has_item(_item_id: String) -> bool:
 	## Check if player has an item (simplified)
 	# This would integrate with InventorySystem
 	return false  # Placeholder

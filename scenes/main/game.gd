@@ -7,6 +7,9 @@ extends Node3D
 # =============================================================================
 
 const PLAYER_SCENE = preload("res://scenes/player/player.tscn")
+const PAUSE_MENU_SCENE = preload("res://scenes/ui/menus/pause_menu.tscn")
+const SETTINGS_MENU_SCRIPT = "res://scenes/ui/menus/settings_menu.gd"
+const MAIN_MENU_SCENE = "res://scenes/ui/menus/main_menu.tscn"
 
 # =============================================================================
 # NODE REFERENCES
@@ -22,6 +25,8 @@ const PLAYER_SCENE = preload("res://scenes/player/player.tscn")
 # =============================================================================
 
 var _spawn_index: int = 0
+var pause_menu: PauseMenu = null
+var settings_menu: Control = null
 
 # =============================================================================
 # BUILT-IN CALLBACKS
@@ -42,6 +47,9 @@ func _ready() -> void:
 		if peer_id != NetworkManager.local_peer_id:
 			_spawn_remote_player(peer_id)
 	
+	# Set up pause menu
+	_setup_pause_menu()
+	
 	# Capture mouse
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
@@ -55,12 +63,14 @@ func _exit_tree() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	# Release mouse on escape (handled by pause menu later)
-	if event.is_action_pressed("pause"):
-		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		else:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	# Toggle mouse capture on right-click (when not in pause menu)
+	# Left pause menu to handle escape key for pause/unpause
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+		if pause_menu == null or not pause_menu.is_paused():
+			if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+			else:
+				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 # =============================================================================
 # PLAYER SPAWNING
@@ -179,3 +189,70 @@ func _on_player_connected(peer_id: int) -> void:
 
 func _on_player_disconnected(peer_id: int) -> void:
 	_despawn_player(peer_id)
+
+# =============================================================================
+# PAUSE MENU
+# =============================================================================
+
+func _setup_pause_menu() -> void:
+	"""Create and set up the pause menu"""
+	pause_menu = PAUSE_MENU_SCENE.instantiate()
+	add_child(pause_menu)
+	
+	# Connect pause menu signals
+	pause_menu.resume_requested.connect(_on_pause_menu_resume)
+	pause_menu.join_requested.connect(_on_pause_menu_join)
+	pause_menu.settings_requested.connect(_on_pause_menu_settings)
+	pause_menu.quit_to_menu_requested.connect(_on_pause_menu_quit)
+
+
+func _on_pause_menu_resume() -> void:
+	"""Handle resume from pause menu"""
+	# Just show the pause menu, the game will resume automatically
+	pass
+
+
+func _on_pause_menu_join() -> void:
+	"""Handle join request from pause menu"""
+	# This would open a join/lobby UI
+	# For now, just a placeholder
+	if pause_menu:
+		pause_menu.resume()
+
+
+func _on_pause_menu_settings() -> void:
+	"""Handle settings request from pause menu"""
+	if settings_menu == null:
+		# Load and instantiate settings menu dynamically
+		var SettingsMenuScript = load(SETTINGS_MENU_SCRIPT)
+		if SettingsMenuScript:
+			settings_menu = SettingsMenuScript.new()
+			add_child(settings_menu)
+			settings_menu.settings_closed.connect(_on_settings_menu_closed)
+		else:
+			push_error("Failed to load settings menu script")
+			return
+	
+	# Show the settings menu
+	settings_menu.show()
+
+
+func _on_settings_menu_closed() -> void:
+	"""Handle settings menu closed"""
+	if settings_menu:
+		settings_menu.queue_free()
+		settings_menu = null
+	
+	# Show pause menu again
+	if pause_menu:
+		pause_menu.pause()
+
+
+func _on_pause_menu_quit() -> void:
+	"""Handle quit to menu request"""
+	# Unpause the game
+	get_tree().paused = false
+	
+	# Return to main menu
+	GameManager.current_state = Enums.GameState.MAIN_MENU
+	get_tree().change_scene_to_file(MAIN_MENU_SCENE)

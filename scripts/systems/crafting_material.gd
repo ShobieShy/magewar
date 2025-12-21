@@ -22,7 +22,7 @@ extends Resource
 # VALIDATION
 # =============================================================================
 
-func _validate_property(property: Dictionary) -> void:
+func _validate_property(_property: Dictionary) -> void:
 	# This method is called by Godot's inspector when validating properties
 	# In Godot 4.x, this is used to hide/show properties based on other properties
 	pass

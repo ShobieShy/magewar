@@ -454,7 +454,7 @@ func _on_storage_slot_clicked(slot: ItemSlot, button: int) -> void:
 		pass
 
 
-func _on_inventory_slot_dropped(slot: ItemSlot, data: Variant) -> void:
+func _on_inventory_slot_dropped(_slot: ItemSlot, data: Variant) -> void:
 	if data is Dictionary and data.has("source_slot"):
 		var source = data.source_slot as ItemSlot
 		# If dropped from storage, withdraw item
@@ -465,7 +465,7 @@ func _on_inventory_slot_dropped(slot: ItemSlot, data: Variant) -> void:
 				_update_storage_count()
 
 
-func _on_storage_slot_dropped(slot: ItemSlot, data: Variant) -> void:
+func _on_storage_slot_dropped(_slot: ItemSlot, data: Variant) -> void:
 	if data is Dictionary and data.has("source_slot"):
 		var source = data.source_slot as ItemSlot
 		# If dropped from inventory, deposit item

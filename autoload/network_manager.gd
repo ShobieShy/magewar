@@ -119,7 +119,7 @@ func _disconnect_steam() -> void:
 	SteamManager.leave_lobby()
 
 
-func _on_steam_lobby_created(lobby_id: int, result: int) -> void:
+func _on_steam_lobby_created(_lobby_id: int, result: int) -> void:
 	if result == 1:  # Steam.RESULT_OK
 		print("Steam lobby created, setting up as host")
 		local_peer_id = 1
@@ -138,7 +138,7 @@ func _on_steam_lobby_created(lobby_id: int, result: int) -> void:
 		push_error("Failed to create Steam lobby")
 
 
-func _on_steam_lobby_joined(lobby_id: int, result: int) -> void:
+func _on_steam_lobby_joined(_lobby_id: int, result: int) -> void:
 	if result == 1:  # Steam.RESULT_OK
 		print("Joined Steam lobby successfully")
 		connection_state = Enums.ConnectionState.CONNECTED

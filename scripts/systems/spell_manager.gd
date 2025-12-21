@@ -211,7 +211,7 @@ func notify_spell_cast_completed(spell_id: String, caster: Node, success: bool) 
 	"""Notify that a spell casting has completed (called by SpellCaster)"""
 	spell_cast_completed.emit(spell_id, caster, success)
 
-func get_spell_requirements(spell_id: String) -> Dictionary:
+func get_spell_requirements(_spell_id: String) -> Dictionary:
 	"""Get requirements to learn a spell"""
 	# This could be expanded with level requirements, prerequisite spells, etc.
 	return {
