@@ -66,14 +66,14 @@ enum ItemType {
 
 enum EquipmentSlot {
 	NONE,
-	HEAD,          ## Hat
-	BODY,          ## Clothes
-	BELT,          ## Belt
-	FEET,          ## Shoes
-	WEAPON_PRIMARY,   ## Staff
-	WEAPON_SECONDARY, ## Wand
-	GRIMOIRE,      ## Spell book
-	POTION         ## Quick-use potion
+	HEAD,            ## Hat
+	BODY,            ## Clothes
+	BELT,            ## Belt
+	FEET,            ## Shoes
+	PRIMARY_WEAPON,   ## Staff/Wand (primary weapon slot)
+	SECONDARY_WEAPON, ## Staff/Wand (secondary weapon slot)
+	GRIMOIRE,        ## Spell book
+	POTION           ## Quick-use potion
 }
 
 # =============================================================================
@@ -99,19 +99,13 @@ enum WandPart {
 # =============================================================================
 
 enum Element {
-	NONE,          ## Pure arcane
-	FIRE,          ## Burns, DoT
-	ICE,           ## Slows, freeze
-	LIGHTNING,     ## Chain, stun
-	EARTH,         ## Knockback, armor
-	WIND,          ## Speed, push
-	WATER,         ## Heal, cleanse
-	LIGHT,         ## Blind, holy damage
-	DARK,          ## Curse, life steal
-	SHADOW,        ## Stealth, shadow damage
-	HOLY,          ## Holy damage, undead weakness
-	ARCANE,        ## Raw magic damage
-	POISON         ## Poison damage, DoT
+	NONE = 0,      ## No element / neutral (for optional element fields)
+	FIRE,          ## Burns, DoT - strong against Air
+	WATER,         ## Slowing, cleanse - strong against Fire
+	EARTH,         ## Knockback, armor - strong against Water
+	AIR,           ## Speed, critical damage - strong against Earth
+	LIGHT,         ## Healing, summons - balanced vs Dark
+	DARK           ## Corruption, life steal - balanced vs Light
 }
 
 enum DamageType {
@@ -358,8 +352,8 @@ static func element_to_string(element: Element) -> String:
 			return "Water"
 		Element.EARTH:
 			return "Earth"
-		Element.WIND:
-			return "Wind"
+		Element.AIR:
+			return "Air"
 		Element.LIGHT:
 			return "Light"
 		Element.DARK:

@@ -655,3 +655,15 @@ func _on_auto_save_timeout() -> void:
 	if GameManager.current_state == Enums.GameState.PLAYING:
 		save_all()
 		print("Auto-save completed")
+
+# =============================================================================
+# CONVENIENCE ALIASES
+# =============================================================================
+
+## Convenience alias for save_all() - intuitive naming
+func save_game() -> void:
+	save_all()
+
+## Convenience alias for load_player_data() - intuitive naming
+func load_game() -> Dictionary:
+	return load_player_data()

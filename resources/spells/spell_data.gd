@@ -11,7 +11,7 @@ extends Resource
 @export var spell_name: String = "Unnamed Spell"
 @export var description: String = ""
 @export var icon: Texture2D
-@export var element: Enums.Element = Enums.Element.ARCANE
+@export var element: Enums.Element = Enums.Element.FIRE  ## Element (FIRE, WATER, EARTH, AIR, LIGHT, DARK)
 
 @export_group("Casting")
 @export var magika_cost: float = 10.0

@@ -128,13 +128,13 @@ func _get_color() -> Color:
 	match damage_element:
 		Enums.Element.FIRE:
 			return Color.ORANGE_RED
-		Enums.Element.ICE:
+		Enums.Element.WATER  # Ice:
 			return Color.CYAN
-		Enums.Element.LIGHTNING:
+		Enums.Element.AIR  # Lightning:
 			return Color.YELLOW
 		Enums.Element.EARTH:
 			return Color.SADDLE_BROWN
-		Enums.Element.WIND:
+		Enums.Element.AIR:
 			return Color.LIGHT_GREEN
 		Enums.Element.WATER:
 			return Color.DODGER_BLUE
@@ -142,7 +142,7 @@ func _get_color() -> Color:
 			return Color.WHITE
 		Enums.Element.DARK:
 			return Color.DARK_VIOLET
-		Enums.Element.ARCANE:
+		Enums.Element.FIRE:
 			return Color.MEDIUM_PURPLE
 		_:
 			return Color.WHITE

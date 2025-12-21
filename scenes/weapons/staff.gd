@@ -206,7 +206,7 @@ func _recompute_stats() -> void:
 		"stability": 0.0,
 		"accuracy": 0.0,
 		"effects": [],
-		"element": Enums.Element.ARCANE
+		"element": Enums.Element.FIRE  # (mapped from ARCANE)
 	}
 	
 	# Apply part stats and calculate average level
@@ -268,7 +268,7 @@ func _update_current_spell() -> void:
 			_current_spell.effects.append(effect)
 	
 	# Apply element if set
-	if _computed_stats.element != Enums.Element.ARCANE:
+	if _computed_stats.element != Enums.Element.FIRE:  # (mapped from ARCANE)
 		_current_spell.element = _computed_stats.element
 	
 	# Apply gem modifiers

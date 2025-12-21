@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/enemies/troll.tscn" id="5_troll"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/wraith.tscn" id="6_wraith"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/filth_slime.tscn" id="7_slime"]
+[ext_resource type="PackedScene" path="res://scenes/objects/loot_chest.tscn" id="8_chest"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -107,6 +108,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, 10)
 
 [node name="Slime" parent="Enemies" instance=ExtResource("7_slime")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 1, 10)
+
+[node name="Objects" type="Node3D" parent="."]
+
+[node name="LootChest" parent="Objects" instance=ExtResource("8_chest")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -8)
 
 [node name="HUD" type="CanvasLayer" parent="."]
 

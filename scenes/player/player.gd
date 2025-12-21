@@ -488,3 +488,31 @@ func grant_weapon_xp(amount: float) -> void:
 	# Pass through to weapon's leveling system if it exists
 	if current_weapon.has_method("gain_experience"):
 		current_weapon.gain_experience(amount)
+
+# =============================================================================
+# CONVENIENCE METHODS
+# =============================================================================
+
+## Get a player stat (delegates to StatsComponent)
+## Example: get_stat(Enums.StatType.HEALTH) -> returns current health value
+func get_stat(stat_type: int) -> float:
+	if stats and stats.has_method("get_stat"):
+		return stats.get_stat(stat_type)
+	return 0.0
+
+## Equip an item to a specific slot
+## Returns true if successful, false if equipment slot is invalid or item is wrong type
+func equip_item(item: ItemData, slot: int) -> void:
+	if _inventory_system and _inventory_system.has_method("equip_item"):
+		_inventory_system.equip_item(item, slot)
+
+## Grant experience points (generic version)
+## Delegates to WeaponLevelingSystem for the current weapon
+func grant_xp(amount: int) -> void:
+	grant_weapon_xp(float(amount))
+
+## Apply damage to the player
+## Delegates to StatsComponent.take_damage()
+func take_damage(amount: float) -> void:
+	if stats and stats.has_method("take_damage"):
+		stats.take_damage(amount)

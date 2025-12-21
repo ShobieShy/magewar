@@ -123,9 +123,9 @@ func _create_equipment_panel(parent: Control) -> void:
 	# Create equipment slots in order
 	var equipment_order = [
 		[Enums.EquipmentSlot.HEAD, "Head"],
-		[Enums.EquipmentSlot.WEAPON_PRIMARY, "Staff"],
+		[Enums.EquipmentSlot.PRIMARY_WEAPON, "Staff"],
 		[Enums.EquipmentSlot.BODY, "Body"],
-		[Enums.EquipmentSlot.WEAPON_SECONDARY, "Wand"],
+		[Enums.EquipmentSlot.SECONDARY_WEAPON, "Wand"],
 		[Enums.EquipmentSlot.BELT, "Belt"],
 		[Enums.EquipmentSlot.GRIMOIRE, "Grimoire"],
 		[Enums.EquipmentSlot.FEET, "Feet"],

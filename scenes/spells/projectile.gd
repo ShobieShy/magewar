@@ -142,22 +142,18 @@ func _apply_element_visual(element: Enums.Element) -> void:
 	match element:
 		Enums.Element.FIRE:
 			color = Color.ORANGE_RED
-		Enums.Element.ICE:
-			color = Color.CYAN
-		Enums.Element.LIGHTNING:
-			color = Color.YELLOW
-		Enums.Element.EARTH:
-			color = Color.SADDLE_BROWN
-		Enums.Element.WIND:
-			color = Color.PALE_GREEN
 		Enums.Element.WATER:
 			color = Color.DEEP_SKY_BLUE
+		Enums.Element.EARTH:
+			color = Color.SADDLE_BROWN
+		Enums.Element.AIR:
+			color = Color.PALE_GREEN
 		Enums.Element.LIGHT:
 			color = Color.WHITE
 		Enums.Element.DARK:
 			color = Color.DARK_VIOLET
 		_:
-			color = Color.MEDIUM_PURPLE  # Arcane default
+			color = Color.MEDIUM_PURPLE  # Default
 	
 	# Update mesh material
 	var mesh = get_node_or_null("MeshInstance3D")

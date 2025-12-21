@@ -90,7 +90,7 @@ func _demo_basic_configuration() -> void:
 	ice_gem.item_id = "sapphire_gem"
 	ice_gem.item_name = "Sapphire"
 	ice_gem.rarity = Enums.Rarity.RARE
-	ice_gem.element = Enums.Element.ICE
+	ice_gem.element = Enums.Element.WATER  # Ice
 	ice_gem.damage_multiplier = 1.1
 	ice_gem.cost_multiplier = 0.9  # 10% cheaper
 	ice_gem.projectile_speed_multiplier = 0.8  # slower projectiles

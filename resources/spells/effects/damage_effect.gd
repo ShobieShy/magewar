@@ -9,7 +9,7 @@ extends SpellEffect
 @export_group("Damage")
 @export var base_damage: float = 10.0
 @export var damage_type: Enums.DamageType = Enums.DamageType.MAGICAL
-@export var element: Enums.Element = Enums.Element.ARCANE
+@export var element: Enums.Element = Enums.Element.FIRE  ## Element (FIRE, WATER, EARTH, AIR, LIGHT, DARK)
 
 @export_group("Scaling")
 @export var damage_variance: float = 0.1  ## +/- percentage variance

@@ -597,6 +597,56 @@ func _play_sound(sound: AudioStream, position: Vector3) -> void:
 	player.play()
 
 # =============================================================================
+# ELEMENT SYSTEM
+# =============================================================================
+
+## Calculate damage multiplier based on element advantage/disadvantage
+## Returns 1.25 for advantage, 0.75 for disadvantage, 1.0 for neutral
+func get_element_advantage(attacker_element: int, defender_element: int) -> float:
+	# If no defender element, return neutral
+	if defender_element == Enums.Element.NONE or attacker_element == Enums.Element.NONE:
+		return 1.0
+	
+	# Light and Dark are balanced against each other (no advantage)
+	if (attacker_element == Enums.Element.LIGHT and defender_element == Enums.Element.DARK) or \
+	   (attacker_element == Enums.Element.DARK and defender_element == Enums.Element.LIGHT):
+		return 1.0
+	
+	# Rock-paper-scissors system for other elements
+	match attacker_element:
+		Enums.Element.FIRE:
+			if defender_element == Enums.Element.AIR:
+				return Constants.ELEMENT_ADVANTAGE  # 1.25
+			elif defender_element == Enums.Element.WATER:
+				return Constants.ELEMENT_DISADVANTAGE  # 0.75
+		
+		Enums.Element.AIR:
+			if defender_element == Enums.Element.EARTH:
+				return Constants.ELEMENT_ADVANTAGE
+			elif defender_element == Enums.Element.FIRE:
+				return Constants.ELEMENT_DISADVANTAGE
+		
+		Enums.Element.EARTH:
+			if defender_element == Enums.Element.WATER:
+				return Constants.ELEMENT_ADVANTAGE
+			elif defender_element == Enums.Element.AIR:
+				return Constants.ELEMENT_DISADVANTAGE
+		
+		Enums.Element.WATER:
+			if defender_element == Enums.Element.FIRE:
+				return Constants.ELEMENT_ADVANTAGE
+			elif defender_element == Enums.Element.EARTH:
+				return Constants.ELEMENT_DISADVANTAGE
+	
+	# Neutral matchup
+	return 1.0
+
+## Apply element advantage to damage value
+func apply_element_advantage(base_damage: float, attacker_element: int, defender_element: int) -> float:
+	var multiplier = get_element_advantage(attacker_element, defender_element)
+	return base_damage * multiplier
+
+# =============================================================================
 # WEAPON PROGRESSION
 # =============================================================================
 

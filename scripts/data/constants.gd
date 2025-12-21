@@ -73,6 +73,12 @@ const CHARGED_ATTACK_DAMAGE_MULT: float = 2.0      # 200% damage
 const CHARGED_ATTACK_COST_MULT: float = 2.5        # 250% magika cost
 const CHARGED_ATTACK_COOLDOWN_MULT: float = 1.5    # 150% cooldown
 
+# Element advantage system (rock-paper-scissors balance)
+const ELEMENT_ADVANTAGE: float = 1.25              # 25% bonus when strong against
+const ELEMENT_DISADVANTAGE: float = 0.75           # 25% reduction when weak against
+# Fire > Air > Earth > Water > Fire (cycle)
+# Light vs Dark (balanced, no advantage either way)
+
 # =============================================================================
 # LOOT & ITEMS
 # =============================================================================

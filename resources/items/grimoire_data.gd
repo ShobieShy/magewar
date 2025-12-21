@@ -9,7 +9,7 @@ extends ItemData
 
 @export_group("Grimoire")
 @export var grimoire_name: String = "Unknown Grimoire"
-@export var grimoire_element: Enums.Element = Enums.Element.ARCANE  ## Primary element theme
+@export var grimoire_element: Enums.Element = Enums.Element.FIRE  ## Primary element theme (FIRE, WATER, EARTH, AIR, LIGHT, or DARK)
 
 @export_group("Spells")
 @export var contained_spells: Array[SpellData] = []  ## Spells granted when equipped

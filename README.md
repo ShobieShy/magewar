@@ -94,22 +94,41 @@ magewar/
 
 ### 1. Autoload Managers (Global Singletons)
 
-These 12 managers are always available globally. They handle core game state:
+These 18 managers are always available globally. They handle core game state:
 
+#### Core Game Systems
 | Manager | Purpose | Key Methods |
 |---------|---------|-------------|
 | **GameManager** | Scene transitions, game flow | `change_scene()`, `emit_event()` |
-| **NetworkManager** | Multiplayer orchestration | `is_multiplayer()`, `get_peer_count()` |
-| **SteamManager** | Steam P2P networking | `send_p2p_message()`, `initialize_steam()` |
-| **SaveManager** | Persistence and loading | `save_game()`, `load_game()` |
-| **QuestManager** | Quest tracking | `accept_quest()`, `progress_objective()`, `complete_quest()` |
-| **SkillManager** | Skill progression | `learn_skill()`, `get_skill()` |
-| **ItemDatabase** | Item lookups | `get_item()`, `validate_equipment()` |
-| **GemDatabase** | Gem properties | `get_gem()`, `apply_gem_bonus()` |
-| **ShopManager** | NPC shops | `buy_item()`, `sell_item()` |
-| **SpellManager** | Spell registry | `register_spell()`, `get_spell()` |
-| **CutsceneManager** | Dialogue and cutscenes | `play_dialogue()`, `queue_cutscene()` |
-| **FastTravelManager** | Portal network | `add_location()`, `teleport_to()` |
+| **SaveManager** | Persistence and loading | `save_all()`, `save_player_data()`, `load_player_data()` |
+| **QuestManager** | Quest tracking and progression | `accept_quest()`, `progress_objective()`, `complete_quest()` |
+| **SkillManager** | Skill learning and progression | `learn_skill()`, `get_skill()`, `get_skill_points()` |
+| **ShopManager** | NPC shop management | `buy_item()`, `sell_item()`, `get_shop()` |
+| **CutsceneManager** | Dialogue and cutscene playback | `play_dialogue()`, `queue_cutscene()`, `skip_cutscene()` |
+| **FastTravelManager** | Portal network and fast travel | `add_location()`, `teleport_to()`, `get_locations()` |
+
+#### Data & Registry Systems
+| Manager | Purpose | Key Methods |
+|---------|---------|-------------|
+| **ItemDatabase** | Item and equipment lookups | `get_item()`, `validate_equipment()`, `register_item()` |
+| **GemDatabase** | Gem properties and bonuses | `get_gem()`, `apply_gem_bonus()`, `get_gem_by_element()` |
+| **SpellManager** | Spell registry and casting | `register_spell()`, `get_spell()`, `learn_spell()` |
+| **CraftingRecipeManager** | Crafting recipes database | `get_recipe()`, `validate_recipe()`, `discover_recipe()` |
+
+#### Networking Systems  
+| Manager | Purpose | Key Methods |
+|---------|---------|-------------|
+| **NetworkManager** | Multiplayer orchestration | `is_multiplayer()`, `get_peer_count()`, `sync_player_data()` |
+| **SteamManager** | Steam P2P networking backend | `send_p2p_message()`, `initialize_steam()`, `get_lobby()` |
+| **SpellNetworkManager** | Spell casting synchronization | `sync_spell_cast()`, `broadcast_effect()` |
+| **SaveNetworkManager** | Save data validation in multiplayer | `validate_save()`, `sync_saves()`, `prevent_corruption()` |
+
+#### Dungeon & Enemy Systems
+| Manager | Purpose | Key Methods |
+|---------|---------|-------------|
+| **DungeonPortalSystem** | Dungeon entry/exit management | `enter_dungeon()`, `exit_dungeon()`, `discover_portal()` |
+| **EnemySpawnSystem** | Enemy spawning and patrols | `spawn_enemies()`, `set_spawn_rate()`, `clear_spawned()` |
+| **DungeonTemplateSystem** | Dungeon room layout generation | `generate_room()`, `get_template()`, `create_layout()` |
 
 **Access anywhere in code:**
 ```gdscript
@@ -299,7 +318,7 @@ if can_cast_spell(rare_fire_staff):
 - Locked, Available, Active, Completed, Failed
 
 **Objective Types:**
-Kill, Collect, Talk, Explore, Defeat Boss, Survive, Escort, Interact, Custom Event
+Kill Enemy, Kill Specific, Collect Item, Talk to NPC, Discover Area, Defeat Boss, Survive Time, Escort NPC, Interact Object, Custom
 
 **Key Files:**
 - `quest_manager.gd` - Central quest registry
@@ -553,7 +572,7 @@ enum Element { FIRE, WATER, EARTH, AIR, LIGHT, DARK }
 # Fire > Air > Earth > Water > Fire (cycle)
 # Light vs Dark (balanced opposition)
 
-enum ObjectiveType { KILL, COLLECT, TALK, EXPLORE, DEFEAT_BOSS, SURVIVE, ESCORT, INTERACT, CUSTOM_EVENT }
+enum ObjectiveType { KILL_ENEMY, KILL_SPECIFIC, COLLECT_ITEM, TALK_TO_NPC, DISCOVER_AREA, DEFEAT_BOSS, SURVIVE_TIME, ESCORT_NPC, INTERACT_OBJECT, CUSTOM }
 enum EquipmentSlot { HEAD, BODY, BELT, FEET, PRIMARY_WEAPON, SECONDARY_WEAPON, GRIMOIRE, POTION }
 enum SkillType { PASSIVE, ACTIVE, SPELL_AUGMENT }
 enum QuestState { LOCKED, AVAILABLE, ACTIVE, COMPLETED, FAILED }
@@ -1324,7 +1343,7 @@ For full details, see [PHASE1_COMPLETION.md](PHASE1_COMPLETION.md).
 | **Lines of Code** | ~36,000 |
 | **Scenes** | 60 (.tscn files) |
 | **Resources** | 132+ (.tres files) |
-| **Autoload Managers** | 12 |
+| **Autoload Managers** | 18 |
 | **Game Systems** | 38+ |
 | **Components** | 6 |
 | **Magic Elements** | 6 (Fire, Water, Earth, Air, Light, Dark) |

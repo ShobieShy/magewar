@@ -481,7 +481,7 @@ func _use_frost_breath() -> void:
 		var spread_angle = deg_to_rad((i - 2) * 10)
 		var direction = base_dir.rotated(Vector3.UP, spread_angle)
 		
-		projectile.setup(direction, damage * 0.6, Enums.Element.ICE, self)
+		projectile.setup(direction, damage * 0.6, Enums.Element.WATER, self)  # Frost/Ice
 
 func _use_dimensional_shift() -> void:
 	"""Ancient wraith ultimate ability"""
@@ -556,7 +556,7 @@ func take_damage(amount: float, damage_type: Enums.DamageType = Enums.DamageType
 	
 	# Frost wraiths resist ice
 	if wraith_data.variant == WraithEnemyData.WraithVariant.FROST_WRAITH:
-		if damage_type == Enums.DamageType.ELEMENTAL and wraith_data.element == Enums.Element.ICE:
+		if damage_type == Enums.DamageType.ELEMENTAL and wraith_data.element == Enums.Element.WATER  # Frost/Ice:
 			amount *= 0.3
 	
 	super.take_damage(amount, damage_type, attacker)

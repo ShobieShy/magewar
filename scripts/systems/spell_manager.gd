@@ -241,18 +241,20 @@ func apply_grimoire_modifiers(spell_data: SpellData, grimoire: GrimoireEquipment
 		Enums.Element.FIRE:
 			if grimoire.fire_damage_bonus > 0:
 				modified.damage_multiplier *= (1.0 + grimoire.fire_damage_bonus / 100.0)
-		Enums.Element.ICE:
-			if grimoire.ice_damage_bonus > 0:
+		Enums.Element.WATER:
+			if grimoire.ice_damage_bonus > 0:  # Keeping ice_damage_bonus for backwards compatibility
 				modified.damage_multiplier *= (1.0 + grimoire.ice_damage_bonus / 100.0)
-		Enums.Element.LIGHTNING:
-			if grimoire.lightning_damage_bonus > 0:
+		Enums.Element.AIR:
+			if grimoire.lightning_damage_bonus > 0:  # Keeping lightning_damage_bonus for backwards compatibility
 				modified.damage_multiplier *= (1.0 + grimoire.lightning_damage_bonus / 100.0)
 		Enums.Element.EARTH:
 			if grimoire.earth_damage_bonus > 0:
 				modified.damage_multiplier *= (1.0 + grimoire.earth_damage_bonus / 100.0)
-		Enums.Element.ARCANE:
-			if grimoire.arcane_damage_bonus > 0:
+		Enums.Element.LIGHT:
+			if grimoire.arcane_damage_bonus > 0:  # Keeping arcane_damage_bonus, mapping to LIGHT
 				modified.damage_multiplier *= (1.0 + grimoire.arcane_damage_bonus / 100.0)
+		Enums.Element.DARK:
+			pass  # Dark element handled separately or use arcane bonus
 	
 	return modified
 

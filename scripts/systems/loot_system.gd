@@ -26,7 +26,7 @@ var loot_pickup_scene: PackedScene = null
 # INITIALIZATION
 # =============================================================================
 
-func _init():
+func _init() -> void:
 	## Initialize loot pickup scene
 	if ResourceLoader.exists("res://scenes/world/loot_pickup.tscn"):
 		loot_pickup_scene = load("res://scenes/world/loot_pickup.tscn")

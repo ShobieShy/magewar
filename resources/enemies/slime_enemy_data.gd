@@ -88,7 +88,7 @@ func _apply_variant_modifiers() -> void:
 		SlimeVariant.ICE:
 			health = 35.0
 			damage = 8.0
-			element = Enums.Element.ICE
+			element = Enums.Element.WATER  # Frost/Ice → Water element
 			elemental_power = 12.0
 			elemental_behavior = "freezing_ground"
 			emissive_color = Color.CYAN
@@ -97,7 +97,7 @@ func _apply_variant_modifiers() -> void:
 		SlimeVariant.POISON:
 			health = 40.0
 			damage = 7.0
-			element = Enums.Element.POISON
+			element = Enums.Element.DARK  # Poison → Dark element
 			elemental_power = 18.0
 			elemental_behavior = "poison_cloud"
 			emissive_color = Color.DARK_GREEN
@@ -106,7 +106,7 @@ func _apply_variant_modifiers() -> void:
 		SlimeVariant.ELECTRIC:
 			health = 30.0
 			damage = 12.0
-			element = Enums.Element.LIGHTNING
+			element = Enums.Element.AIR  # Lightning → Air element
 			elemental_power = 20.0
 			elemental_behavior = "shock_burst"
 			jump_cooldown = 2.0

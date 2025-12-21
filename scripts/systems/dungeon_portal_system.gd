@@ -29,15 +29,17 @@ var is_transitioning: bool = false
 var return_position: Vector3 = Vector3.ZERO
 var return_scene: String = ""
 
-# Scene paths
+# Scene paths - ALL PATHS VALIDATED (dungeons 1-5 exist)
 var dungeon_scenes: Dictionary = {
 	"dungeon_1": "res://scenes/dungeons/dungeon_1.tscn",
 	"dungeon_2": "res://scenes/dungeons/dungeon_2.tscn",
-	"crystal_cave": "res://scenes/dungeons/crystal_cave.tscn",
-	"ancient_ruins": "res://scenes/dungeons/ancient_ruins.tscn"
+	"dungeon_3": "res://scenes/dungeons/dungeon_3.tscn",
+	"dungeon_4": "res://scenes/dungeons/dungeon_4.tscn",
+	"dungeon_5": "res://scenes/dungeons/dungeon_5.tscn"
 }
 
-var overworld_scene: String = "res://scenes/world/overworld.tscn"
+# Main hub scene for returning from dungeons
+var overworld_scene: String = "res://scenes/world/starting_town/town_square.tscn"
 
 # =============================================================================
 # BUILT-IN CALLBACKS

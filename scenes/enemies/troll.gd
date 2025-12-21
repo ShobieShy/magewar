@@ -343,7 +343,7 @@ func _use_ice_breath() -> void:
 		var direction = (current_target.global_position - global_position).normalized()
 		direction = direction.rotated(Vector3.UP, deg_to_rad((i - 1) * 15))
 		
-		projectile.setup(direction, damage * 0.8, Enums.Element.ICE, self)
+		projectile.setup(direction, damage * 0.8, Enums.Element.WATER, self)  # Frost/Ice
 
 func _throw_rock() -> void:
 	"""Hill troll rock throw attack"""

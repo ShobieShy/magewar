@@ -97,7 +97,7 @@ func _apply_variant_modifiers() -> void:
 			health = 70.0
 			damage = 15.0
 			speed = 3.0
-			element = [Enums.Element.FIRE, Enums.Element.LIGHTNING, Enums.Element.POISON].pick_random()
+			element = [Enums.Element.FIRE, Enums.Element.AIR, Enums.Element.DARK].pick_random()
 			elemental_power = 25.0
 			uses_weapon = false
 			special_ability = "elemental_bolt"
