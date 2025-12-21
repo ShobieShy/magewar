@@ -556,7 +556,7 @@ func take_damage(amount: float, damage_type: Enums.DamageType = Enums.DamageType
 	
 	# Frost wraiths resist ice
 	if wraith_data.variant == WraithEnemyData.WraithVariant.FROST_WRAITH:
-		if damage_type == Enums.DamageType.ELEMENTAL and wraith_data.element == Enums.Element.WATER  # Frost/Ice:
+		if damage_type == Enums.DamageType.ELEMENTAL and wraith_data.element == Enums.Element.WATER:  # Frost/Ice
 			amount *= 0.3
 	
 	super.take_damage(amount, damage_type, attacker)

@@ -72,22 +72,22 @@ func _apply_variant_modifiers() -> void:
 			teleport_cooldown = 6.0
 			mesh_color = Color.DARK_GRAY
 			
-	WraithVariant.FROST_WRAITH:
-		health = 65.0
-		damage = 25.0
-		speed = 5.0
-		element = Enums.Element.WATER  # Frost/Ice → Water element
-		elemental_power = 20.0
-		special_ability = "frost_breath"
-		mesh_color = Color.LIGHT_BLUE
+		WraithVariant.FROST_WRAITH:
+			health = 65.0
+			damage = 25.0
+			speed = 5.0
+			element = Enums.Element.WATER  # Frost/Ice → Water element
+			elemental_power = 20.0
+			special_ability = "frost_breath"
+			mesh_color = Color.LIGHT_BLUE
 			
-	WraithVariant.ANCIENT:
-		health = 100.0
-		damage = 35.0
-		speed = 4.5
-		life_drain_rate = 8.0
-		invisibility_duration = 5.0
-		element = Enums.Element.DARK  # Shadow/Corruption → Dark element
+		WraithVariant.ANCIENT:
+			health = 100.0
+			damage = 35.0
+			speed = 4.5
+			life_drain_rate = 8.0
+			invisibility_duration = 5.0
+			element = Enums.Element.DARK  # Shadow/Corruption → Dark element
 			elemental_power = 30.0
 			special_ability = "dimensional_shift"
 			mesh_color = Color.DARK_RED
