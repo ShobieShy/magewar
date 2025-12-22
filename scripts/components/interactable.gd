@@ -8,7 +8,7 @@ extends Area3D
 # =============================================================================
 
 signal interaction_started(player: Node)
-signal interaction_ended(player: Node)
+# signal interaction_ended(player: Node)  # Currently unused but kept for future implementation
 signal player_entered_range(player: Node)
 signal player_exited_range(player: Node)
 

@@ -75,9 +75,9 @@ func apply(caster: Node, _target: Node, hit_point: Vector3, _spell_data: SpellDa
 	spawn_impact_effect(spawn_position)
 
 
-func _schedule_despawn(summon: Node, duration: float) -> void:
+func _schedule_despawn(summon: Node, despawn_duration: float) -> void:
 	if summon.has_method("despawn"):
-		var timer = summon.get_tree().create_timer(duration)
+		var timer = summon.get_tree().create_timer(despawn_duration)
 		timer.timeout.connect(func(): 
 			if is_instance_valid(summon):
 				summon.despawn()

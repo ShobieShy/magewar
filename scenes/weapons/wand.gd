@@ -197,10 +197,42 @@ func get_current_spell() -> SpellData:
 	return _current_spell
 
 # =============================================================================
+# INVENTORY STATE CHECK
+# =============================================================================
+
+func _is_inventory_open() -> bool:
+	"""Check if inventory UI is currently open"""
+	if owner_player == null:
+		return false
+	
+	var inventory_ui = owner_player.get_node_or_null("InventoryUI")
+	if inventory_ui and inventory_ui.has_method("is_open"):
+		return inventory_ui.is_open()
+	
+	return false
+
+
+func _can_cast_spell() -> bool:
+	"""Check if conditions are right for spell casting"""
+	# Don't cast if inventory is open
+	if _is_inventory_open():
+		return false
+	
+	# Don't cast if mouse is free (UI/menu is open)
+	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+		return false
+	
+	return true
+
+# =============================================================================
 # INPUT HANDLING
 # =============================================================================
 
 func _handle_input() -> void:
+	# Don't cast spells if conditions aren't right
+	if not _can_cast_spell():
+		return
+	
 	# Wand uses secondary fire by default when equipped
 	if Input.is_action_just_pressed("secondary_fire"):
 		fire()

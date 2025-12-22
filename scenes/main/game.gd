@@ -7,7 +7,7 @@ extends Node3D
 # =============================================================================
 
 const PLAYER_SCENE = preload("res://scenes/player/player.tscn")
-const PAUSE_MENU_SCENE = preload("res://scenes/ui/menus/pause_menu.tscn")
+const UNIFIED_MENU_SCENE = preload("res://scenes/ui/menus/unified_menu_ui.gd")
 const SETTINGS_MENU_SCRIPT = "res://scenes/ui/menus/settings_menu.gd"
 const MAIN_MENU_SCENE = "res://scenes/ui/menus/main_menu.tscn"
 
@@ -25,7 +25,7 @@ const MAIN_MENU_SCENE = "res://scenes/ui/menus/main_menu.tscn"
 # =============================================================================
 
 var _spawn_index: int = 0
-var pause_menu: PauseMenu = null
+var unified_menu: UnifiedMenuUI = null
 var settings_menu: Control = null
 
 # =============================================================================
@@ -47,8 +47,8 @@ func _ready() -> void:
 		if peer_id != NetworkManager.local_peer_id:
 			_spawn_remote_player(peer_id)
 	
-	# Set up pause menu
-	_setup_pause_menu()
+	# Set up unified menu (deferred to ensure player is ready)
+	call_deferred("_setup_unified_menu")
 	
 	# Capture mouse
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -62,15 +62,11 @@ func _exit_tree() -> void:
 	SaveManager.stop_auto_save()
 
 
-func _input(event: InputEvent) -> void:
-	# Toggle mouse capture on right-click (when not in pause menu)
-	# Left pause menu to handle escape key for pause/unpause
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
-		if pause_menu == null or not pause_menu.is_paused():
-			if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-			else:
-				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+func _input(_event: InputEvent) -> void:
+	# Right-click is reserved for gameplay spell casting only
+	# Mouse mode is controlled exclusively by pause menu
+	# Pause menu handles escape key for pause/unpause
+	pass
 
 # =============================================================================
 # PLAYER SPAWNING
@@ -171,11 +167,11 @@ func respawn_player(peer_id: int) -> void:
 
 
 @rpc("authority", "call_remote", "reliable")
-func _rpc_respawn_player(peer_id: int, position: Vector3) -> void:
+func _rpc_respawn_player(peer_id: int, spawn_position: Vector3) -> void:
 	var player_name = "Player_" + str(peer_id)
 	var player = players_node.get_node_or_null(player_name)
 	if player:
-		player.position = position
+		player.position = spawn_position
 		player.respawn()
 
 # =============================================================================
@@ -191,37 +187,37 @@ func _on_player_disconnected(peer_id: int) -> void:
 	_despawn_player(peer_id)
 
 # =============================================================================
-# PAUSE MENU
+# UNIFIED MENU
 # =============================================================================
 
-func _setup_pause_menu() -> void:
-	"""Create and set up the pause menu"""
-	pause_menu = PAUSE_MENU_SCENE.instantiate()
-	add_child(pause_menu)
+func _setup_unified_menu() -> void:
+	"""Create and set up the unified menu"""
+	unified_menu = UNIFIED_MENU_SCENE.new()
+	add_child(unified_menu)
 	
-	# Connect pause menu signals
-	pause_menu.resume_requested.connect(_on_pause_menu_resume)
-	pause_menu.join_requested.connect(_on_pause_menu_join)
-	pause_menu.settings_requested.connect(_on_pause_menu_settings)
-	pause_menu.quit_to_menu_requested.connect(_on_pause_menu_quit)
+	# Pass inventory system reference when available
+	var player = _get_local_player()
+	if player and player.inventory:
+		unified_menu.set_inventory_system(player.inventory)
+	
+	# Connect unified menu signals
+	unified_menu.settings_requested.connect(_on_unified_menu_settings)
+	unified_menu.quit_to_menu_requested.connect(_on_unified_menu_quit)
+	unified_menu.join_requested.connect(_on_unified_menu_join)
 
 
-func _on_pause_menu_resume() -> void:
-	"""Handle resume from pause menu"""
-	# Just show the pause menu, the game will resume automatically
-	pass
+func _get_local_player() -> Node:
+	"""Get the local player node"""
+	var player_name = "Player_" + str(NetworkManager.local_peer_id)
+	var players_container = get_node_or_null("Players")
+	if players_container:
+		return players_container.get_node_or_null(player_name)
+	return null
 
 
-func _on_pause_menu_join() -> void:
-	"""Handle join request from pause menu"""
-	# This would open a join/lobby UI
-	# For now, just a placeholder
-	if pause_menu:
-		pause_menu.resume()
-
-
-func _on_pause_menu_settings() -> void:
-	"""Handle settings request from pause menu"""
+func _on_unified_menu_settings() -> void:
+	"""Handle settings request from unified menu"""
+	
 	if settings_menu == null:
 		# Load and instantiate settings menu dynamically
 		var SettingsMenuScript = load(SETTINGS_MENU_SCRIPT)
@@ -243,12 +239,12 @@ func _on_settings_menu_closed() -> void:
 		settings_menu.queue_free()
 		settings_menu = null
 	
-	# Show pause menu again
-	if pause_menu:
-		pause_menu.pause()
+	# Show unified menu again
+	if unified_menu:
+		unified_menu.open()
 
 
-func _on_pause_menu_quit() -> void:
+func _on_unified_menu_quit() -> void:
 	"""Handle quit to menu request"""
 	# Unpause the game
 	get_tree().paused = false
@@ -256,3 +252,11 @@ func _on_pause_menu_quit() -> void:
 	# Return to main menu
 	GameManager.current_state = Enums.GameState.MAIN_MENU
 	get_tree().change_scene_to_file(MAIN_MENU_SCENE)
+
+
+func _on_unified_menu_join() -> void:
+	"""Handle join request from unified menu"""
+	# This would open a join/lobby UI
+	# For now, just a placeholder
+	if unified_menu:
+		unified_menu.close()

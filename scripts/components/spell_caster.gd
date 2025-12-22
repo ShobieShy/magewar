@@ -494,7 +494,7 @@ func _execute_chain(spell: SpellData, direction: Vector3) -> void:
 	
 	var chain_targets: Array = [result.collider]
 	var current_pos = result.position
-	var damage_mult = 1.0  # Chain damage multiplier (currently unused but needed for falloff calculation)
+	var _damage_mult = 1.0  # Chain damage multiplier (currently unused but needed for falloff calculation)
 	
 	# Apply to first target
 	for effect in spell.effects:
@@ -502,7 +502,7 @@ func _execute_chain(spell: SpellData, direction: Vector3) -> void:
 	
 	# Chain to additional targets
 	for i in range(spell.chain_count - 1):
-		damage_mult *= spell.chain_damage_falloff
+		_damage_mult *= spell.chain_damage_falloff
 		
 		# Find next closest target
 		var shape = SphereShape3D.new()

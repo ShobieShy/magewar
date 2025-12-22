@@ -61,7 +61,7 @@ func apply(caster: Node, target: Node, hit_point: Vector3, spell_data: SpellData
 	spawn_impact_effect(hit_point)
 
 
-func _schedule_modifier_removal(stats: StatsComponent, stat_type: Enums.StatType, modifier_id: String, duration: float) -> void:
+func _schedule_modifier_removal(stats: StatsComponent, stat_type: Enums.StatType, modifier_id: String, removal_duration: float) -> void:
 	# Create a timer to remove the modifier
-	var timer = stats.get_tree().create_timer(duration)
+	var timer = stats.get_tree().create_timer(removal_duration)
 	timer.timeout.connect(func(): stats.remove_modifier(stat_type, modifier_id))

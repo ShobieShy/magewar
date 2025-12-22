@@ -1,0 +1,35 @@
+[gd_resource type="ShopData" script_class="ShopData" load_steps=16 format=3]
+
+[ext_resource type="Resource" path="res://resources/items/potions/health_potion.tres" id="1_ao0y8"]
+[ext_resource type="Resource" path="res://resources/items/potions/health_potion_small.tres" id="2_5ow50"]
+[ext_resource type="Resource" path="res://resources/items/potions/mana_potion.tres" id="3_6n3c4"]
+[ext_resource type="Resource" path="res://resources/items/potions/stamina_potion.tres" id="4_w2l6c"]
+[ext_resource type="Resource" path="res://resources/items/potions/strength_elixir.tres" id="5_n4c3t"]
+[ext_resource type="Resource" path="res://resources/items/materials/ore_fragment.tres" id="6_5qdt2"]
+[ext_resource type="Resource" path="res://resources/items/materials/ore_piece.tres" id="7_e4g5t"]
+[ext_resource type="Resource" path="res://resources/items/materials/fire_essence_0.tres" id="8_b7f9n"]
+[ext_resource type="Resource" path="res://resources/items/materials/water_essence_0.tres" id="9_3g5ct"]
+[ext_resource type="Resource" path="res://resources/items/gems/fire_ruby.tres" id="10_k5h3m"]
+[ext_resource type="Resource" path="res://resources/items/gems/ice_sapphire.tres" id="11_2k7ah"]
+[ext_resource type="Resource" path="res://resources/items/gems/storm_topaz.tres" id="12_l9b8p"]
+[ext_resource type="Resource" path="res://resources/items/parts/handles/leather_wrap.tres" id="13_a8d4f"]
+[ext_resource type="Resource" path="res://resources/items/parts/exteriors/rough_wood.tres" id="14_t2v1w"]
+[ext_resource type="Resource" path="res://resources/items/parts/interiors/iron_conduit.tres" id="15_6v3h1"]
+
+[resource]
+script = SubResource("Resource")
+shop_id = "town_shop"
+shop_name = "Town Market"
+shop_description = "The main marketplace in town with a rotating selection of goods."
+shop_keeper_name = "Merchant"
+item_pool = [ExtResource("1_ao0y8"), ExtResource("2_5ow50"), ExtResource("3_6n3c4"), ExtResource("4_w2l6c"), ExtResource("5_n4c3t"), ExtResource("6_5qdt2"), ExtResource("7_e4g5t"), ExtResource("8_b7f9n"), ExtResource("9_3g5ct"), ExtResource("10_k5h3m"), ExtResource("11_2k7ah"), ExtResource("12_l9b8p"), ExtResource("13_a8d4f"), ExtResource("14_t2v1w"), ExtResource("15_6v3h1")]
+stock_size = 12
+refresh_on_load = true
+basic_weight = 100.0
+uncommon_weight = 50.0
+rare_weight = 20.0
+mythic_weight = 5.0
+primordial_weight = 1.0
+unique_weight = 0.0
+buy_price_multiplier = 1.5
+sell_price_multiplier = 0.5

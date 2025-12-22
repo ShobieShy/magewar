@@ -19,7 +19,8 @@ var effects: Array[SpellEffect] = []
 
 var _elapsed_time: float = 0.0
 var _tick_timer: float = 0.0
-var _hit_targets: Array = []
+var _enemies_in_beam: Array = []  # Track enemies currently in beam (continuous damage)
+var _hit_targets: Array = []  # Legacy compatibility
 var _area: Area3D = null
 
 # =============================================================================
@@ -31,6 +32,8 @@ func _ready() -> void:
 	if _area:
 		_area.area_entered.connect(_on_area_entered)
 		_area.body_entered.connect(_on_body_entered)
+		_area.area_exited.connect(_on_area_exited)
+		_area.body_exited.connect(_on_body_exited)
 
 
 func _process(delta: float) -> void:
@@ -74,26 +77,50 @@ func initialize(config: Dictionary) -> void:
 func _on_body_entered(body: Node3D) -> void:
 	if body == caster:
 		return
-	if body in _hit_targets:
+	if body in _enemies_in_beam:
 		return
 	
-	_hit_targets.append(body)
+	# Check if this is an enemy
+	if body.is_in_group("enemies"):
+		_enemies_in_beam.append(body)
+		print_debug("Beam entered enemy: %s" % body.name)
 
 
 func _on_area_entered(area: Area3D) -> void:
 	if area.is_in_group("hitbox"):
 		var owner = area.get_parent()
-		if owner and owner != caster and owner not in _hit_targets:
-			_hit_targets.append(owner)
+		if owner and owner != caster and owner not in _enemies_in_beam:
+			if owner.is_in_group("enemies"):
+				_enemies_in_beam.append(owner)
+				print_debug("Beam entered enemy (hitbox): %s" % owner.name)
+
+
+func _on_body_exited(body: Node3D) -> void:
+	if body in _enemies_in_beam:
+		_enemies_in_beam.erase(body)
+		print_debug("Beam exited enemy: %s" % body.name)
+
+
+func _on_area_exited(area: Area3D) -> void:
+	if area.is_in_group("hitbox"):
+		var owner = area.get_parent()
+		if owner in _enemies_in_beam:
+			_enemies_in_beam.erase(owner)
+			print_debug("Beam exited enemy (hitbox): %s" % owner.name)
 
 
 func _apply_effects() -> void:
 	if effects.is_empty():
 		return
 	
-	# Apply to all current targets
-	for target in _hit_targets:
-		if target and is_instance_valid(target):
-			var hit_point = target.global_position if target is Node3D else global_position
+	# Apply continuous damage to all enemies currently in beam
+	for enemy in _enemies_in_beam:
+		if enemy and is_instance_valid(enemy):
+			var hit_point = enemy.global_position if enemy is Node3D else global_position
 			for effect in effects:
-				effect.apply(caster, target, hit_point, spell)
+				if effect and effect.has_method("apply"):
+					effect.apply(caster, enemy, hit_point, spell)
+	
+	# Debug logging
+	if not _enemies_in_beam.is_empty():
+		print_debug("Beam damage tick: %d enemies hit" % _enemies_in_beam.size())

@@ -44,6 +44,9 @@ func _ready() -> void:
 	_spawn_npcs()
 	_setup_portals()
 	_setup_entrances()
+	_setup_shop()
+	_spawn_vendor_npc()
+	_spawn_skill_trainer_npc()
 	
 	# Register with FastTravelManager
 	FastTravelManager.register_spawn_point("starting_town", get_player_spawn_position())
@@ -130,8 +133,40 @@ func _create_generic_npc(npc_id: String) -> Node:
 	return npc
 
 
+func _spawn_vendor_npc() -> void:
+	var vendor_scene = preload("res://scenes/world/starting_town/vendor_npc.tscn")
+	if vendor_scene:
+		var vendor = vendor_scene.instantiate()
+		vendor.position = Vector3(-5, 0, 0)  # Position on left side of Town Square
+		add_child(vendor)
+		_npcs["vendor"] = vendor
+		npc_spawned.emit(vendor)
+
+
+func _spawn_skill_trainer_npc() -> void:
+	var trainer_scene = preload("res://scenes/world/starting_town/skill_trainer_npc.tscn")
+	if trainer_scene:
+		var trainer = trainer_scene.instantiate()
+		trainer.position = Vector3(5, 0, 0)  # Position on right side of Town Square
+		add_child(trainer)
+		_npcs["skill_trainer"] = trainer
+		npc_spawned.emit(trainer)
+
+
 func get_npc(npc_id: String) -> Node:
 	return _npcs.get(npc_id)
+
+# =============================================================================
+# SHOP SETUP
+# =============================================================================
+
+func _setup_shop() -> void:
+	# Load and register the town shop
+	var shop_data = load("res://resources/shops/town_shop.tres")
+	if shop_data:
+		ShopManager.register_shop(shop_data)
+	else:
+		push_warning("Failed to load town_shop.tres")
 
 # =============================================================================
 # PORTALS

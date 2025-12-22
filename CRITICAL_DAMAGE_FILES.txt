@@ -1,0 +1,124 @@
+MAGEWAR DAMAGE SYSTEM - CRITICAL FILES LISTING
+================================================
+
+ABSOLUTE PATHS TO KEY FILES FOR DAMAGE SYSTEM
+
+ENEMY DAMAGE RECEPTION:
+/home/shobie/magewar/scenes/enemies/enemy_base.gd              (446 lines) - Enemy health & damage
+/home/shobie/magewar/scripts/components/stats_component.gd     (330 lines) - Core damage application
+
+SPELL EXECUTION:
+/home/shobie/magewar/scripts/components/spell_caster.gd        (666 lines) - Spell casting system
+/home/shobie/magewar/resources/spells/spell_data.gd            (174 lines) - Spell definition
+
+SPELL EFFECTS:
+/home/shobie/magewar/resources/spells/spell_effect.gd          (71 lines)  - Base effect class
+/home/shobie/magewar/resources/spells/effects/damage_effect.gd (115 lines) - Damage effect
+
+PROJECTILE SYSTEM:
+/home/shobie/magewar/scenes/spells/projectile.gd               (367 lines) - Projectile physics & hit detection
+/home/shobie/magewar/scripts/components/spell_beam.gd          (100 lines) - Beam spell effect
+
+CONFIGURATION:
+/home/shobie/magewar/scripts/data/constants.gd                 - Damage constants & layer definitions
+/home/shobie/magewar/scripts/data/enums.gd                     - Enums for damage types, spell delivery
+
+SCENE FILES:
+/home/shobie/magewar/scenes/enemies/enemy_base.tscn            - Enemy scene (HAS LAYER BUG)
+/home/shobie/magewar/scenes/player/player.tscn                 - Player scene
+/home/shobie/magewar/scenes/spells/projectile.tscn             - Projectile scene
+
+OTHER EFFECTS:
+/home/shobie/magewar/resources/spells/effects/heal_effect.gd   - Healing effect
+/home/shobie/magewar/resources/spells/effects/shield_effect.gd - Shield effect
+/home/shobie/magewar/resources/spells/effects/status_effect.gd - Status effects
+/home/shobie/magewar/resources/spells/effects/summon_effect.gd - Summon effect
+/home/shobie/magewar/resources/spells/effects/movement_effect.gd - Movement effect
+
+SPELL PRESETS (Examples):
+/home/shobie/magewar/resources/spells/presets/fireball.tres            - Projectile spell
+/home/shobie/magewar/resources/spells/presets/lightning_strike.tres    - Hitscan spell
+/home/shobie/magewar/resources/spells/presets/arcane_bolt.tres        - Hitscan spell
+/home/shobie/magewar/resources/spells/presets/earth_spike.tres        - AOE spell
+/home/shobie/magewar/resources/spells/presets/lightning_chain.tres    - Chain spell
+
+PLAYER:
+/home/shobie/magewar/scenes/player/player.gd                  (526 lines) - Player class
+
+ANALYSIS DOCUMENTS (CREATED):
+/home/shobie/magewar/DAMAGE_SYSTEM_ANALYSIS.md                - Comprehensive analysis
+/home/shobie/magewar/DAMAGE_SYSTEM_FILES_REFERENCE.md         - Files reference guide
+/home/shobie/magewar/CRITICAL_DAMAGE_FILES.txt                - This file
+
+
+ROOT CAUSE SUMMARY:
+===================
+
+The primary issue preventing spells from hitting enemies:
+
+COLLISION LAYER MISMATCH
+
+Enemy Scene Configuration (enemy_base.tscn):
+  collision_layer = 4  (WRONG - should be 3)
+
+Code Expectation (projectile.gd Line 36):
+  collision_mask = (1 << (LAYER_ENEMIES - 1))
+  where LAYER_ENEMIES = 3
+  so collision_mask includes Layer 3
+
+Result:
+  Enemy on Layer 4
+  Projectiles look for Layer 3
+  No collision = spells pass through
+
+
+FIX PRIORITY:
+=============
+
+1. CRITICAL: Fix enemy collision_layer from 4 to 3
+   File: /home/shobie/magewar/scenes/enemies/enemy_base.tscn
+   Search for: "collision_layer = 4"
+   Replace with: "collision_layer = 3"
+
+2. IMPORTANT: Add debug logging to spell system
+   Files: /home/shobie/magewar/scripts/components/spell_caster.gd
+          /home/shobie/magewar/scenes/spells/projectile.gd
+   Add warnings when hits miss
+
+3. IMPORTANT: Add SaveManager null checks
+   File: /home/shobie/magewar/resources/spells/effects/damage_effect.gd
+   Prevent crashes when SaveManager not initialized
+
+4. USEFUL: Improve beam hit detection
+   File: /home/shobie/magewar/scripts/components/spell_beam.gd
+   Add continuous raycasting
+
+
+TESTING AFTER FIX:
+==================
+
+Test with:
+1. Cast fireball at enemy, verify health decreases
+2. Cast hitscan spell, verify instant hit
+3. Cast AOE spell, verify all enemies in radius take damage
+4. Verify damage numbers appear on hit
+5. Verify enemy dies when health reaches 0
+6. Verify loot drops on enemy death
+
+
+KEY METHODS TO UNDERSTAND:
+===========================
+
+Damage Flow:
+SpellCaster.cast_spell() → _execute_projectile() → initialize projectile
+Projectile._physics_process() → _on_body_entered() → _handle_hit()
+_handle_hit() → effect.apply(caster, target, hit_point, spell)
+DamageEffect.apply() → can_affect_target() → calculate_damage()
+stats.take_damage() → emit died signal when health <= 0
+
+Critical Decision Points:
+1. Line 207 (projectile.gd): is_enemy = target.is_in_group("enemies")
+2. Line 218 (projectile.gd): caster_is_player check
+3. Line 36 (damage_effect.gd): can_affect_target() check
+4. Line 46 (damage_effect.gd): StatsComponent validation
+

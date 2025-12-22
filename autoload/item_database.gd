@@ -73,8 +73,8 @@ func _load_items_from_path(path: String) -> void:
 		return
 	
 	var file_name = dir.get_next()
-	var loaded_count = 0
-	var failed_count = 0
+	var _loaded_count = 0
+	var _failed_count = 0
 	
 	while file_name != "":
 		if file_name.ends_with(".tres"):
@@ -82,26 +82,26 @@ func _load_items_from_path(path: String) -> void:
 			var resource = load(full_path)
 			if resource == null:
 				push_warning("ItemDatabase: Failed to load resource: %s" % full_path)
-				failed_count += 1
+				_failed_count += 1
 			elif resource is ItemData:
 				register_item(resource)
-				loaded_count += 1
+				_loaded_count += 1
 			else:
 				push_warning("ItemDatabase: Loaded file is not ItemData: %s" % full_path)
-				failed_count += 1
+				_failed_count += 1
 		file_name = dir.get_next()
 	
-	if failed_count > 0:
-		push_warning("ItemDatabase: Failed to load %d items from %s" % [failed_count, path])
+	if _failed_count > 0:
+		push_warning("ItemDatabase: Failed to load %d items from %s" % [_failed_count, path])
 
 
 # =============================================================================
 # SEARCH
 # =============================================================================
 
-func find_by_name(name: String) -> Array[ItemData]:
+func find_by_name(item_name: String) -> Array[ItemData]:
 	var results: Array[ItemData] = []
-	var search_lower = name.to_lower()
+	var search_lower = item_name.to_lower()
 	
 	for item in _items.values():
 		if item.item_name.to_lower().contains(search_lower):

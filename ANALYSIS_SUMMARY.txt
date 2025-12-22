@@ -1,0 +1,399 @@
+================================================================================
+MAGEWAR NPC SYSTEM - COMPREHENSIVE ANALYSIS SUMMARY
+================================================================================
+
+OVERVIEW
+--------
+The Magewar codebase has a sophisticated NPC system built on a hierarchy of 
+components and managers. NPCs extend the Interactable component, which handles 
+proximity detection and player interaction. The system integrates with multiple 
+global managers for quests, shops, and skills.
+
+KEY FINDINGS
+============
+
+1. NPC ARCHITECTURE
+   - NPCs are Area3D nodes with the NPC script attached
+   - They extend the Interactable base class
+   - Dialogue is text-based, displayed line by line
+   - NPCs can trigger quests, open shops, or perform custom actions
+
+2. INTERACTABLE COMPONENT
+   - Base class for all interactive objects in the world
+   - Uses Area3D for proximity detection (2.5 unit radius by default)
+   - Handles player input ([E] key) and prompt display
+   - Supports one-time-only interactions with flag system
+
+3. NAMEPLATE DISPLAY
+   - Uses Label3D with Billboard mode for camera-facing text
+   - Positioned above NPC (default 3.0 units)
+   - Supports color, font size, and outline customization
+   - Can be updated dynamically at runtime
+
+4. SHOP SYSTEM
+   - ShopManager is a global autoload that manages all shops
+   - Shops are defined as ShopData resources
+   - Stock is generated from weighted item pools by rarity
+   - Supports buy, sell, and buyback mechanics
+   - Stock rotates on map load if configured
+
+5. SKILL SYSTEM
+   - SkillManager is a global autoload managing the skill tree
+   - Skills come in 3 types: PASSIVE, ACTIVE, SPELL_AUGMENT
+   - Passive skills apply stat modifiers automatically
+   - Active skills are abilities with cooldowns and resource costs
+   - Spell augments modify spell properties
+
+6. QUEST INTEGRATION
+   - NPCs can give quests via give_quest_id property
+   - NPCs can accept quest turn-ins via complete_quest_id
+   - NPC interactions are tracked in QuestManager
+
+MAIN COMPONENTS
+===============
+
+File: scripts/components/npc.gd
+  Class: NPC
+  Extends: Interactable
+  Key Methods:
+    - _perform_interaction(player)     [starts dialogue]
+    - _start_dialogue(player)          [initializes dialogue sequence]
+    - _advance_dialogue()              [moves to next line]
+    - _end_dialogue()                  [closes dialogue, triggers actions]
+    - _trigger_post_dialogue_actions() [quests, shops, tracking]
+  
+  Key Properties:
+    - npc_name, npc_id, npc_title
+    - dialogue_lines: Array[String]
+    - give_quest_id, complete_quest_id
+    - open_shop_on_dialogue_end, shop_id
+  
+  Signals:
+    - dialogue_started()
+    - dialogue_ended()
+
+File: scripts/components/interactable.gd
+  Class: Interactable
+  Extends: Area3D
+  Key Methods:
+    - _try_interact()                  [called when [E] pressed]
+    - _perform_interaction(player)     [override in subclasses]
+    - set_interactable(bool)           [enable/disable interaction]
+  
+  Key Properties:
+    - interaction_prompt: String
+    - interaction_range: float (default 2.5)
+    - can_interact: bool
+    - one_time_only: bool
+  
+  Signals:
+    - interaction_started(player)
+    - player_entered_range(player)
+    - player_exited_range(player)
+
+File: scripts/components/name_plate.gd
+  Class: NamePlate
+  Extends: Node3D
+  Key Methods:
+    - set_name_plate_text(text)
+    - set_name_plate_color(color)
+  
+  Key Properties:
+    - display_name: String
+    - height_offset: float (default 3.0)
+    - font_size: int (default 32)
+    - text_color: Color
+    - outline_color: Color
+
+File: autoload/shop_manager.gd
+  Class: ShopManager (singleton)
+  Key Methods:
+    - register_shop(shop: ShopData)
+    - open_shop(shop_id: String) -> bool
+    - close_shop()
+    - buy_item(index: int, quantity: int) -> bool
+    - sell_item(item: ItemData, quantity: int) -> bool
+    - buyback_item(index: int, quantity: int) -> bool
+    - refresh_shop_stock(shop_id: String)
+    - refresh_all_stocks()
+  
+  Key Properties:
+    - _shops: Dictionary[String, ShopData]
+    - _current_shop: ShopData
+  
+  Signals:
+    - shop_opened(shop: ShopData)
+    - shop_closed()
+    - item_purchased(item, quantity, cost)
+    - item_sold(item, quantity, gold)
+    - stock_refreshed(shop_id: String)
+
+File: resources/shops/shop_data.gd
+  Class: ShopData
+  Extends: Resource
+  Key Methods:
+    - generate_stock()
+    - buy_item(index, quantity) -> Dictionary
+    - sell_item(item, quantity) -> Dictionary
+    - buyback_item(index, quantity) -> Dictionary
+    - get_stock() -> Array[Dictionary]
+    - get_buyback() -> Array[Dictionary]
+  
+  Key Properties:
+    - shop_id, shop_name, shop_keeper_name
+    - item_pool: Array[ItemData]
+    - stock_size: int (default 12)
+    - refresh_on_load: bool
+    - buy_price_multiplier, sell_price_multiplier
+    - rarity weights for stock generation
+
+File: autoload/skill_manager.gd
+  Class: SkillManager (singleton)
+  Key Methods:
+    - unlock_skill(skill_id: String) -> bool
+    - can_unlock_skill(skill_id: String) -> bool
+    - is_skill_unlocked(skill_id: String) -> bool
+    - set_active_ability(skill_id: String) -> bool
+    - use_active_ability(caster: Node) -> bool
+    - get_active_ability() -> SkillData
+    - set_player_stats(stats_component)
+    - apply_augments_to_spell(spell: SpellData)
+  
+  Key Properties:
+    - _skill_database: Dictionary[String, SkillData]
+    - _unlocked_skills: Dictionary[String, SkillData]
+    - _active_ability: SkillData
+    - _active_ability_cooldown: float
+    - _active_ability_ready: bool
+  
+  Signals:
+    - skill_unlocked(skill: SkillData)
+    - skill_points_changed(new_amount: int)
+    - active_ability_changed(skill: SkillData)
+    - active_ability_used(skill: SkillData)
+    - active_ability_ready(skill: SkillData)
+
+File: resources/skills/skill_data.gd
+  Class: SkillData
+  Extends: Resource
+  Key Methods:
+    - can_unlock(player_level, unlocked_skills) -> bool
+    - apply_passive_to_stats(stats_component)
+    - apply_augment_to_spell(spell: SpellData)
+    - matches_spell(spell: SpellData) -> bool
+    - get_tooltip() -> String
+  
+  Key Properties:
+    - skill_id, skill_name, description
+    - skill_type: Enums.SkillType (PASSIVE|ACTIVE|SPELL_AUGMENT)
+    - category: Enums.SkillCategory (OFFENSE|DEFENSE|UTILITY|ELEMENTAL)
+    - required_level, prerequisite_skills
+    - skill_points_cost
+    - stat_modifiers (for PASSIVE)
+    - ability_effect, cooldown, costs (for ACTIVE)
+    - augment multipliers (for SPELL_AUGMENT)
+
+INTERACTION FLOW
+================
+
+1. PLAYER ENTERS NPC RANGE
+   - Interactable._on_body_entered() called
+   - Player added to players_in_range array
+   - Interaction prompt shown via HUD
+
+2. PLAYER PRESSES [E]
+   - Interactable._input() detects "interact" action
+   - Interactable._try_interact() called
+   - Gets closest local player in range
+   - Calls _perform_interaction(player)
+
+3. NPC._perform_interaction() CALLED
+   - Calls _start_dialogue(player)
+   - Sets _in_dialogue = true
+   - Disables player input: player.set_input_enabled(false)
+   - Shows dialogue box
+   - Displays first line
+
+4. DIALOGUE ADVANCEMENT
+   - Player presses [E] or clicks "Continue" button
+   - _advance_dialogue() increments _current_line_index
+   - _show_current_line() displays next line
+   - Repeat until all lines shown
+
+5. DIALOGUE ENDS
+   - All lines displayed
+   - _end_dialogue() called
+   - Dialogue box hidden
+   - Player input re-enabled: player.set_input_enabled(true)
+   - dialogue_ended signal emitted
+   - _trigger_post_dialogue_actions() runs
+
+6. POST-DIALOGUE ACTIONS
+   - QuestManager.report_npc_talked(npc_id)
+   - If give_quest_id: QuestManager.start_quest()
+   - If complete_quest_id: QuestManager.complete_quest()
+   - If open_shop_on_dialogue_end: ShopManager.open_shop()
+
+SCENE SETUP EXAMPLE
+===================
+
+Town Square (scenes/world/starting_town/town_square.gd):
+  
+  func _ready():
+    _spawn_npcs()
+    
+  func _spawn_npcs():
+    _spawn_npc("crazy_joe", "CrazyJoeSpawn")
+    _spawn_npc("bob", "BobSpawn")
+    
+  func _spawn_npc(npc_id, spawn_point_name):
+    var spawn_point = npc_spawns.get_node(spawn_point_name)
+    var npc_scene = load("res://scenes/npcs/%s.tscn" % npc_id)
+    var npc = npc_scene.instantiate()
+    npc.global_position = spawn_point.global_position
+    add_child(npc)
+    _npcs[npc_id] = npc
+
+NPC Scene Example (crazy_joe.tscn):
+  
+  Node: CrazyJoe (Area3D)
+  ├── Script: npc.gd
+  ├── CollisionShape3D
+  ├── MeshInstance3D
+  └── InteractionArea
+  
+  Properties:
+    npc_name: "Crazy Joe"
+    npc_title: "Eccentric Hermit"
+    npc_id: "crazy_joe"
+    dialogue_lines: ["Hey there, young mage!", "See, I lost something..."]
+    give_quest_id: "tutorial_landfill"
+
+ENUMS & CONSTANTS
+=================
+
+Important Enums (Enums class):
+  SkillType: PASSIVE, ACTIVE, SPELL_AUGMENT
+  SkillCategory: OFFENSE, DEFENSE, UTILITY, ELEMENTAL
+  Element: FIRE, WATER, EARTH, AIR, LIGHT, DARK
+  ItemType: STAFF_PART, WAND_PART, GEM, EQUIPMENT, CONSUMABLE, GRIMOIRE, MISC
+  Rarity: BASIC, UNCOMMON, RARE, MYTHIC, PRIMORDIAL, UNIQUE
+
+Important Constants (Constants class):
+  SKILL_POINTS_PER_LEVEL: 2
+  ACTIVE_ABILITY_COOLDOWN: 30.0
+  LAYER_TRIGGERS: 64  (Interactable collision layer)
+  LAYER_PLAYERS: 2    (Player collision layer)
+
+INTEGRATION POINTS
+==================
+
+SaveManager:
+  - Stores unlocked skills
+  - Stores skill points
+  - Stores active ability selection
+  - Handles gold for shop transactions
+  - Tracks NPCs talked to
+
+QuestManager:
+  - Receives NPC dialogue notifications
+  - Starts quests from NPCs
+  - Completes quests at NPCs
+
+GameManager:
+  - Notifies ShopManager of map load (game state change)
+  - Triggers stock refresh
+
+Player (scenes/player/player.gd):
+  - Has set_input_enabled(bool) method (called by NPCs)
+  - Stores inventory system
+  - Equipped weapon and stats
+
+HUD/UI:
+  - Shows interaction prompts at "HUD/PlayerHUD"
+  - Shows dialogue box
+  - Shows shop UI when open
+
+DATA FLOW PATTERNS
+==================
+
+Pattern 1: Simple Dialogue
+  NPC.dialogue_lines → Dialogue Box → Player reads → Dialogue ends
+  
+Pattern 2: Quest Giver
+  Player talks to NPC → QuestManager.start_quest() → Quest added
+  
+Pattern 3: Quest Turn-In
+  Player talks to NPC with quest done → QuestManager.complete_quest() 
+  → Rewards given
+  
+Pattern 4: Shopkeeper
+  Player talks to NPC → ShopManager.open_shop() → Shop UI shows
+  → Player buys/sells items → ShopManager.close_shop()
+  
+Pattern 5: Skill Training
+  Player talks to Trainer NPC → SkillManager methods called directly
+  or via custom script attached to NPC
+
+EXTENSIBILITY
+=============
+
+To add custom NPC behavior:
+  1. Create a script extending NPC
+  2. Override _trigger_post_dialogue_actions()
+  3. Add custom logic before/after calling super()
+  
+Example:
+  class_name TrainerNPC
+  extends NPC
+  
+  var trainer_skill_id: String
+  
+  func _trigger_post_dialogue_actions():
+    super()
+    # Custom trainer logic
+    if SkillManager.can_unlock_skill(trainer_skill_id):
+      SkillManager.unlock_skill(trainer_skill_id)
+
+FILE REFERENCES
+===============
+
+Source Files Analyzed:
+  /scripts/components/npc.gd (237 lines)
+  /scripts/components/interactable.gd (170 lines)
+  /scripts/components/name_plate.gd (58 lines)
+  /autoload/shop_manager.gd (222 lines)
+  /resources/shops/shop_data.gd (279 lines)
+  /autoload/skill_manager.gd (388 lines)
+  /resources/skills/skill_data.gd (194 lines)
+  /scenes/world/starting_town/town_square.gd (194 lines)
+  /scenes/npcs/crazy_joe.tscn (42 lines)
+  /scenes/npcs/bob.tscn (50 lines)
+  /scripts/data/constants.gd (partial)
+  /scripts/data/enums.gd (partial)
+
+RECOMMENDATIONS
+================
+
+1. For NPC Creation:
+   - Always set npc_id for quest tracking
+   - Always set dialogue_lines (minimum 1 line)
+   - Test interaction range and prompt visibility
+   
+2. For Shops:
+   - Populate item_pool before register_shop()
+   - Set appropriate rarity weights
+   - Test stock generation and rotation
+   
+3. For Skills:
+   - Create SkillData resources in /resources/skills/definitions/
+   - Test prerequisite chains
+   - Verify stat modifiers are reasonable
+
+4. For Debugging:
+   - Check "In Range Players" count
+   - Verify dialogue_lines is populated
+   - Print shop_id and verify registration
+   - Check SaveManager for gold/skill points
+
+================================================================================

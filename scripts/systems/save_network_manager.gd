@@ -186,7 +186,7 @@ func _process_next_pending_save(lock_key: String) -> void:
 func _execute_queued_save(request: Dictionary) -> void:
 	"""Execute a queued save operation"""
 	var save_type = request.save_type
-	var peer_id = request.peer_id
+	var _peer_id = request.peer_id
 
 	# Trigger the appropriate save based on type
 	match save_type:
@@ -370,21 +370,21 @@ func _receive_network_packet(packet: Dictionary) -> void:
 # PACKET PROCESSORS
 # =============================================================================
 
-func _process_save_lock_packet(data: Dictionary, sender: int) -> void:
+func _process_save_lock_packet(data: Dictionary, _sender: int) -> void:
 	"""Process save lock acquisition"""
 	var lock_key = data.get("lock_key", "")
 	var peer_id = data.get("peer_id", 0)
-	var timestamp = data.get("timestamp", 0)
+	var _timestamp = data.get("timestamp", 0)
 
 	if peer_id != multiplayer.get_unique_id():
 		# Someone else acquired a lock
 		save_locks[lock_key] = {
 			"peer_id": peer_id,
-			"timestamp": timestamp,
+			"timestamp": _timestamp,
 			"save_type": lock_key
 		}
 
-func _process_save_unlock_packet(data: Dictionary, sender: int) -> void:
+func _process_save_unlock_packet(data: Dictionary, _sender: int) -> void:
 	"""Process save lock release"""
 	var lock_key = data.get("lock_key", "")
 	var peer_id = data.get("peer_id", 0)

@@ -347,24 +347,24 @@ func _on_level_up(new_level: int, skill_points: int) -> void:
 
 
 func _show_level_up_notification(level: int, skill_points: int) -> void:
-	var notification = Label.new()
-	notification.text = "LEVEL UP! Level %d\n+%d Skill Points" % [level, skill_points]
-	notification.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	notification.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	notification.add_theme_font_size_override("font_size", 32)
-	notification.add_theme_color_override("font_color", Color.GOLD)
-	notification.add_theme_color_override("font_shadow_color", Color.BLACK)
-	notification.add_theme_constant_override("shadow_offset_x", 2)
-	notification.add_theme_constant_override("shadow_offset_y", 2)
-	notification.modulate = Color(1, 1, 1, 0)
-	add_child(notification)
+	var level_up_label = Label.new()
+	level_up_label.text = "LEVEL UP! Level %d\n+%d Skill Points" % [level, skill_points]
+	level_up_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	level_up_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	level_up_label.add_theme_font_size_override("font_size", 32)
+	level_up_label.add_theme_color_override("font_color", Color.GOLD)
+	level_up_label.add_theme_color_override("font_shadow_color", Color.BLACK)
+	level_up_label.add_theme_constant_override("shadow_offset_x", 2)
+	level_up_label.add_theme_constant_override("shadow_offset_y", 2)
+	level_up_label.modulate = Color(1, 1, 1, 0)
+	add_child(level_up_label)
 	
 	# Animate notification
 	var tween = create_tween()
-	tween.tween_property(notification, "modulate", Color.WHITE, 0.3)
+	tween.tween_property(level_up_label, "modulate", Color.WHITE, 0.3)
 	tween.tween_interval(2.0)
-	tween.tween_property(notification, "modulate", Color(1, 1, 1, 0), 0.5)
-	tween.tween_callback(notification.queue_free)
+	tween.tween_property(level_up_label, "modulate", Color(1, 1, 1, 0), 0.5)
+	tween.tween_callback(level_up_label.queue_free)
 
 # =============================================================================
 # QUEST TRACKER

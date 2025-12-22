@@ -26,7 +26,7 @@ radius = 2.0
 viewport_path = NodePath("HealthBar3D/SubViewport")
 
 [node name="EnemyBase" type="CharacterBody3D" groups=["enemies"]]
-collision_layer = 4
+collision_layer = 3
 collision_mask = 3
 script = ExtResource("1_enemy")
 

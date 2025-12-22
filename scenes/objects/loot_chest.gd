@@ -1,4 +1,4 @@
-## LootChest - Interactable chest that gives random parts
+## LootChest - Interactable chest that spawns random parts as ground pickups
 class_name LootChest
 extends Node3D
 
@@ -6,7 +6,8 @@ extends Node3D
 # PROPERTIES
 # =============================================================================
 
-@export var parts_to_give: int = 5
+@export var parts_min: int = 1
+@export var parts_max: int = 10
 @export var has_been_looted: bool = false
 
 var _interactable: Interactable = null
@@ -41,26 +42,38 @@ func _ready() -> void:
 # INTERACTABLE
 # =============================================================================
 
-func _on_interact(player: Node) -> void:
+func _on_interact(_player: Node) -> void:
 	"""Called when player interacts with chest"""
 	if has_been_looted:
 		return
 	
-	# Check if player has inventory
-	if not player.has_method("add_item"):
-		push_warning("Player doesn't have add_item method")
-		return
+	# Generate random number of parts (1-10)
+	var num_parts = randi_range(parts_min, parts_max)
 	
-	# Generate and give random parts
+	# Generate random parts
 	var part_generator = RandomPartGenerator.new()
-	var random_parts = part_generator.get_random_parts(parts_to_give)
+	var random_parts = part_generator.get_random_parts(num_parts)
 	
-	print("Giving player %d random parts from chest" % random_parts.size())
+	print("Spawning %d random parts from chest" % random_parts.size())
 	
+	# Get or create LootSystem
+	var loot_system = get_tree().current_scene.get_node_or_null("LootSystem")
+	if loot_system == null:
+		loot_system = LootSystem.new()
+		get_tree().current_scene.add_child(loot_system)
+	
+	# Spawn each part as a ground pickup
 	for part in random_parts:
 		if part:
-			player.add_item(part)
-			print("  - Added: %s (%s)" % [part.item_name, Enums.Rarity.keys()[part.rarity]])
+			# Calculate spawn position with spread around chest
+			var offset = Vector3(randf_range(-1.5, 1.5), 0.5, randf_range(-1.5, 1.5))
+			var spawn_pos = global_position + offset
+			
+			# Give upward velocity for bounce effect
+			var velocity = Vector3(randf_range(-2, 2), randf_range(3, 5), randf_range(-2, 2))
+			
+			loot_system.drop_loot(part, spawn_pos, velocity)
+			print("  - Spawned: %s (%s)" % [part.item_name, Enums.Rarity.keys()[part.rarity]])
 	
 	# Mark as looted
 	has_been_looted = true

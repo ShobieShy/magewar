@@ -14,7 +14,26 @@ var coop_loot: CoopLootSystem = null
 # =============================================================================
 
 signal loot_dropped(item: ItemData, position: Vector3)
-signal loot_picked_up(item: ItemData, player: Player)
+# signal loot_picked_up(item: ItemData, player: Player)  # Currently unused but kept for future implementation
+
+# =============================================================================
+# RANDOMIZATION SYSTEMS
+# =============================================================================
+
+## Reference to item generation system
+var item_generation_system: ItemGenerationSystem = null
+
+## Reference to affix system
+var affix_system: AffixSystem = null
+
+## Player level for loot scaling (set by owner)
+var player_level: int = 1
+
+## Whether to generate randomized stats (can be disabled for testing)
+var enable_stat_randomization: bool = true
+
+## Whether to generate affixes (can be disabled for testing)
+var enable_affix_generation: bool = true
 
 # =============================================================================
 # CONSTANTS
@@ -30,6 +49,10 @@ func _init() -> void:
 	## Initialize loot pickup scene
 	if ResourceLoader.exists("res://scenes/world/loot_pickup.tscn"):
 		loot_pickup_scene = load("res://scenes/world/loot_pickup.tscn")
+	
+	## Initialize randomization systems
+	item_generation_system = ItemGenerationSystem.new()
+	affix_system = AffixSystem.new()
 
 # =============================================================================
 # METHODS
@@ -86,8 +109,20 @@ func drop_loot_from_table(loot_table: Array, position: Vector3, count: int = 1) 
 					item.stack_count = randi_range(min_count, max_count)
 				
 				# Roll rarity (if not fixed)
-				if not entry.has("fixed_rarity"):
-					item.rarity = _roll_rarity()
+				var rarity = entry.get("fixed_rarity", null)
+				if rarity == null:
+					rarity = _roll_rarity()
+				
+				# Generate randomized stats for equipment items
+				if enable_stat_randomization and item is EquipmentData:
+					item = RandomizedItemData.create_from_base(
+						item as EquipmentData,
+						rarity,
+						player_level,
+						enable_affix_generation
+					)
+				else:
+					item.rarity = rarity
 				
 				# Spread position slightly
 				var offset = Vector3(randf_range(-0.5, 0.5), 0, randf_range(-0.5, 0.5))

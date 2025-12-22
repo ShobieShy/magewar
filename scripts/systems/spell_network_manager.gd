@@ -448,7 +448,7 @@ func _get_player_by_peer_id(peer_id: int) -> Node:
 			return player
 	return null
 
-func _apply_network_spell_effect(effect_id: String, effect_type: String, position: Vector3, affected_targets: Array, effect_data: Dictionary) -> void:
+func _apply_network_spell_effect(_effect_id: String, effect_type: String, _position: Vector3, affected_targets: Array, effect_data: Dictionary) -> void:
 	"""Apply spell effect received from network"""
 	# Create effect at position
 	match effect_type:
@@ -479,7 +479,7 @@ func _apply_network_spell_effect(effect_id: String, effect_type: String, positio
 			# Apply debuff effects
 			pass
 
-func _create_network_projectile(projectile_id: String, projectile_type: String, position: Vector3, velocity: Vector3, projectile_data: Dictionary) -> void:
+func _create_network_projectile(projectile_id: String, _projectile_type: String, position: Vector3, velocity: Vector3, projectile_data: Dictionary) -> void:
 	"""Create projectile instance from network data"""
 	var projectile_scene = load("res://scenes/spells/projectile.tscn")
 	if projectile_scene:

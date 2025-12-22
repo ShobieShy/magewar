@@ -196,13 +196,13 @@ func get_formation_positions(group_size: int, leader_position: Vector3) -> Array
 			for i in range(group_size):
 				positions.append(leader_position + Vector3(i * 2.0, 0.0, -i * 1.0))
 		"wedge":
-			var half_size = int(group_size / 2)
+			var half_size = int(group_size / 2.0)
 			for i in range(half_size):
 				positions.append(leader_position + Vector3(i * 3.0, 0.0, i * 2.0))
 			if group_size % 2 == 1:
 				positions.append(leader_position + Vector3(half_size * 3.0, 0.0, half_size * 1.0))
 		"shield_wall":
-			var half_size = int(group_size / 2)
+			var half_size = int(group_size / 2.0)
 			for i in range(half_size):
 				positions.append(leader_position + Vector3(-2.0, 0.0, i * 2.0))
 			for i in range(half_size, group_size):

@@ -87,6 +87,11 @@ func initialize(config: Dictionary) -> void:
 	_projectile_pool = config.get("pool", _projectile_pool)  # Allow pool to be set via config
 	pierce_remaining = config.get("pierce", 0)
 	
+	# Debug logging
+	var spell_name = spell.spell_name if spell else "Unknown"
+	var caster_name = caster.name if caster else "None"
+	print_debug("Projectile created: %s (caster: %s, pierce: %d)" % [spell_name, caster_name, pierce_remaining])
+	
 	# Clamp bounce count to prevent infinite recursion
 	var requested_bounces = config.get("bounce", 0)
 	bounce_remaining = mini(requested_bounces, MAX_BOUNCES)
@@ -231,6 +236,7 @@ func _handle_hit(target: Node) -> void:
 	
 	# Handle world collision
 	if is_world:
+		print_debug("Projectile HIT world: %s at %s" % [target.name, global_position])
 		# Only bounce if we have bounces remaining
 		if bounce_remaining > 0:
 			_bounce(target)
@@ -244,6 +250,10 @@ func _handle_hit(target: Node) -> void:
 	# Handle entity hit
 	if is_enemy or is_player:
 		_hit_targets.append(target)
+		
+		# Debug logging
+		var target_type = "Enemy" if is_enemy else "Player"
+		print_debug("Projectile HIT %s: %s at %s" % [target_type, target.name, global_position])
 		
 		# Apply spell effects (including damage)
 		for effect in effects:

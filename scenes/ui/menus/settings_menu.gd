@@ -15,7 +15,7 @@ signal settings_applied()
 # =============================================================================
 
 var _is_open: bool = false
-var _tab_index: int = 0  # 0=Audio, 1=Video, 2=Gameplay, 3=Controls
+# var _tab_index: int = 0  # 0=Audio, 1=Video, 2=Gameplay, 3=Controls - Currently unused but kept for future implementation
 
 # UI Nodes
 var _main_panel: PanelContainer
@@ -510,10 +510,10 @@ func _apply_audio_settings() -> void:
 	var voice_bus = AudioServer.get_bus_index("Voice")
 	
 	# Convert volume (0.0-1.0) to dB (-40 to 0)
-	var master_db = linear_to_db(_master_volume_slider.value) if _master_volume_slider.value > 0 else -80
-	var music_db = linear_to_db(_music_volume_slider.value) if _music_volume_slider.value > 0 else -80
-	var sfx_db = linear_to_db(_sfx_volume_slider.value) if _sfx_volume_slider.value > 0 else -80
-	var voice_db = linear_to_db(_voice_volume_slider.value) if _voice_volume_slider.value > 0 else -80
+	var master_db = linear_to_db(_master_volume_slider.value) if _master_volume_slider.value > 0 else -80.0
+	var music_db = linear_to_db(_music_volume_slider.value) if _music_volume_slider.value > 0 else -80.0
+	var sfx_db = linear_to_db(_sfx_volume_slider.value) if _sfx_volume_slider.value > 0 else -80.0
+	var voice_db = linear_to_db(_voice_volume_slider.value) if _voice_volume_slider.value > 0 else -80.0
 	
 	if master_bus != -1:
 		AudioServer.set_bus_volume_db(master_bus, master_db)

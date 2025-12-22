@@ -31,7 +31,7 @@ func _ready() -> void:
 	label_3d.modulate = text_color
 	label_3d.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label_3d.no_depth_test = false
-	label_3d.outline_size = outline_width
+	label_3d.outline_size = int(outline_width)
 	
 	# Create outline material
 	var outline_material = StandardMaterial3D.new()

@@ -426,13 +426,16 @@ func _on_detection_body_exited(body: Node3D) -> void:
 # =============================================================================
 
 func get_sync_data() -> Dictionary:
+	var target_path = ""
+	if current_target:
+		target_path = str(current_target.get_path())
+	
 	return {
-		"position": position,
 		"rotation": rotation,
 		"velocity": velocity,
 		"ai_state": ai_state,
 		"health": stats.current_health if stats else max_health,
-		"target": current_target.get_path() if current_target else ""
+		"target": target_path
 	}
 
 

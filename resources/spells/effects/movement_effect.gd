@@ -62,7 +62,7 @@ func _apply_knockback(caster: Node, target: Node, hit_point: Vector3) -> void:
 		else:
 			direction = (target.global_position - caster.global_position).normalized()
 		
-		direction.y = vertical_force / force if force > 0 else 0
+		direction.y = vertical_force / force if force > 0 else 0.0
 		direction = direction.normalized()
 		target.velocity += direction * force
 

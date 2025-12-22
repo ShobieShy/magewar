@@ -56,6 +56,16 @@ const STARTER_STAFF_SCENE = preload("res://resources/items/weapons/starter_staff
 var _inventory_ui: Control = null
 var _inventory_system: InventorySystem = null
 
+# Public accessor for inventory system
+var inventory: InventorySystem:
+	get:
+		# Initialize inventory system if needed
+		if _inventory_system == null:
+			_inventory_system = InventorySystemClass.new()
+			_inventory_system.initialize(self)
+			add_child(_inventory_system)
+		return _inventory_system
+
 # =============================================================================
 # PROPERTIES
 # =============================================================================
