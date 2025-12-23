@@ -329,6 +329,8 @@ func _on_player_entered(_player: Node, _portal: Node) -> void:
 	"""Player entered the dungeon"""
 	player_entered = true
 	print("Player entered " + dungeon_name)
+	if QuestManager:
+		QuestManager.report_area_entered(dungeon_id)
 
 func _on_player_exited(_player: Node, _portal: Node) -> void:
 	"""Player exited the dungeon"""
@@ -346,7 +348,10 @@ func _on_boss_died(_enemy: Node) -> void:
 	boss_defeated_flag = true
 	boss_defeated.emit()
 	print("Crystal Golem defeated! Treasure room unlocked.")
+	if QuestManager:
+		QuestManager.report_kill(Enums.EnemyType.BOSS, "crystal_golem")
 	unlock_treasure_room()
+
 
 func _on_treasure_opened() -> void:
 	"""Treasure chest was opened"""
