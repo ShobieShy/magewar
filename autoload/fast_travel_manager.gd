@@ -36,6 +36,36 @@ const PORTAL_REGISTRY: Dictionary = {
 		"name": "The Landfill",
 		"scene_path": "res://scenes/world/landfill/landfill.tscn",
 		"spawn_offset": Vector3(0, 1, 2)
+	},
+	"dungeon_1": {
+		"name": "Abandoned Mine",
+		"scene_path": "res://scenes/dungeons/dungeon_1.tscn",
+		"spawn_offset": Vector3(0, 1, 2)
+	},
+	"dungeon_2": {
+		"name": "Haunted Catacombs",
+		"scene_path": "res://scenes/dungeons/dungeon_2.tscn",
+		"spawn_offset": Vector3(0, 1, 2)
+	},
+	"dungeon_3": {
+		"name": "Crystal Cave",
+		"scene_path": "res://scenes/dungeons/dungeon_3.tscn",
+		"spawn_offset": Vector3(0, 1, 2)
+	},
+	"dungeon_4": {
+		"name": "Ancient Ruins",
+		"scene_path": "res://scenes/dungeons/dungeon_4.tscn",
+		"spawn_offset": Vector3(0, 1, 2)
+	},
+	"dungeon_5": {
+		"name": "Forbidden Sanctum",
+		"scene_path": "res://scenes/dungeons/dungeon_5.tscn",
+		"spawn_offset": Vector3(0, 1, 2)
+	},
+	"test_arena": {
+		"name": "Test Arena",
+		"scene_path": "res://scenes/world/test_arena.tscn",
+		"spawn_offset": Vector3(0, 1, 2)
 	}
 }
 
@@ -197,9 +227,16 @@ func travel_to_portal(destination_id: String, from_id: String = "") -> bool:
 
 func get_spawn_position_for_portal(portal_id: String) -> Vector3:
 	## Returns the world position where players should spawn when traveling to this portal
-	var portal_node = _active_portals.get(portal_id)
 	
+	# Try registered spawn point first
+	if portal_id in _spawn_points:
+		return _spawn_points[portal_id]
+		
+	# Try active portal node
+	var portal_node = _active_portals.get(portal_id)
 	if portal_node and portal_node is Node3D:
+		if portal_node.has_method("get_spawn_position"):
+			return portal_node.get_spawn_position()
 		return portal_node.global_position + get_portal_spawn_offset(portal_id)
 	
 	# Fallback position

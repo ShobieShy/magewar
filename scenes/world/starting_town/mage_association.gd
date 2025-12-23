@@ -48,6 +48,7 @@ func _ready() -> void:
 
 func _register_spawn() -> void:
 	FastTravelManager.register_spawn_point("mage_association", get_player_spawn_position())
+	FastTravelManager.unlock_portal("mage_association")
 
 # =============================================================================
 # SERVICES SETUP

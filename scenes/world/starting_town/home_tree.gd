@@ -43,6 +43,7 @@ func _ready() -> void:
 
 func _register_spawn() -> void:
 	FastTravelManager.register_spawn_point("home_tree", get_player_spawn_position())
+	FastTravelManager.unlock_portal("home_tree")
 
 # =============================================================================
 # STORAGE CHEST

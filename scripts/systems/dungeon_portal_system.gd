@@ -118,6 +118,10 @@ func enter_dungeon(dungeon_id: String, portal: DungeonPortal) -> void:
 	if portal:
 		discover_portal(portal.portal_id)
 		dest_portal_id = portal.destination_portal_id
+		
+		# Also unlock in FastTravelManager if applicable
+		if FastTravelManager:
+			FastTravelManager.unlock_portal(dungeon_id)
 
 	# Save return information
 	var player = get_tree().get_first_node_in_group("player")
