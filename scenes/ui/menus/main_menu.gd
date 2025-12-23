@@ -19,8 +19,11 @@ extends Control
 # Custom UI components
 var _save_selection_ui: Control = null
 var _char_creation_ui: Control = null
+var _settings_menu: Control = null
 var _pending_network_action: String = "" # "host" or "join"
+var _auto_start: bool = false
 var _target_lobby_id: int = 0
+var _available_lobbies: Array = []
 
 # Settings menu script class
 const SettingsMenuScript = preload("res://scenes/ui/menus/settings_menu.gd")
@@ -50,6 +53,7 @@ func _ready() -> void:
 	NetworkManager.player_connected.connect(_on_player_connected)
 	NetworkManager.player_disconnected.connect(_on_player_disconnected)
 	NetworkManager.game_start_requested.connect(_on_game_start)
+	NetworkManager.server_started.connect(_on_server_started)
 	
 	lobby_list.item_selected.connect(func(_idx): _join_selected_button.disabled = false)
 	
@@ -259,6 +263,7 @@ func _on_character_created(char_name: String, char_data: Dictionary) -> void:
 	# Generate a new unique slot name
 	var slot_name = "save_" + str(Time.get_unix_time_from_system())
 	SaveManager.create_new_save(slot_name, char_name, char_data)
+	_auto_start = true # Auto-start new games
 	_on_save_selected(slot_name)
 
 
@@ -356,7 +361,8 @@ func _on_steam_initialized(_success: bool) -> void:
 
 func _on_lobby_created(_lobby_id: int, result: int) -> void:
 	if result == 1:  # Success
-		_show_lobby()
+		if not _auto_start:
+			_show_lobby()
 
 
 func _on_lobby_joined(_lobby_id: int, result: int) -> void:
@@ -396,6 +402,13 @@ func _on_player_disconnected(_peer_id: int) -> void:
 func _on_game_start() -> void:
 	# Transition to game scene
 	GameManager.start_game()
+
+
+func _on_server_started() -> void:
+	"""Called when host server/lobby is ready"""
+	if _auto_start:
+		_auto_start = false
+		NetworkManager.request_game_start()
 
 
 func _on_settings_closed() -> void:

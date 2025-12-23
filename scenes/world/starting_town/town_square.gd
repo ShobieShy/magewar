@@ -185,6 +185,20 @@ func _setup_portals() -> void:
 		else:
 			portal_landfill.visible = landfill_unlocked
 
+	# Spawn TempLand portal
+	var portal_scene = load("res://scenes/objects/dungeon_portal.tscn")
+	if portal_scene:
+		var p = portal_scene.instantiate()
+		p.name = "PortalTempLand"
+		p.dungeon_id = "temp_land"
+		p.portal_id = "portal_temp_land"
+		p.portal_name = "Temp Land"
+		p.position = Vector3(5, 0, 10) # Near player spawn
+		p.portal_color = Color(1.0, 0.5, 0.0)
+		$Portals.add_child(p)
+		p.set_active(true)
+
+
 
 func unlock_portal(portal_id: String) -> void:
 	match portal_id:

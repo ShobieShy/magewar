@@ -40,7 +40,8 @@ var dungeon_scenes: Dictionary = {
 	"home_tree": "res://scenes/world/starting_town/home_tree.tscn",
 	"mage_association": "res://scenes/world/starting_town/mage_association.tscn",
 	"landfill": "res://scenes/world/landfill/landfill.tscn",
-	"test_arena": "res://scenes/world/test_arena.tscn"
+	"test_arena": "res://scenes/world/test_arena.tscn",
+	"temp_land": "res://scenes/world/temp_land/temp_land.tscn"
 }
 
 # Main hub scene for returning from dungeons
@@ -372,6 +373,10 @@ func get_dungeon_info(dungeon_id: String) -> Dictionary:
 			info.name = "Test Arena"
 			info.level_range = [1, 20]
 			info.description = "A training ground for testing spells and combat skills."
+		"temp_land":
+			info.name = "Temp Land"
+			info.level_range = [1, 50]
+			info.description = "A vast procedural landscape."
 	
 	return info
 
