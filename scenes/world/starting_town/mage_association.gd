@@ -42,7 +42,11 @@ var _skill_tree_ui: Control = null
 func _ready() -> void:
 	_setup_services()
 	
-	# Register spawn point
+	# Register spawn point (deferred to ensure valid transform)
+	call_deferred("_register_spawn")
+
+
+func _register_spawn() -> void:
 	FastTravelManager.register_spawn_point("mage_association", get_player_spawn_position())
 
 # =============================================================================

@@ -39,6 +39,11 @@ var _npcs: Dictionary = {}  # npc_id -> NPC node
 # =============================================================================
 
 func _ready() -> void:
+	# Use call_deferred to ensure we are fully in the tree and transforms are valid
+	call_deferred("_initialize_scene")
+
+
+func _initialize_scene() -> void:
 	_spawn_npcs()
 	_setup_portals()
 	_setup_shop()

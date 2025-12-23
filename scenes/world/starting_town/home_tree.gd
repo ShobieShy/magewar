@@ -37,7 +37,11 @@ func _ready() -> void:
 	_setup_assembly()
 	_setup_bed()
 	
-	# Register spawn point
+	# Register spawn point (deferred to ensure valid transform)
+	call_deferred("_register_spawn")
+
+
+func _register_spawn() -> void:
 	FastTravelManager.register_spawn_point("home_tree", get_player_spawn_position())
 
 # =============================================================================

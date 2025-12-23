@@ -45,6 +45,7 @@ const PORTAL_REGISTRY: Dictionary = {
 
 var unlocked_portals: Array[String] = ["starting_town"]  # Starting town always unlocked
 var _active_portals: Dictionary = {}  # portal_id -> portal node reference
+var _spawn_points: Dictionary = {}  # location_id -> Vector3
 
 # =============================================================================
 # BUILT-IN CALLBACKS
@@ -69,6 +70,21 @@ func register_portal(portal_id: String, portal_node: Node) -> void:
 
 func unregister_portal(portal_id: String) -> void:
 	_active_portals.erase(portal_id)
+
+
+func register_spawn_point(location_id: String, spawn_pos: Vector3) -> void:
+	## Register a spawn point for a location
+	_spawn_points[location_id] = spawn_pos
+
+
+func unregister_spawn_point(location_id: String) -> void:
+	## Unregister a spawn point
+	_spawn_points.erase(location_id)
+
+
+func get_spawn_point(location_id: String) -> Vector3:
+	## Get spawn point for a location
+	return _spawn_points.get(location_id, Vector3.ZERO)
 
 
 func get_portal_node(portal_id: String) -> Node:
