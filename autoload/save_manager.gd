@@ -453,6 +453,14 @@ func _migrate_player_data(old_data: Dictionary) -> Dictionary:
 			new_data.experience = old_player.experience
 		if old_player.has("inventory"):
 			new_data.inventory = old_player.inventory
+		if old_player.has("character"):
+			new_data.character = old_player.character
+		if old_player.has("allocated_stats"):
+			new_data.allocated_stats = old_player.allocated_stats
+		if old_player.has("unallocated_stat_points"):
+			new_data.unallocated_stat_points = old_player.unallocated_stat_points
+		if old_player.has("gold"):
+			new_data.gold = old_player.gold
 	
 	return new_data
 

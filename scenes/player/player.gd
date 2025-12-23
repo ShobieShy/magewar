@@ -322,7 +322,7 @@ func _apply_character_data() -> void:
 	# Apply color
 	if char_data.has("color") and mesh_instance:
 		var color_str = char_data.color
-		var color = Color.from_string(color_str, Color.WHITE)
+		var color = Color.html(color_str)
 		
 		# Create a unique material for this player
 		var material = StandardMaterial3D.new()
