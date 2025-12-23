@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://home_tree"]
+[gd_scene load_steps=8 format=3 uid="uid://home_tree"]
 
 [ext_resource type="Script" path="res://scenes/world/starting_town/home_tree.gd" id="1_home"]
 [ext_resource type="Script" path="res://scenes/world/storage_chest.gd" id="2_storage"]
 [ext_resource type="Script" path="res://scenes/world/assembly_station.gd" id="3_assembly"]
 [ext_resource type="PackedScene" uid="uid://dportal001" path="res://scenes/objects/dungeon_portal.tscn" id="4_dportal"]
+[ext_resource type="Script" path="res://scripts/components/interactable.gd" id="5_interactable"]
 
 [sub_resource type="StandardMaterial3D" id="mat_wood"]
 albedo_color = Color(0.35, 0.25, 0.18, 1)
@@ -159,7 +160,7 @@ script = ExtResource("2_storage")
 chest_name = "Home Storage"
 
 [node name="Interactable" type="Area3D" parent="StorageChest"]
-script = preload("res://scripts/components/interactable.gd")
+script = ExtResource("5_interactable")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StorageChest"]
 shape = SubResource("SphereShape3D_1")
@@ -170,7 +171,7 @@ script = ExtResource("3_assembly")
 station_name = "Home Workbench"
 
 [node name="Interactable" type="Area3D" parent="AssemblyStation"]
-script = preload("res://scripts/components/interactable.gd")
+script = ExtResource("5_interactable")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AssemblyStation"]
 shape = SubResource("SphereShape3D_1")

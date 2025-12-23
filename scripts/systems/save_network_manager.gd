@@ -400,7 +400,7 @@ func _process_save_sync_packet(data: Dictionary, sender: int) -> void:
 	var save_type = data.get("save_type", "")
 	var save_data = data.get("save_data", {})
 	var checksum = data.get("checksum", "")
-	var timestamp = data.get("timestamp", 0.0)
+	var _timestamp = data.get("timestamp", 0.0)
 
 	# Validate checksum
 	var calculated_checksum = _calculate_checksum(save_data)

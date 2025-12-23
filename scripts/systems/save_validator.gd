@@ -239,9 +239,9 @@ func _validate_inventory(inventory: Array) -> Dictionary:
 		result.errors.append("Inventory is not an array")
 		return result
 	
-	if inventory.size() > 100:  # Reasonable inventory limit
+	if inventory.size() > Constants.INVENTORY_SIZE:
 		result.valid = false
-		result.errors.append("Inventory exceeds maximum size (100 items)")
+		result.errors.append("Inventory exceeds maximum size (%d items)" % Constants.INVENTORY_SIZE)
 	
 	for i in range(inventory.size()):
 		var item = inventory[i]

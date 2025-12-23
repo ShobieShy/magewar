@@ -1031,7 +1031,7 @@ func _populate_friends_list() -> void:
 		_friends_list.set_item_metadata(idx, friend)
 
 
-func _on_friend_selected(index: int) -> void:
+func _on_friend_selected(_index: int) -> void:
 	"""Handle friend selection"""
 	_join_selected_button.disabled = false
 

@@ -93,7 +93,7 @@ func initialize(config: Dictionary) -> void:
 	
 	# Debug logging
 	var spell_name = spell.spell_name if spell else "Unknown"
-	var caster_name = caster.name if caster else "None"
+	var caster_name: String = str(caster.name) if caster else "None"
 	print_debug("Projectile created: %s (caster: %s, pierce: %d)" % [spell_name, caster_name, pierce_remaining])
 	
 	# Clamp bounce count to prevent infinite recursion

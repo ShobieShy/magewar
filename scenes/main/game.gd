@@ -187,9 +187,9 @@ func _get_next_spawn_position() -> Vector3:
 			return player_spawn_node.global_position
 
 	# Fallback to local spawn points in Game scene
-	var spawn_children = spawn_points.get_children()
-	if spawn_children.size() > 0:
-		var spawn_point = spawn_children[_spawn_index % spawn_children.size()]
+	var fallback_spawns = spawn_points.get_children()
+	if fallback_spawns.size() > 0:
+		var spawn_point = fallback_spawns[_spawn_index % fallback_spawns.size()]
 		_spawn_index += 1
 		return spawn_point.global_position
 	

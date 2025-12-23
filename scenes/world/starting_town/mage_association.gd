@@ -57,7 +57,9 @@ func _register_spawn() -> void:
 func _setup_services() -> void:
 	# Quest Board
 	if has_quest_board and quest_board:
-		if quest_board.has_signal("interacted"):
+		if quest_board.has_signal("interaction_started"):
+			quest_board.interaction_started.connect(_on_quest_board_interacted)
+		elif quest_board.has_signal("interacted"):
 			quest_board.interacted.connect(_on_quest_board_interacted)
 	
 	# Skill Trainer
