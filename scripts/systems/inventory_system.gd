@@ -64,6 +64,8 @@ func add_item(item: ItemData) -> int:
 		push_warning("add_item: Attempted to add invalid item")
 		return -1
 	
+	print("InventorySystem: Attempting to add item: %s" % item.item_name)
+	
 	# Try to stack if stackable
 	if item.stackable:
 		for i in range(inventory_size):
@@ -73,6 +75,7 @@ func add_item(item: ItemData) -> int:
 					# Ensure we don't exceed max stack
 					if inventory[i].stack_count > inventory[i].max_stack:
 						inventory[i].stack_count = inventory[i].max_stack
+					print("InventorySystem: Stacked item in slot %d" % i)
 					item_added.emit(inventory[i], i)
 					inventory_changed.emit()
 					return i
@@ -85,10 +88,12 @@ func add_item(item: ItemData) -> int:
 				inventory[i] = item.duplicate()
 			else:
 				inventory[i] = item
+			print("InventorySystem: Added item to slot %d" % i)
 			item_added.emit(inventory[i], i)
 			inventory_changed.emit()
 			return i
 	
+	print("InventorySystem: Inventory full!")
 	inventory_full.emit()
 	return -1
 

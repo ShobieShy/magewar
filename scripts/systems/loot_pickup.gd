@@ -96,26 +96,49 @@ func _update_visual() -> void:
 
 func _on_body_entered(body: Node3D) -> void:
 	if _pickup_delay > 0.0:
+		print("LootPickup: Still in pickup delay (%.2f/%.2f)" % [_pickup_delay, 0.5])
 		return
 	
 	if body is Player:
+		print("LootPickup: Player collision detected, attempting pickup")
 		_pickup_by_player(body)
+	else:
+		print("LootPickup: Non-player collision detected: %s" % body.name)
 
 
 func _pickup_by_player(player: Player) -> void:
 	if item_data == null:
+		push_error("LootPickup: item_data is null")
 		return
 	
-	# Try to add to inventory
-	var inventory = player.get_node_or_null("InventorySystem")
-	if inventory and inventory.has_method("add_item"):
-		for i in range(quantity):
-			if not inventory.add_item(item_data):
-				# Inventory full, drop remaining items
-				break
+	print("LootPickup: Attempting to pick up %s for player %s" % [item_data.item_name, player.name])
 	
-	picked_up.emit()
-	queue_free()
+	# Get inventory from player (uses property getter which auto-initializes)
+	var inventory = player.inventory
+	
+	print("LootPickup: Got inventory: %s" % ("valid" if inventory else "null"))
+	
+	if inventory and inventory.has_method("add_item"):
+		# Successfully added items
+		var added = 0
+		for i in range(quantity):
+			# Pass item directly - inventory.add_item() will duplicate it
+			var slot = inventory.add_item(item_data)
+			print("LootPickup: add_item returned slot %d" % slot)
+			if slot == -1:
+				# Inventory full, stop trying
+				break
+			added += 1
+		
+		if added > 0:
+			print("LootPickup: Successfully added %d items, deleting pickup" % added)
+			picked_up.emit()
+			queue_free()
+		else:
+			# Couldn't add any items - inventory might be full
+			push_warning("LootPickup: Inventory full, could not pick up item: %s" % item_data.item_name)
+	else:
+		push_error("LootPickup: Player has no inventory system")
 
 # =============================================================================
 # UTILITY

@@ -60,6 +60,10 @@ func _init() -> void:
 
 func drop_loot(item: ItemData, position: Vector3, velocity: Vector3 = Vector3.ZERO) -> Node3D:
 	## Spawns a loot pickup in the world
+	if item == null:
+		push_error("LootSystem.drop_loot: Attempting to drop null item")
+		return null
+	
 	var pickup: Node3D
 
 	if loot_pickup_scene:
@@ -76,6 +80,10 @@ func drop_loot(item: ItemData, position: Vector3, velocity: Vector3 = Vector3.ZE
 
 	if pickup.has_method("initialize"):
 		pickup.initialize(item, 1, velocity)
+		print("LootSystem: Dropped %s at %v" % [item.item_name, position])
+	else:
+		push_error("LootSystem: Pickup does not have initialize method")
+	
 	loot_dropped.emit(item, position)
 
 	# Check if this should be shared loot for co-op
@@ -87,13 +95,19 @@ func drop_loot(item: ItemData, position: Vector3, velocity: Vector3 = Vector3.ZE
 
 func drop_loot_from_table(loot_table: Array, position: Vector3, count: int = 1) -> Array:
 	## Drops random loot from a loot table
-	## loot_table format: [{"item": ItemData, "weight": float, "min": int, "max": int}]
+	## loot_table format: [{"item": ItemData or String, "weight": float, "min": int, "max": int}]
 	
 	var drops: Array = []
 	var total_weight = 0.0
 	
+	if loot_table.is_empty():
+		push_warning("LootSystem.drop_loot_from_table: Empty loot table")
+		return drops
+	
 	for entry in loot_table:
 		total_weight += entry.get("weight", 1.0)
+	
+	print("LootSystem: Attempting to drop %d items from table with %d entries (total weight: %f)" % [count, loot_table.size(), total_weight])
 	
 	for i in range(count):
 		var roll = randf() * total_weight
@@ -104,7 +118,7 @@ func drop_loot_from_table(loot_table: Array, position: Vector3, count: int = 1) 
 			if roll <= current:
 				# Skip gold entries - gold is handled by _drop_gold() not the loot system
 				if entry.item == "gold":
-					push_warning("Loot drop: 'gold' should not be in item loot table - use _drop_gold() instead")
+					print("LootSystem: Skipping gold entry")
 					continue
 				
 				# Handle both ItemData objects and string IDs
@@ -112,6 +126,7 @@ func drop_loot_from_table(loot_table: Array, position: Vector3, count: int = 1) 
 				
 				if entry.item is String:
 					# Try to load from ItemDatabase
+					print("LootSystem: Loading item from database: %s" % entry.item)
 					item = ItemDatabase.get_item(entry.item)
 					if item == null:
 						push_warning("Loot drop: Item not found in database: %s" % entry.item)
@@ -122,6 +137,9 @@ func drop_loot_from_table(loot_table: Array, position: Vector3, count: int = 1) 
 				
 				# Now safe to duplicate
 				item = item.duplicate_item()
+				if item == null:
+					push_error("LootSystem: Failed to duplicate item")
+					continue
 				
 				# Roll quantity
 				var min_count = entry.get("min", 1)
@@ -156,6 +174,7 @@ func drop_loot_from_table(loot_table: Array, position: Vector3, count: int = 1) 
 				drops.append(item)
 				break
 	
+	print("LootSystem: Successfully dropped %d items" % drops.size())
 	return drops
 
 
