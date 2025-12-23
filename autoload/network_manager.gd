@@ -338,6 +338,14 @@ func _disconnect_enet() -> void:
 # MULTIPLAYER CALLBACKS
 # =============================================================================
 
+@rpc("any_peer", "call_local", "reliable")
+func _rpc_relay_enet(node_path: NodePath, method: String, args: Array) -> void:
+	## Relay an RPC call to all peers in ENet mode
+	var node = get_node_or_null(node_path)
+	if node and node.has_method(method):
+		node.callv(method, args)
+
+
 func _on_peer_connected(peer_id: int) -> void:
 	print("Peer connected: ", peer_id)
 	
@@ -431,7 +439,14 @@ func rpc_broadcast(node: Node, method: String, args: Array = []) -> void:
 				node.callv(method, args)
 		Enums.NetworkMode.ENET:
 			# Use Godot's built-in RPC
-			node.rpc(method)
+			# Since rpc doesn't support arrays directly, we handle common argument counts
+			match args.size():
+				0: node.rpc(method)
+				1: node.rpc(method, args[0])
+				2: node.rpc(method, args[0], args[1])
+				3: node.rpc(method, args[0], args[1], args[2])
+				4: node.rpc(method, args[0], args[1], args[2], args[3])
+				_: push_error("rpc_broadcast: too many arguments for ENet")
 		_:
 			# Offline - just call locally
 			if node.has_method(method):
@@ -451,7 +466,13 @@ func rpc_to(peer_id: int, node: Node, method: String, args: Array = []) -> void:
 					"args": args
 				})
 		Enums.NetworkMode.ENET:
-			node.rpc_id(peer_id, method)
+			match args.size():
+				0: node.rpc_id(peer_id, method)
+				1: node.rpc_id(peer_id, method, args[0])
+				2: node.rpc_id(peer_id, method, args[0], args[1])
+				3: node.rpc_id(peer_id, method, args[0], args[1], args[2])
+				4: node.rpc_id(peer_id, method, args[0], args[1], args[2], args[3])
+				_: push_error("rpc_to: too many arguments for ENet")
 
 # =============================================================================
 # UTILITY
