@@ -17,6 +17,7 @@ extends Resource
 @export_group("Stacking")
 @export var stackable: bool = false
 @export var max_stack: int = 1
+var stack_count: int = 1  ## Current stack count (not exported, set at runtime)
 
 @export_group("Value")
 @export var base_value: int = 0  ## Sell value in gold

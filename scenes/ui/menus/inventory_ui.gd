@@ -335,7 +335,9 @@ func _refresh_inventory() -> void:
 		var slot = _inventory_slots[i]
 		var item = _inventory_system.get_item(i)
 		if item:
-			slot.set_item(item.item, item.get("quantity", 1))
+			# Get stack count from item (defaults to 1 if not set)
+			var quantity = item.stack_count if item.stack_count > 0 else 1
+			slot.set_item(item, quantity)
 		else:
 			slot.clear()
 
