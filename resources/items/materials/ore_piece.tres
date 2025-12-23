@@ -1,6 +1,8 @@
 [gd_resource type="CraftingMaterial" format=3]
+[ext_resource type="Script" path="res://scripts/systems/crafting_material.gd" id="0_mat"]
 
 [resource]
+script = ExtResource("0_mat")
 material_id = "ore_piece"
 material_name = "Uncommon Ore Piece"
 material_type = 0

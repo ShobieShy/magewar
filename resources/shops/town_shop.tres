@@ -1,5 +1,6 @@
-[gd_resource type="ShopData" script_class="ShopData" load_steps=16 format=3]
+[gd_resource type="ShopData" script_class="ShopData" load_steps=17 format=3]
 
+[ext_resource type="Script" path="res://resources/shops/shop_data.gd" id="0_shop"]
 [ext_resource type="Resource" path="res://resources/items/potions/health_potion.tres" id="1_ao0y8"]
 [ext_resource type="Resource" path="res://resources/items/potions/health_potion_small.tres" id="2_5ow50"]
 [ext_resource type="Resource" path="res://resources/items/potions/mana_potion.tres" id="3_6n3c4"]
@@ -17,7 +18,7 @@
 [ext_resource type="Resource" path="res://resources/items/parts/interiors/iron_conduit.tres" id="15_6v3h1"]
 
 [resource]
-script = SubResource("Resource")
+script = ExtResource("0_shop")
 shop_id = "town_shop"
 shop_name = "Town Market"
 shop_description = "The main marketplace in town with a rotating selection of goods."

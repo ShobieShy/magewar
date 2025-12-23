@@ -1,6 +1,8 @@
 [gd_resource type="CraftingMaterial" format=3]
+[ext_resource type="Script" path="res://scripts/systems/crafting_material.gd" id="0_mat"]
 
 [resource]
+script = ExtResource("0_mat")
 material_id = "water_essence_0"
 material_name = "Basic Water Essence"
 material_type = 1
