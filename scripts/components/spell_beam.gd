@@ -43,7 +43,12 @@ func _process(delta: float) -> void:
 	# Update beam direction
 	if spawn_point:
 		global_position = spawn_point.global_position
-		look_at(spawn_point.global_position + direction * range, Vector3.UP)
+		var target = spawn_point.global_position + direction * range
+		if spawn_point.global_position.distance_to(target) > 0.01:
+			var up = Vector3.UP
+			if abs(direction.normalized().dot(Vector3.UP)) > 0.99:
+				up = Vector3.RIGHT
+			look_at(target, up)
 	
 	# Tick effects
 	if _tick_timer >= tick_rate:

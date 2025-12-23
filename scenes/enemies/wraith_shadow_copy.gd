@@ -44,7 +44,7 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		
 		# Face target
-		if direction.length() > 0.1:
+		if direction.length_squared() > 0.01:
 			look_at(global_position + direction, Vector3.UP)
 		
 		# Try to attack if close

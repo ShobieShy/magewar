@@ -50,12 +50,7 @@ func _process(delta: float) -> void:
 	var progress = _time_alive / duration
 	global_position = _initial_position + _offset + Vector3.UP * rise_speed * _time_alive
 	
-	# Billboard to face camera
-	if _label:
-		var camera = get_viewport().get_camera_3d()
-		if camera:
-			_label.look_at(camera.global_position)
-			_label.rotate_object_local(Vector3.UP, PI)  # Face camera
+	# Billboard behavior is handled by Label3D property
 	
 	# Fade out
 	if progress > fade_start:

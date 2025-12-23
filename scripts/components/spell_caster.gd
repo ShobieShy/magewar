@@ -279,7 +279,10 @@ func _execute_projectile(spell: SpellData, _aim_point: Vector3, direction: Vecto
 
 		# Now we can safely set global properties
 		projectile.global_position = start_pos
-		projectile.look_at(start_pos + proj_dir)
+		var up = Vector3.UP
+		if abs(proj_dir.dot(Vector3.UP)) > 0.99:
+			up = Vector3.RIGHT
+		projectile.look_at(start_pos + proj_dir, up)
 
 		# Configure projectile
 		if projectile.has_method("initialize"):
@@ -580,8 +583,11 @@ func _spawn_impact(spell: SpellData, position: Vector3, normal: Vector3 = Vector
 		var effect = spell.impact_effect.instantiate()
 		if effect is Node3D:
 			effect.global_position = position
-			if normal != Vector3.UP:
-				effect.look_at(position + normal)
+			if normal.length_squared() > 0.01:
+				var up = Vector3.UP
+				if abs(normal.normalized().dot(Vector3.UP)) > 0.99:
+					up = Vector3.RIGHT
+				effect.look_at(position + normal, up)
 		get_tree().current_scene.add_child(effect)
 	
 	if spell.impact_sound:

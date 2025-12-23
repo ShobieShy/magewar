@@ -64,7 +64,11 @@ func spawn_impact_effect(position: Vector3, normal: Vector3 = Vector3.UP) -> voi
 		var effect = impact_effect.instantiate()
 		if effect is Node3D:
 			effect.global_position = position
-			effect.look_at(position + normal)
+			if normal.length_squared() > 0.01:
+				var up = Vector3.UP
+				if abs(normal.normalized().dot(Vector3.UP)) > 0.99:
+					up = Vector3.RIGHT
+				effect.look_at(position + normal, up)
 		var scene_tree = Engine.get_main_loop() as SceneTree
 		if scene_tree:
 			scene_tree.current_scene.add_child(effect)

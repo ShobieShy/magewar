@@ -66,7 +66,11 @@ func _physics_process(delta: float) -> void:
 	
 	# Update rotation to match velocity
 	if _velocity.length_squared() > 0.01:
-		look_at(global_position + _velocity)
+		var target = global_position + _velocity
+		var up = Vector3.UP
+		if abs(_velocity.normalized().dot(Vector3.UP)) > 0.99:
+			up = Vector3.RIGHT
+		look_at(target, up)
 
 # =============================================================================
 # INITIALIZATION

@@ -83,6 +83,9 @@ func _ready() -> void:
 	
 	# Store original scale
 	original_scale = scale
+	if original_scale.length_squared() < 0.001:
+		original_scale = Vector3.ONE
+		scale = Vector3.ONE
 	
 	# Configure visuals
 	_setup_visuals()
@@ -124,10 +127,9 @@ func _process(delta: float) -> void:
 
 func _physics_process(_delta: float) -> void:
 	# Face the interaction prompt toward camera if player is near
-	if interaction_prompt and interaction_prompt.visible and player_in_range:
-		var camera = get_viewport().get_camera_3d()
-		if camera:
-			interaction_prompt.look_at(camera.global_position, Vector3.UP)
+	# Note: Billboard property on Label3D handles this automatically, 
+	# but we keep this function if we need other physics logic
+	pass
 
 # =============================================================================
 # VISUAL SETUP

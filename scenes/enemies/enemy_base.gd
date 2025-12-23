@@ -160,7 +160,7 @@ func _process_patrol(_delta: float) -> void:
 	velocity.z = direction.z * move_speed
 	
 	# Rotate to face movement direction
-	if direction.length() > 0.1:
+	if direction.length() > 0.01:
 		look_at(global_position + direction)
 
 
@@ -194,7 +194,7 @@ func _process_chase(_delta: float) -> void:
 	velocity.x = direction.x * move_speed
 	velocity.z = direction.z * move_speed
 	
-	if direction.length() > 0.1:
+	if direction.length() > 0.01:
 		look_at(global_position + direction)
 
 
@@ -214,7 +214,8 @@ func _process_attack(delta: float) -> void:
 	# Face target
 	var look_pos = current_target.global_position
 	look_pos.y = global_position.y
-	look_at(look_pos)
+	if global_position.distance_squared_to(look_pos) > 0.01:
+		look_at(look_pos)
 	
 	# Stop moving
 	velocity.x = 0

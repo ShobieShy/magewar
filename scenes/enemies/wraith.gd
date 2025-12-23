@@ -314,8 +314,10 @@ func _process_life_drain(delta: float) -> void:
 	# Update drain beam visual
 	if drain_beam and life_drain_target:
 		drain_beam.visible = true
-		drain_beam.look_at(life_drain_target.global_position, Vector3.UP)
-		var distance = global_position.distance_to(life_drain_target.global_position)
+		var target_pos = life_drain_target.global_position
+		if global_position.distance_to(target_pos) > 0.1:
+			drain_beam.look_at(target_pos, Vector3.UP)
+		var distance = global_position.distance_to(target_pos)
 		drain_beam.scale.z = distance
 		drain_beam.position = Vector3(0, 1, 0)
 	
