@@ -1,0 +1,243 @@
+================================================================================
+FUTURE ENHANCEMENT OPPORTUNITY #3: LEGENDARY WEAPON DROP SYSTEM
+================================================================================
+
+Current State:
+- Equipment system exists but legendary weapons not in loot drops
+- Loot system can handle equipment with randomization
+- No boss-specific drops
+- No legendary-only items
+
+Opportunity:
+Create a legendary weapon system that:
+- Legendary weapons drop only from bosses/elites
+- Guaranteed legendary from final boss
+- Unique perks per legendary weapon
+- Creates aspirational goals for players
+- Enables prestige/bragging rights
+
+================================================================================
+DETAILED TODO LIST
+================================================================================
+
+[ ] Phase 1: DESIGN LEGENDARY WEAPON SYSTEM
+    [ ] Define legendary criteria
+        [ ] What makes a weapon legendary?
+        [ ] Stats better than rare?
+        [ ] Special effects?
+        [ ] Unique appearance?
+    [ ] Design legendary progression
+        [ ] Boss 1: Legendary A
+        [ ] Boss 2: Legendary B
+        [ ] Final boss: Ultimate Weapon
+    [ ] Design legendary perks
+        [ ] Stat bonuses (+50% damage, +20% speed, etc.)
+        [ ] Special effects (life steal, AOE, etc.)
+        [ ] Unique animations?
+
+[ ] Phase 2: LEGENDARY ITEM CREATION
+    [ ] Design 5-10 legendary weapons
+        [ ] Name, description, appearance
+        [ ] Stats and bonuses
+        [ ] Perks/special abilities
+        [ ] Boss source
+    [ ] Create legendary item resources
+        [ ] Weapon stat files
+        [ ] Icon/visual assets
+        [ ] Weapon models/meshes
+    [ ] Balance legendary power
+        [ ] Not game-breaking
+        [ ] Progression incentive
+        [ ] Attainable with effort
+
+[ ] Phase 3: DROP MECHANICS DESIGN
+    [ ] Boss-specific drops
+        [ ] Boss 1 drops Legendary A
+        [ ] Boss 2 drops Legendary B
+        [ ] Design rare drop table per boss
+    [ ] Drop probability
+        [ ] 50% legendary from boss?
+        [ ] 20% from elite?
+        [ ] 100% from final boss?
+    [ ] Drop guarantee mechanism
+        [ ] Eventual drop after N kills?
+        [ ] Or pure RNG?
+
+[ ] Phase 4: IMPLEMENTATION DESIGN
+    [ ] Modify enemy data system
+        [ ] Add legendary_drop field
+        [ ] legendary_drop_chance
+        [ ] guaranteed_drop_count
+    [ ] Update boss configurations
+        [ ] Skeleton King: drops legendary A
+        [ ] Dragon: drops legendary B
+        [ ] Final Boss: guaranteed legendary
+    [ ] Modify loot table system
+        [ ] Add legendary entry to tables
+        [ ] Higher weight than rare
+        [ ] Check for boss status
+
+[ ] Phase 5: DISPLAY & PRESENTATION
+    [ ] Legendary visual distinction
+        [ ] Special rarity level?
+        [ ] Unique icon border/effect?
+        [ ] Glowing/shiny appearance?
+    [ ] Legendary notification
+        [ ] Special popup on drop
+        [ ] Screen effects (flash, particles)
+        [ ] Audio fanfare
+    [ ] Legendary in inventory
+        [ ] Special display in inventory
+        [ ] Highlighted in menus
+        [ ] Description shows perks
+
+[ ] Phase 6: STATS & BALANCE
+    [ ] Legendary weapon stats
+        [ ] Higher base damage
+        [ ] Special stat combinations
+        [ ] Perk damage calculations
+    [ ] Perk balance
+        [ ] Not too powerful
+        [ ] Useful but not mandatory
+        [ ] Interesting trade-offs
+    [ ] Boss scaling
+        [ ] Legendary power scales with boss difficulty
+        [ ] Final legendary strongest
+
+[ ] Phase 7: NETWORKING (MULTIPLAYER)
+    [ ] Legendary drop sharing
+        [ ] All players get legendary?
+        [ ] Killer only?
+        [ ] Random allocation?
+    [ ] Legendary ownership
+        [ ] Can trade?
+        [ ] Bound to player?
+        [ ] Account-wide achievement?
+
+[ ] Phase 8: IMPLEMENTATION
+    [ ] Create legendary weapon items
+    [ ] Add to loot tables for bosses
+    [ ] Update drop notification
+    [ ] Add perk system if needed
+    [ ] Update equipment system
+    [ ] Create legendary display UI
+
+[ ] Phase 9: TESTING & BALANCING
+    [ ] Verify drops from correct bosses
+        [ ] Boss 1 → Legendary A only
+        [ ] Boss 2 → Legendary B only
+        [ ] Final Boss → Guaranteed drop
+    [ ] Balance testing
+        [ ] Legendary power reasonable?
+        [ ] Drop rate feel right?
+        [ ] Progression impacted?
+    [ ] Gameplay impact
+        [ ] Does legendary change strategy?
+        [ ] Makes game easier? By how much?
+        [ ] New build possibilities?
+
+[ ] Phase 10: DOCUMENTATION
+    [ ] Legendary item catalog
+        [ ] Stats, perks, sources
+        [ ] Appearance descriptions
+    [ ] Drop rate documentation
+    [ ] Perk explanation for players
+    [ ] Achievement system (if applicable)
+
+================================================================================
+QUESTIONS FOR PLANNING
+================================================================================
+
+Q: Should legendary be craftable or drop-only?
+   - Drop-only: More exciting
+   - Craftable: More control
+   - Recommendation: Drop-only with crafting alternative (hard path)
+
+Q: How powerful should legendary be?
+   - 2x regular equipment? (very powerful)
+   - 1.5x regular equipment? (moderate)
+   - Unique perks but not stat advantage? (interesting)
+   - Recommendation: 1.5x stats + unique perks
+
+Q: How many legendary weapons in game?
+   - 5 (one per enemy type)?
+   - 10 (more variety)?
+   - 20+ (lots of goals)?
+   - Recommendation: 8-10 (good variety, achievable)
+
+Q: Should legendary be unique per player?
+   - Only one copy in world?
+   - Unlimited drops?
+   - Trade-able?
+   - Recommendation: Unlimited, unique, not tradeable
+
+Q: Guaranteed drop or RNG?
+   - Guaranteed from final boss?
+   - Guaranteed after N boss kills?
+   - Pure RNG?
+   - Recommendation: Guaranteed final boss, RNG others
+
+================================================================================
+IMPLEMENTATION PREFERENCES
+================================================================================
+
+RECOMMENDED APPROACH:
+1. Create legendary weapon items
+2. Add to boss loot tables
+3. Update notifications
+4. Balance and test
+5. Optional: Add perk system
+
+ESTIMATED EFFORT:
+- Design: 2-3 hours
+- Asset creation: 3-5 hours
+- Implementation: 3-4 hours
+- Testing/balance: 2-3 hours
+- Total: 10-15 hours
+
+ESTIMATED GAMEPLAY IMPACT:
+- High: Creates major progression goals
+- Exciting drops
+- End-game content
+- Builds hype around bosses
+
+================================================================================
+DEPENDENCIES
+================================================================================
+
+Requires:
+- Equipment system
+- Boss/elite enemy definitions
+- Loot table system
+- Notification system (ideally)
+
+Related Systems:
+- Enemy/boss system
+- Item database
+- Combat system (for balance)
+- Notification system
+
+================================================================================
+SUCCESS CRITERIA
+================================================================================
+
+[ ] Legendary weapons drop from bosses
+[ ] Stats are balanced
+[ ] Drop rates feel right
+[ ] Legendary notification works
+[ ] Players feel rewarded
+[ ] No game balance issues
+[ ] Clear progression path
+
+================================================================================
+FUTURE ENHANCEMENTS
+================================================================================
+
+After legendary weapons:
+- Legendary weapon perks system (active abilities)
+- Legendary crafting (upgrade path)
+- Legendary cosmetics (visual upgrades)
+- Legendary collections/catalog
+- Weapon trade/auction system (multiplayer)
+
+================================================================================

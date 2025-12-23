@@ -47,7 +47,7 @@ enum GoblinVariant {
 ## Loot configuration
 @export var gold_drop_min: int = 10
 @export var gold_drop_max: int = 25
-@export var item_drops: Array[String] = ["basic_potion", "rusty_dagger"]
+@export var item_drops: Array[String] = ["apprentice_shoes", "enchanted_shoes"]
 @export var drop_chance: float = 0.6
 
 ## AI preferences
@@ -166,15 +166,7 @@ func get_loot_table() -> Array:
 	## Generate loot table based on variant
 	var loot_table = []
 	
-	# Base gold drop
-	loot_table.append({
-		"item": "gold",
-		"weight": 30,
-		"min": gold_drop_min,
-		"max": gold_drop_max
-	})
-	
-	# Item drops
+	# Item drops (gold is handled separately by _drop_gold())
 	for item_id in item_drops:
 		loot_table.append({
 			"item": item_id,
@@ -186,7 +178,7 @@ func get_loot_table() -> Array:
 	# Special drops for elites
 	if variant == GoblinVariant.CHIEF:
 		loot_table.append({
-			"item": "chief_horn",
+			"item": "master_hat",
 			"weight": 10,
 			"min": 1,
 			"max": 1

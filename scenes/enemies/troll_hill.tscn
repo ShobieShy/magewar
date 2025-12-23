@@ -28,7 +28,7 @@ armor_color = Color(0.0, 0.5, 0.0, 1)
 weapon_color = Color(0.5, 0.5, 0.5, 1)
 gold_drop_min = 35
 gold_drop_max = 65
-item_drops = ["healing_potion", "troll_hide_armor", "strength_rune"]
+item_drops = ["enhanced_robes", "magical_belt", "fire_ruby"]
 drop_chance = 0.75
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hill"]

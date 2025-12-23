@@ -28,7 +28,7 @@ armor_color = Color(0.3, 0.3, 0.3, 1)
 weapon_color = Color(0.4, 0.4, 0.4, 1)
 gold_drop_min = 30
 gold_drop_max = 55
-item_drops = ["healing_potion", "troll_hide_armor", "cave_crystal"]
+item_drops = ["enhanced_robes", "magical_belt", "arcane_amethyst"]
 drop_chance = 0.72
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_cave"]

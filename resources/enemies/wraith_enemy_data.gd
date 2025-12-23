@@ -44,7 +44,7 @@ enum WraithVariant {
 ## Loot configuration
 @export var gold_drop_min: int = 30
 @export var gold_drop_max: int = 60
-@export var item_drops: Array[String] = ["shadow_essence", "wraith_cloak"]
+@export var item_drops: Array[String] = ["swift_shoes", "journeyman_hat"]
 @export var drop_chance: float = 0.4
 
 # =============================================================================
@@ -141,15 +141,7 @@ func get_loot_table() -> Array:
 	## Generate loot table based on variant
 	var loot_table = []
 	
-	# Base gold drop
-	loot_table.append({
-		"item": "gold",
-		"weight": 30,
-		"min": gold_drop_min,
-		"max": gold_drop_max
-	})
-	
-	# Item drops
+	# Item drops (gold is handled separately by _drop_gold())
 	for item_id in item_drops:
 		loot_table.append({
 			"item": item_id,
@@ -161,7 +153,7 @@ func get_loot_table() -> Array:
 	# Special drops for ancient wraiths
 	if variant == WraithVariant.ANCIENT:
 		loot_table.append({
-			"item": "soul_crystal",
+			"item": "expert_hat",
 			"weight": 6,
 			"min": 1,
 			"max": 1

@@ -46,7 +46,7 @@ enum TrollVariant {
 ## Loot configuration
 @export var gold_drop_min: int = 25
 @export var gold_drop_max: int = 50
-@export var item_drops: Array[String] = ["healing_potion", "troll_hide_armor"]
+@export var item_drops: Array[String] = ["enhanced_robes", "magical_belt"]
 @export var drop_chance: float = 0.7
 
 # =============================================================================
@@ -151,15 +151,7 @@ func get_loot_table() -> Array:
 	## Generate loot table based on variant
 	var loot_table = []
 	
-	# Base gold drop
-	loot_table.append({
-		"item": "gold",
-		"weight": 25,
-		"min": gold_drop_min,
-		"max": gold_drop_max
-	})
-	
-	# Item drops
+	# Item drops (gold is handled separately by _drop_gold())
 	for item_id in item_drops:
 		loot_table.append({
 			"item": item_id,
@@ -171,7 +163,7 @@ func get_loot_table() -> Array:
 	# Special drops for ancient trolls
 	if variant == TrollVariant.ANCIENT:
 		loot_table.append({
-			"item": "ancient_scroll",
+			"item": "flying_shoes",
 			"weight": 8,
 			"min": 1,
 			"max": 1

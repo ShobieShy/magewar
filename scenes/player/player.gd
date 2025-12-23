@@ -93,6 +93,9 @@ var _current_height: float = 2.0
 # =============================================================================
 
 func _ready() -> void:
+	# Add player to group for targeting/detection
+	add_to_group("player")
+	
 	# Store default collision height
 	if collision_shape and collision_shape.shape is CapsuleShape3D:
 		_default_height = collision_shape.shape.height

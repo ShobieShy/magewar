@@ -24,7 +24,7 @@ armor_color = Color(0.4, 0, 0, 1)
 weapon_color = Color(0.4, 0.4, 0.4, 1)
 gold_drop_min = 35
 gold_drop_max = 55
-item_drops = ["bone_club", "rage_gem"]
+item_drops = ["enhanced_robes", "magical_belt"]
 drop_chance = 0.7
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_berserker"]

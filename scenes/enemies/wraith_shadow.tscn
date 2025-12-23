@@ -27,7 +27,7 @@ armor_color = Color(0.1, 0.1, 0.1, 1)
 weapon_color = Color(0.3, 0.3, 0.3, 1)
 gold_drop_min = 28
 gold_drop_max = 58
-item_drops = ["shadow_essence", "shadow_stone", "wraith_cloak"]
+item_drops = ["swift_shoes", "journeyman_hat", "fire_ruby"]
 drop_chance = 0.45
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_shadow"]

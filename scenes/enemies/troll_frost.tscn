@@ -28,7 +28,7 @@ armor_color = Color(0.3, 0.6, 1.0, 1)
 weapon_color = Color(0.7, 0.9, 1.0, 1)
 gold_drop_min = 28
 gold_drop_max = 52
-item_drops = ["healing_potion", "ice_shard", "frost_rune"]
+item_drops = ["enhanced_robes", "magical_belt", "ice_sapphire"]
 drop_chance = 0.7
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_frost"]

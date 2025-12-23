@@ -24,7 +24,7 @@ armor_color = Color(0.6, 0.5, 0, 1)
 weapon_color = Color(0.6, 0.6, 0.6, 1)
 gold_drop_min = 40
 gold_drop_max = 60
-item_drops = ["commander_helmet", "ancient_bone_talisman"]
+item_drops = ["journeyman_hat", "legendary_belt"]
 drop_chance = 0.8
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_commander"]

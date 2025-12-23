@@ -24,7 +24,7 @@ armor_color = Color(0.6, 0.6, 0.6, 1)
 weapon_color = Color(0.39, 0.27, 0.16, 1)
 gold_drop_min = 25
 gold_drop_max = 45
-item_drops = ["bone_arrows", "ranger_bow"]
+item_drops = ["apprentice_shoes", "swift_shoes"]
 drop_chance = 0.6
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_archer"]

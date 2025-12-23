@@ -68,12 +68,14 @@ func drop_loot(item: ItemData, position: Vector3, velocity: Vector3 = Vector3.ZE
 		# Create simple placeholder pickup
 		pickup = _create_placeholder_pickup()
 
+	# Add to scene tree BEFORE setting global_position
+	get_tree().current_scene.add_child(pickup)
+	
+	# Now safe to set global position
 	pickup.global_position = position
 
 	if pickup.has_method("initialize"):
-		pickup.initialize(item, velocity)
-
-	get_tree().current_scene.add_child(pickup)
+		pickup.initialize(item, 1, velocity)
 	loot_dropped.emit(item, position)
 
 	# Check if this should be shared loot for co-op
@@ -100,7 +102,26 @@ func drop_loot_from_table(loot_table: Array, position: Vector3, count: int = 1) 
 		for entry in loot_table:
 			current += entry.get("weight", 1.0)
 			if roll <= current:
-				var item: ItemData = entry.item.duplicate_item()
+				# Skip gold entries - gold is handled by _drop_gold() not the loot system
+				if entry.item == "gold":
+					push_warning("Loot drop: 'gold' should not be in item loot table - use _drop_gold() instead")
+					continue
+				
+				# Handle both ItemData objects and string IDs
+				var item: ItemData
+				
+				if entry.item is String:
+					# Try to load from ItemDatabase
+					item = ItemDatabase.get_item(entry.item)
+					if item == null:
+						push_warning("Loot drop: Item not found in database: %s" % entry.item)
+						continue
+				else:
+					# Already an ItemData object
+					item = entry.item
+				
+				# Now safe to duplicate
+				item = item.duplicate_item()
 				
 				# Roll quantity
 				var min_count = entry.get("min", 1)

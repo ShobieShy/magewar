@@ -17,6 +17,7 @@ var item_data: ItemData = null
 var quantity: int = 1
 var _despawn_timer: float = 0.0
 var _pickup_delay: float = 0.5  # Prevent instant pickup
+var _bob_time: float = 0.0  # For bob animation
 
 # =============================================================================
 # BUILT-IN CALLBACKS
@@ -37,13 +38,15 @@ func _process(delta: float) -> void:
 	_despawn_timer -= delta
 	if _despawn_timer <= 0.0:
 		queue_free()
+		return  # Don't process further after queue_free
 	
 	# Handle pickup delay
 	if _pickup_delay > 0.0:
 		_pickup_delay -= delta
 	
 	# Gentle bob animation
-	var bob = sin(get_tree().get_process_frame_count() * 0.02) * 0.1
+	_bob_time += delta
+	var bob = sin(_bob_time * 2.0) * 0.1
 	position.y += bob * delta
 
 # =============================================================================

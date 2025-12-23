@@ -39,7 +39,7 @@ enum SkeletonVariant {
 ## Loot configuration
 @export var gold_drop_min: int = 20
 @export var gold_drop_max: int = 40
-@export var item_drops: Array[String] = ["bone_fragments", "rusty_sword"]
+@export var item_drops: Array[String] = ["apprentice_robes", "reinforced_belt"]
 @export var drop_chance: float = 0.5
 
 # =============================================================================
@@ -133,15 +133,7 @@ func get_loot_table() -> Array:
 	## Generate loot table based on variant
 	var loot_table = []
 	
-	# Base gold drop
-	loot_table.append({
-		"item": "gold",
-		"weight": 25,
-		"min": gold_drop_min,
-		"max": gold_drop_max
-	})
-	
-	# Item drops
+	# Item drops (gold is handled separately by _drop_gold())
 	for item_id in item_drops:
 		loot_table.append({
 			"item": item_id,
@@ -153,7 +145,7 @@ func get_loot_table() -> Array:
 	# Special drops for commanders
 	if variant == SkeletonVariant.COMMANDER:
 		loot_table.append({
-			"item": "ancient_bone_talisman",
+			"item": "legendary_belt",
 			"weight": 8,
 			"min": 1,
 			"max": 1

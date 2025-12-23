@@ -24,7 +24,7 @@ armor_color = Color(0.827, 0.827, 0.827, 1)
 weapon_color = Color(0.502, 0.502, 0.502, 1)
 gold_drop_min = 20
 gold_drop_max = 40
-item_drops = ["bone_fragments", "rusty_sword"]
+item_drops = ["apprentice_robes", "reinforced_belt"]
 drop_chance = 0.5
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_skeleton"]

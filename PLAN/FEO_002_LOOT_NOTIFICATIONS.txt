@@ -1,0 +1,292 @@
+================================================================================
+FUTURE ENHANCEMENT OPPORTUNITY #2: LOOT NOTIFICATIONS & MESSAGING
+================================================================================
+
+Current State:
+- Loot drops silently appear on ground
+- No player feedback when loot obtained
+- No notifications for rare drops
+- No log of drops made
+- Limited visual feedback beyond colored pickups
+
+Opportunity:
+Create a complete notification system for loot events. This provides:
+- Player feedback for actions
+- Rare loot excitement (notifications for good drops)
+- Visual/audio feedback
+- Loot log for record keeping
+- Encourages engagement with loot system
+
+================================================================================
+DETAILED TODO LIST
+================================================================================
+
+[ ] Phase 1: DESIGN NOTIFICATION SYSTEM
+    [ ] Define notification types
+        [ ] Item dropped (at drop)
+        [ ] Item picked up (at pickup)
+        [ ] Item found (rare drops only)
+        [ ] Achievement unlocked (first legendary, etc.)
+    [ ] Design notification appearance
+        [ ] Pop-up UI element
+        [ ] Position on screen (top-right corner standard)
+        [ ] Duration (3-5 seconds typical)
+        [ ] Animation (fade in/out)
+    [ ] Notification content
+        [ ] Item name + icon
+        [ ] Rarity indicator
+        [ ] Quantity (if stackable)
+        [ ] Special indicator (legendary, etc.)
+
+[ ] Phase 2: DESIGN AUDIO FEEDBACK
+    [ ] Define sound effects
+        [ ] Normal item pickup: soft chime
+        [ ] Rare item pickup: higher pitch
+        [ ] Legendary item pickup: special fanfare
+        [ ] Material pickup: different effect?
+    [ ] Volume levels
+        [ ] Configurable audio volume
+        [ ] Master volume control
+        [ ] Per-notification volume
+    [ ] Create/source sound files
+        [ ] Pickup sounds
+        [ ] Rare drop sounds
+        [ ] Achievement sounds
+
+[ ] Phase 3: DESIGN VISUAL FEEDBACK
+    [ ] Particle effects on pickup
+        [ ] Rarity-based color
+        [ ] Burst pattern
+        [ ] Duration and fade
+    [ ] Screen effects (optional)
+        [ ] Screen flash on legendary?
+        [ ] Enemy highlight when dropping loot?
+    [ ] Animation effects
+        [ ] Item float/spin animation
+        [ ] Collection animation (item moves to inventory)
+
+[ ] Phase 4: DESIGN LOOT LOG/HISTORY
+    [ ] Log data structure
+        [ ] Item name, rarity, quantity
+        [ ] Enemy type that dropped it
+        [ ] Timestamp
+        [ ] Item ID for sorting
+    [ ] Log display UI
+        [ ] Scrollable list
+        [ ] Filtering by rarity
+        [ ] Search functionality
+        [ ] Clear history option
+    [ ] Log persistence
+        [ ] Save to disk? (session only or permanent?)
+        [ ] Max entries (1000? 5000?)
+
+[ ] Phase 5: NOTIFICATION PRIORITY SYSTEM
+    [ ] Design display priority
+        [ ] Multiple notifications at once?
+        [ ] Queue or overlap?
+        [ ] Different priority tiers
+    [ ] Rarity-based display
+        [ ] BASIC: Optional, brief
+        [ ] UNCOMMON: Always show
+        [ ] RARE: Highlight notification
+        [ ] LEGENDARY+: Special effect
+    [ ] Configuration
+        [ ] Show/hide by rarity
+        [ ] Sound toggle per rarity
+        [ ] Log toggle
+
+[ ] Phase 6: IMPLEMENTATION DESIGN
+    [ ] Create LootNotificationManager
+        [ ] Singleton or scene-based?
+        [ ] Receive loot events
+        [ ] Queue notifications
+        [ ] Display/dismiss management
+    [ ] Modify LootSystem
+        [ ] Emit more detailed signals
+        [ ] Include rarity in signal
+        [ ] Include item details
+    [ ] Modify LootPickup
+        [ ] Emit pickup event
+        [ ] Include player reference
+    [ ] Create notification UI prefab
+        [ ] Reusable notification component
+        [ ] Animation controller
+        [ ] Icon rendering
+
+[ ] Phase 7: CONFIGURATION & CUSTOMIZATION
+    [ ] Create settings structure
+        [ ] Show notifications toggle
+        [ ] Show log toggle
+        [ ] Notification duration
+        [ ] Position on screen
+        [ ] Font size/color
+    [ ] Preset notification styles
+        [ ] Minimal (text only)
+        [ ] Standard (icon + text)
+        [ ] Detailed (icon + text + rarity)
+    [ ] Sound configuration
+        [ ] Per-rarity volume
+        [ ] Mute individual sounds
+        [ ] Custom sound files?
+
+[ ] Phase 8: IMPLEMENTATION
+    [ ] Create NotificationManager class
+    [ ] Implement notification display system
+    [ ] Implement notification queuing
+    [ ] Create notification UI scene
+    [ ] Modify loot drop signals
+    [ ] Add sound playback system
+    [ ] Implement particle effects
+    [ ] Create loot history log
+
+[ ] Phase 9: AUDIO/VISUAL INTEGRATION
+    [ ] Load sound files
+    [ ] Create particle effect scenes
+    [ ] Test audio playback
+    [ ] Test visual effects
+    [ ] Timing synchronization
+    [ ] Performance optimization
+
+[ ] Phase 10: TESTING & REFINEMENT
+    [ ] Basic functionality test
+        [ ] Notifications display
+        [ ] Sounds play correctly
+        [ ] Log records items
+    [ ] UI layout test
+        [ ] Multiple notifications
+        [ ] Animation smoothness
+        [ ] No overlapping issues
+    [ ] Gameplay integration test
+        [ ] Feel appropriate?
+        [ ] Not distracting?
+        [ ] Feels rewarding?
+    [ ] Performance test
+        [ ] No frame drops
+        [ ] Efficient rendering
+        [ ] Memory footprint
+
+[ ] Phase 11: POLISH & LOCALIZATION
+    [ ] UI polish
+        [ ] Font choices
+        [ ] Color schemes
+        [ ] Animation smoothness
+    [ ] Localization prep
+        [ ] Text for translations
+        [ ] Font support for languages
+    [ ] Accessibility
+        [ ] High contrast option
+        [ ] Colorblind mode
+        [ ] Text-to-speech option?
+
+================================================================================
+QUESTIONS FOR PLANNING
+================================================================================
+
+Q: Which rarity tiers warrant notifications?
+   - All items? (spammy)
+   - Rare+ only? (good feedback)
+   - UNCOMMON+ (balance)
+   - Recommendation: UNCOMMON+ with config option
+
+Q: Should there be special effects for legendaries?
+   - Screen flash?
+   - Special sound?
+   - Floating text?
+   - Recommendation: All of above for legendary
+
+Q: Persistent loot history?
+   - Session-only?
+   - Save to file?
+   - Cloud sync?
+   - Recommendation: Session-only (less clutter)
+
+Q: Multiple simultaneous notifications?
+   - Stack vertically?
+   - Overlap?
+   - Queue and show one at a time?
+   - Recommendation: Queue with max 3 visible
+
+Q: Audio must-have or nice-to-have?
+   - Sound effects significant effort
+   - Audio feedback is very rewarding
+   - Recommendation: Audio is worth it
+
+================================================================================
+IMPLEMENTATION PREFERENCES
+================================================================================
+
+RECOMMENDED APPROACH:
+1. Simple notification system first
+2. Add audio effects second
+3. Add loot log third
+4. Polish and refine
+
+ESTIMATED EFFORT:
+- Notification UI: 3-4 hours
+- Audio integration: 2-3 hours
+- Loot log: 2-3 hours
+- Polish/testing: 2-3 hours
+- Total: 9-13 hours
+
+ESTIMATED GAMEPLAY IMPACT:
+- High: Significantly improves feel
+- Rewards progression
+- Makes loot more exciting
+- Encourages engagement
+
+================================================================================
+DEPENDENCIES
+================================================================================
+
+Requires:
+- UI system (Canvas, etc.)
+- Audio system
+- Loot signals from LootSystem
+- Asset files (sounds, visuals)
+
+Related Systems:
+- LootSystem (signal source)
+- Player feedback systems
+- UI framework
+
+================================================================================
+ASSET REQUIREMENTS
+================================================================================
+
+Sounds needed:
+- Normal pickup chime (0.5 sec)
+- Rare pickup ding (0.8 sec)
+- Legendary pickup fanfare (2 sec)
+- UI confirmation sound (0.2 sec)
+
+Visuals needed:
+- Notification UI design
+- Icon atlas or individual icons
+- Particle effects (pickup explosion)
+- Animations (fade in/out, scaling)
+
+================================================================================
+SUCCESS CRITERIA
+================================================================================
+
+[ ] Notifications display on item pickup
+[ ] Rare items show special notification
+[ ] Sound effects play on loot events
+[ ] Notifications don't overlap badly
+[ ] Performance not affected
+[ ] Loot history working
+[ ] Settings configuration working
+[ ] Feels rewarding to player
+
+================================================================================
+FUTURE ENHANCEMENTS
+================================================================================
+
+After notification system:
+- Achievement notifications integration
+- Drop predictions (mini-game)
+- Loot statistics dashboard
+- Rare drop alerts
+- Streaming-friendly notifications (for Twitch, etc.)
+
+================================================================================
