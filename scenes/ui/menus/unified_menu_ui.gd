@@ -200,7 +200,6 @@ func open() -> void:
 	_refresh_inventory_display()
 	_update_skill_tree_display()
 	
-	print("DEBUG: Menu opened, visible=%s, layer=%d, paused=%s" % [visible, layer, get_tree().paused])
 	menu_opened.emit()
 
 
@@ -284,8 +283,6 @@ func _create_ui() -> void:
 	_create_storage_tab()
 	_create_quests_tab()
 	_create_fast_travel_tab()
-	
-	print("DEBUG: UnifiedMenuUI created with %d tabs" % _tab_container.get_tab_count())
 	
 	# Create tooltip and context menu (shared across tabs)
 	_inventory_tooltip = ItemTooltip.new()
