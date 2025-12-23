@@ -158,7 +158,8 @@ static func spawn(
 	number.is_critical = critical
 	number.is_heal = heal
 	number.damage_element = element
-	number.global_position = spawn_position
 	
+	# Add to parent first, then set global position (requires to be in scene tree)
 	parent.add_child(number)
+	number.global_position = spawn_position
 	return number
