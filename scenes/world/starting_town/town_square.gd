@@ -77,8 +77,8 @@ func _spawn_npc(npc_id: String, spawn_node_name: String) -> void:
 		# Try creating a generic NPC
 		var npc = _create_generic_npc(npc_id)
 		if npc:
-			npc.global_position = spawn_point.global_position
 			add_child(npc)
+			npc.global_position = spawn_point.global_position
 			_npcs[npc_id] = npc
 			npc_spawned.emit(npc)
 		return
@@ -86,8 +86,8 @@ func _spawn_npc(npc_id: String, spawn_node_name: String) -> void:
 	var npc_scene = load(npc_path)
 	if npc_scene:
 		var npc = npc_scene.instantiate()
-		npc.global_position = spawn_point.global_position
 		add_child(npc)
+		npc.global_position = spawn_point.global_position
 		_npcs[npc_id] = npc
 		npc_spawned.emit(npc)
 
