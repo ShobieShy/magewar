@@ -40,6 +40,15 @@ signal player_respawned()
 
 const STARTER_STAFF_SCENE = preload("res://resources/items/weapons/starter_staff.tscn")
 
+const STARTING_SPELLS = {
+	Enums.Element.FIRE: "res://resources/spells/presets/fireball.tres",
+	Enums.Element.WATER: "res://resources/spells/presets/ice_shard.tres",
+	Enums.Element.EARTH: "res://resources/spells/presets/earth_spike.tres",
+	Enums.Element.AIR: "res://resources/spells/presets/arcane_bolt.tres",
+	Enums.Element.LIGHT: "res://resources/spells/presets/healing_light.tres",
+	Enums.Element.DARK: "res://resources/spells/presets/lightning_chain.tres"
+}
+
 # =============================================================================
 # NODE REFERENCES
 # =============================================================================
@@ -335,6 +344,15 @@ func _equip_starter_weapon() -> void:
 		return  # Already have a weapon
 	
 	var starter_staff = STARTER_STAFF_SCENE.instantiate()
+	
+	# Apply magic type to base spell
+	if SaveManager and SaveManager.player_data.has("character"):
+		var magic_type = SaveManager.player_data.character.get("magic_type", Enums.Element.NONE)
+		if magic_type in STARTING_SPELLS:
+			var spell_res = load(STARTING_SPELLS[magic_type])
+			if spell_res:
+				starter_staff.base_spell = spell_res
+	
 	equip_weapon(starter_staff)
 
 

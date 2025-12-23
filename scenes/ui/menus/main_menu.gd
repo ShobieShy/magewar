@@ -14,6 +14,7 @@ extends Control
 @onready var join_panel: PanelContainer = $JoinPanel
 @onready var address_input: LineEdit = $JoinPanel/VBox/AddressInput
 @onready var lobby_list: ItemList = $JoinPanel/VBox/LobbyList
+@onready var _join_selected_button: Button = $JoinPanel/VBox/HBox/JoinSelectedButton
 
 # Custom UI components
 var _save_selection_ui: Control = null
@@ -50,6 +51,8 @@ func _ready() -> void:
 	NetworkManager.player_disconnected.connect(_on_player_disconnected)
 	NetworkManager.game_start_requested.connect(_on_game_start)
 	
+	lobby_list.item_selected.connect(func(_idx): _join_selected_button.disabled = false)
+	
 	GameManager.current_state = Enums.GameState.MAIN_MENU
 
 # =============================================================================
@@ -78,6 +81,11 @@ func _create_save_selection_ui() -> Control:
 	ui.name = "SaveSelectionUI"
 	ui.set_script(load("res://scenes/ui/menus/save_selection_ui.gd"))
 	ui.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	
+	var bg = ColorRect.new()
+	bg.color = Color(0, 0, 0, 0.7)
+	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	ui.add_child(bg)
 	
 	var panel = PanelContainer.new()
 	panel.name = "Panel"
@@ -133,6 +141,11 @@ func _create_char_creation_ui() -> Control:
 	ui.name = "CharacterCreationUI"
 	ui.set_script(load("res://scenes/ui/menus/character_creation_ui.gd"))
 	ui.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	
+	var bg = ColorRect.new()
+	bg.color = Color(0, 0, 0, 0.7)
+	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	ui.add_child(bg)
 	
 	var panel = PanelContainer.new()
 	panel.name = "Panel"
@@ -354,6 +367,11 @@ func _on_lobby_joined(_lobby_id: int, result: int) -> void:
 func _on_lobby_list_received(lobbies: Array) -> void:
 	lobby_list.clear()
 	_available_lobbies = lobbies
+	
+	_join_selected_button.disabled = true
+	
+	if lobbies.is_empty():
+		return
 	
 	for lobby_id in lobbies:
 		var lobby_name = Steam.getLobbyData(lobby_id, "name") if SteamManager.is_initialized else "Lobby"
