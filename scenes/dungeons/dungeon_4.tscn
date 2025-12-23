@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" path="res://scenes/enemies/skeleton_commander.tscn" id="skeleton_commander"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/wraith.tscn" id="wraith"]
 [ext_resource type="PackedScene" path="res://scenes/objects/dungeon_portal.tscn" id="portal"]
-[ext_resource type="PackedScene" path="res://scenes/world/storage_chest.tscn" id="chest"]
+[ext_resource type="PackedScene" path="res://scenes/objects/loot_chest.tscn" id="chest"]
 [ext_resource type="Script" path="res://scenes/dungeons/dungeon_4.gd" id="dungeon_script"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
@@ -86,6 +86,7 @@ surface_material_override/0 = SubResource("Material_shadow")
 
 [node name="EntrancePortal" parent="EntranceArea" instance=ExtResource("portal")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.8)
+portal_id = "entrance"
 portal_type = 1
 dungeon_id = ""
 portal_name = "Exit to Overworld"

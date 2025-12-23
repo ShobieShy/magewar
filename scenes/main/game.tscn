@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" path="res://scenes/enemies/filth_slime.tscn" id="7_slime"]
 [ext_resource type="PackedScene" path="res://scenes/objects/loot_chest.tscn" id="8_chest"]
 [ext_resource type="PackedScene" path="res://scenes/main/shopkeeper.tscn" id="9_shopkeeper"]
+[ext_resource type="PackedScene" path="res://scenes/objects/dungeon_portal.tscn" id="10_portal"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -117,6 +118,48 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -8)
 
 [node name="Shopkeeper" parent="Objects" instance=ExtResource("9_shopkeeper")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1, 0)
+
+[node name="DungeonPortal" parent="Objects" instance=ExtResource("10_portal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -10)
+portal_id = "portal_d1"
+dungeon_id = "dungeon_1"
+destination_portal_id = "entrance"
+portal_name = "Abandoned Mine"
+
+[node name="DungeonPortal2" parent="Objects" instance=ExtResource("10_portal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, -10)
+portal_id = "portal_d2"
+dungeon_id = "dungeon_2"
+destination_portal_id = "entrance"
+portal_name = "Haunted Catacombs"
+
+[node name="DungeonPortal3" parent="Objects" instance=ExtResource("10_portal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -10)
+portal_id = "portal_d3"
+dungeon_id = "dungeon_3"
+destination_portal_id = "entrance"
+portal_name = "Crystal Cave"
+
+[node name="DungeonPortal4" parent="Objects" instance=ExtResource("10_portal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -15)
+portal_id = "portal_d4"
+dungeon_id = "dungeon_4"
+destination_portal_id = "entrance"
+portal_name = "Ancient Ruins"
+
+[node name="DungeonPortal5" parent="Objects" instance=ExtResource("10_portal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, -15)
+portal_id = "portal_d5"
+dungeon_id = "dungeon_5"
+destination_portal_id = "entrance"
+portal_name = "Forbidden Sanctum"
+
+[node name="TownPortal" parent="Objects" instance=ExtResource("10_portal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -15)
+portal_id = "portal_town"
+dungeon_id = "town_square"
+destination_portal_id = "town_center"
+portal_name = "Starting Town"
 
 [node name="HUD" type="CanvasLayer" parent="."]
 

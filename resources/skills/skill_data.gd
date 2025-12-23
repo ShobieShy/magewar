@@ -69,9 +69,10 @@ func get_stat_description() -> String:
 	
 	match skill_type:
 		Enums.SkillType.PASSIVE:
-			for stat_type in stat_modifiers:
-				var value = stat_modifiers[stat_type]
-				var stat_name = Enums.StatType.keys()[stat_type].replace("_", " ").capitalize()
+			for stat_key in stat_modifiers:
+				var value = stat_modifiers[stat_key]
+				var stat_index = _resolve_stat_enum(stat_key)
+				var stat_name = _format_stat_name(stat_index, stat_key)
 				if is_percentage:
 					lines.append("%+.0f%% %s" % [value * 100, stat_name])
 				else:
@@ -114,6 +115,25 @@ func get_stat_description() -> String:
 				lines.append("+%d Chain" % chain_bonus)
 	
 	return "\n".join(lines)
+
+
+func _resolve_stat_enum(stat_key: Variant) -> int:
+	match typeof(stat_key):
+		TYPE_INT, TYPE_FLOAT:
+			return int(stat_key)
+		TYPE_STRING, TYPE_STRING_NAME:
+			var key_name = String(stat_key).strip_edges().to_upper()
+			if Enums.StatType.has(key_name):
+				return int(Enums.StatType[key_name])
+	return -1
+
+
+func _format_stat_name(stat_index: int, fallback_key: Variant) -> String:
+	if stat_index >= 0:
+		var stat_keys = Enums.StatType.keys()
+		if stat_index < stat_keys.size():
+			return String(stat_keys[stat_index]).replace("_", " ").capitalize()
+	return String(fallback_key).capitalize()
 
 
 func get_tooltip() -> String:

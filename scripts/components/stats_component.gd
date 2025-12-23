@@ -19,17 +19,32 @@ signal stat_depleted(stat_type: Enums.StatType)
 # =============================================================================
 
 @export_group("Health")
-@export var max_health: float = Constants.DEFAULT_HEALTH
+var max_health: float:
+	get:
+		return _get_modified_stat(Enums.StatType.HEALTH, _base_max_health)
+	set(value):
+		_base_max_health = value
+@export var _base_max_health: float = Constants.DEFAULT_HEALTH
 @export var health_regen_rate: float = Constants.HEALTH_REGEN_RATE
 @export var health_regen_delay: float = 3.0  # Delay after taking damage
 
 @export_group("Magika")
-@export var max_magika: float = Constants.DEFAULT_MAGIKA
+var max_magika: float:
+	get:
+		return _get_modified_stat(Enums.StatType.MAGIKA, _base_max_magika)
+	set(value):
+		_base_max_magika = value
+@export var _base_max_magika: float = Constants.DEFAULT_MAGIKA
 @export var magika_regen_rate: float = Constants.MAGIKA_REGEN_RATE
 @export var magika_regen_delay: float = 1.0
 
 @export_group("Stamina")
-@export var max_stamina: float = Constants.DEFAULT_STAMINA
+var max_stamina: float:
+	get:
+		return _get_modified_stat(Enums.StatType.STAMINA, _base_max_stamina)
+	set(value):
+		_base_max_stamina = value
+@export var _base_max_stamina: float = Constants.DEFAULT_STAMINA
 @export var stamina_regen_rate: float = Constants.STAMINA_REGEN_RATE
 @export var stamina_regen_delay: float = Constants.STAMINA_REGEN_DELAY
 
@@ -294,6 +309,36 @@ func _get_modified_stat(stat_type: Enums.StatType, base_value: float) -> float:
 				result += modifier_data.value
 	
 	return result * percentage_bonus
+
+
+func apply_allocated_stats(allocated_stats: Dictionary) -> void:
+	## Apply stat point allocations from SaveManager
+	## allocated_stats is a Dictionary where key = StatType enum value, value = points
+	
+	# Clear any previous allocated stat modifiers
+	_clear_allocated_stat_modifiers()
+	
+	# Apply each allocated stat
+	for key in allocated_stats:
+		var stat_type = int(key) # Ensure key is int (JSON loads keys as strings)
+		var points = allocated_stats[key]
+		if points > 0:
+			# Each allocated point grants a +1 modifier
+			add_modifier(stat_type, "allocated_stat_%d" % stat_type, float(points), false)
+
+
+func _clear_allocated_stat_modifiers() -> void:
+	## Remove all previously applied allocated stat modifiers
+	# We need to remove modifiers that start with "allocated_stat_"
+	for stat_type in _stat_modifiers.keys():
+		var modifiers_to_remove = []
+		for modifier_id in _stat_modifiers[stat_type].keys():
+			if modifier_id.begins_with("allocated_stat_"):
+				modifiers_to_remove.append(modifier_id)
+		
+		# Remove the identified modifiers
+		for modifier_id in modifiers_to_remove:
+			_stat_modifiers[stat_type].erase(modifier_id)
 
 # =============================================================================
 # GETTERS

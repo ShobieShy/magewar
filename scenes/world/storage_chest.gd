@@ -1,7 +1,7 @@
 ## StorageChest - Persistent storage interactable for Home Tree
 ## Players can store and retrieve items that persist across sessions
 class_name StorageChest
-extends Interactable
+extends StaticBody3D
 
 # =============================================================================
 # SIGNALS
@@ -27,14 +27,17 @@ signal item_withdrawn(item: Dictionary)
 var _storage_ui: Control = null
 var _is_using: bool = false
 var _current_player: Node = null
+var _interactable: Interactable = null
 
 # =============================================================================
 # INITIALIZATION
 # =============================================================================
 
 func _ready() -> void:
-	super._ready()
-	interaction_prompt = "[E] Open " + chest_name
+	_interactable = get_node_or_null("Interactable")
+	if _interactable:
+		_interactable.interaction_prompt = "[E] Open " + chest_name
+		_interactable.interaction_started.connect(_perform_interaction)
 
 # =============================================================================
 # INTERACTION

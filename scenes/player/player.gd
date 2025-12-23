@@ -53,7 +53,6 @@ const STARTER_STAFF_SCENE = preload("res://resources/items/weapons/starter_staff
 @onready var raycast: RayCast3D = $CameraPivot/Camera3D/RayCast3D
 
 # Inventory management
-var _inventory_ui: Control = null
 var _inventory_system: InventorySystem = null
 
 # Public accessor for inventory system
@@ -109,6 +108,11 @@ func _ready() -> void:
 		stats.respawned.connect(_on_respawned)
 		# Equip starter weapon
 		_equip_starter_weapon()
+		# Apply allocated stat points from save data
+		if SaveManager and SaveManager.player_data:
+			var allocated_stats = SaveManager.player_data.get("allocated_stats", {})
+			if not allocated_stats.is_empty():
+				stats.apply_allocated_stats(allocated_stats)
 	else:
 		# Remote players don't need active camera
 		camera.current = false
@@ -122,11 +126,6 @@ func _input(event: InputEvent) -> void:
 	# Mouse look
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		_handle_mouse_look(event)
-	
-	# Inventory toggle
-	if event.is_action_pressed("inventory"):
-		_toggle_inventory()
-		get_viewport().set_input_as_handled()
 
 
 func _physics_process(delta: float) -> void:
@@ -255,41 +254,6 @@ func _can_stand_up() -> bool:
 # =============================================================================
 # STATE
 # =============================================================================
-
-func _toggle_inventory() -> void:
-	"""Toggle inventory UI open/closed"""
-	if _inventory_ui == null:
-		_create_inventory_ui()
-	
-	if _inventory_ui.is_open():
-		_inventory_ui.close()
-		_inventory_ui = null
-	else:
-		_inventory_ui.open(_inventory_system)
-
-
-func _create_inventory_ui() -> void:
-	"""Create and setup inventory UI"""
-	var inventory_scene = preload("res://scenes/ui/menus/inventory_ui.tscn")
-	_inventory_ui = inventory_scene.instantiate()
-	
-	# Add to HUD layer if available, otherwise add directly
-	var hud_root = get_tree().current_scene.get_node_or_null("HUD/PlayerHUD")
-	if hud_root:
-		hud_root.add_child(_inventory_ui)
-	else:
-		get_tree().current_scene.add_child(_inventory_ui)
-	
-	# Connect close signal to clean up
-	_inventory_ui.closed.connect(_on_inventory_closed)
-
-
-func _on_inventory_closed() -> void:
-	"""Clean up inventory UI when closed"""
-	if _inventory_ui and is_instance_valid(_inventory_ui):
-		_inventory_ui.queue_free()
-		_inventory_ui = null
-
 
 func _update_player_state() -> void:
 	"""Update player state based on current actions with proper priority system.

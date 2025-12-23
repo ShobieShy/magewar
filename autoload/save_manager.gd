@@ -12,6 +12,9 @@ signal player_data_loaded(data: Dictionary)
 signal world_data_loaded(data: Dictionary)
 signal gold_changed(new_amount: int, delta: int)
 signal level_up(new_level: int, skill_points: int)
+signal stat_points_changed(new_amount: int)
+signal stat_allocated(stat_type: int, new_value: int)
+signal stat_deallocated(stat_type: int, new_value: int)
 signal save_data_corrupted(data_type: String)  # Emitted if corrupted data is detected
 
 # =============================================================================
@@ -156,7 +159,12 @@ func load_player_data() -> Dictionary:
 				loaded_player = _save_validator.sanitize_player_data(loaded_player)
 			
 			player_data = loaded_player
-	
+	# Fix string keys in allocated_stats (JSON conversion side-effect)
+	if player_data.has("allocated_stats"):
+		var fixed_stats = {}
+		for key in player_data.allocated_stats:
+			fixed_stats[int(key)] = player_data.allocated_stats[key]
+		player_data.allocated_stats = fixed_stats
 	# Ensure all required fields are present
 	_ensure_required_player_fields()
 	
@@ -231,6 +239,12 @@ func _get_default_player_data() -> Dictionary:
 			"magika_regen": Constants.MAGIKA_REGEN_RATE,
 			"stamina_regen": Constants.STAMINA_REGEN_RATE
 		},
+		"allocated_stats": {
+			## Maps StatType -> int (points allocated to that stat)
+			## Enums.StatType.HEALTH: 0, Enums.StatType.MAGIKA: 0, etc.
+		},
+		"unallocated_stat_points": 0,  ## Points available to spend (awarded per level)
+		"stat_points_per_level": 3,    ## Customizable allocation budget per level
 		"inventory": [],
 		"equipment": {
 			"head": null,
@@ -443,8 +457,12 @@ func _check_level_up() -> bool:
 	while player_data.experience >= exp_needed:
 		player_data.level += 1
 		player_data.skill_points += Constants.SKILL_POINTS_PER_LEVEL
+		# Award stat points on level up
+		var stat_points_awarded = player_data.get("stat_points_per_level", 3)
+		player_data.unallocated_stat_points += stat_points_awarded
 		leveled = true
 		level_up.emit(player_data.level, Constants.SKILL_POINTS_PER_LEVEL)
+		stat_points_changed.emit(player_data.unallocated_stat_points)
 		exp_needed = _get_exp_for_level(player_data.level + 1)
 	return leveled
 
@@ -539,6 +557,81 @@ func get_active_ability() -> String:
 	if player_data.has("active_ability"):
 		return player_data.active_ability
 	return ""
+
+
+# =============================================================================
+# STAT ALLOCATION HELPERS
+# =============================================================================
+
+func allocate_stat_point(stat_type: Enums.StatType) -> bool:
+	## Spend one unallocated stat point on a specific stat
+	if player_data.get("unallocated_stat_points", 0) <= 0:
+		return false
+	
+	if not player_data.has("allocated_stats"):
+		player_data.allocated_stats = {}
+	
+	# Initialize stat if not present
+	if stat_type not in player_data.allocated_stats:
+		player_data.allocated_stats[stat_type] = 0
+	
+	# Allocate one point
+	player_data.allocated_stats[stat_type] += 1
+	player_data.unallocated_stat_points -= 1
+	
+	stat_allocated.emit(stat_type, player_data.allocated_stats[stat_type])
+	stat_points_changed.emit(player_data.unallocated_stat_points)
+	
+	return true
+
+
+func deallocate_stat_point(stat_type: Enums.StatType) -> bool:
+	## Refund one allocated stat point
+	if not player_data.has("allocated_stats"):
+		player_data.allocated_stats = {}
+	
+	if stat_type not in player_data.allocated_stats or player_data.allocated_stats[stat_type] <= 0:
+		return false
+	
+	# Deallocate one point
+	player_data.allocated_stats[stat_type] -= 1
+	player_data.unallocated_stat_points += 1
+	
+	stat_deallocated.emit(stat_type, player_data.allocated_stats[stat_type])
+	stat_points_changed.emit(player_data.unallocated_stat_points)
+	
+	return true
+
+
+func get_allocated_stat(stat_type: Enums.StatType) -> int:
+	## Get the number of points allocated to a specific stat
+	if not player_data.has("allocated_stats"):
+		return 0
+	if stat_type in player_data.allocated_stats:
+		return player_data.allocated_stats[stat_type]
+	
+	# Fallback for string keys if conversion failed
+	var string_key = str(int(stat_type))
+	if string_key in player_data.allocated_stats:
+		return player_data.allocated_stats[string_key]
+	
+	return 0
+
+
+func get_allocated_stats() -> Dictionary:
+	## Get all allocated stats
+	return player_data.get("allocated_stats", {}).duplicate()
+
+
+func get_available_stat_points() -> int:
+	## Get number of unallocated stat points
+	return player_data.get("unallocated_stat_points", 0)
+
+
+func award_stat_points(amount: int) -> void:
+	## Award stat points (typically on level up)
+	player_data.unallocated_stat_points += amount
+	stat_points_changed.emit(player_data.unallocated_stat_points)
 
 
 # =============================================================================

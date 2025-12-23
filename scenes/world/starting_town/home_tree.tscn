@@ -152,18 +152,24 @@ material = SubResource("mat_wood")
 [node name="PlayerSpawn" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 3)
 
-[node name="StorageChest" type="Area3D" parent="."]
+[node name="StorageChest" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
 script = ExtResource("2_storage")
 chest_name = "Home Storage"
 
+[node name="Interactable" type="Area3D" parent="StorageChest"]
+script = preload("res://scripts/components/interactable.gd")
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StorageChest"]
 shape = SubResource("SphereShape3D_1")
 
-[node name="AssemblyStation" type="Area3D" parent="."]
+[node name="AssemblyStation" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 0)
 script = ExtResource("3_assembly")
 station_name = "Home Workbench"
+
+[node name="Interactable" type="Area3D" parent="AssemblyStation"]
+script = preload("res://scripts/components/interactable.gd")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AssemblyStation"]
 shape = SubResource("SphereShape3D_1")

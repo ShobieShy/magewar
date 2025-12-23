@@ -35,7 +35,8 @@ var dungeon_scenes: Dictionary = {
 	"dungeon_2": "res://scenes/dungeons/dungeon_2.tscn",
 	"dungeon_3": "res://scenes/dungeons/dungeon_3.tscn",
 	"dungeon_4": "res://scenes/dungeons/dungeon_4.tscn",
-	"dungeon_5": "res://scenes/dungeons/dungeon_5.tscn"
+	"dungeon_5": "res://scenes/dungeons/dungeon_5.tscn",
+	"town_square": "res://scenes/world/starting_town/town_square.tscn"
 }
 
 # Main hub scene for returning from dungeons
@@ -108,9 +109,11 @@ func enter_dungeon(dungeon_id: String, portal: DungeonPortal) -> void:
 	is_transitioning = true
 	transition_started.emit()
 
-	# Mark portal as discovered
+	# Mark portal as discovered and get destination info
+	var dest_portal_id = ""
 	if portal:
 		discover_portal(portal.portal_id)
+		dest_portal_id = portal.destination_portal_id
 
 	# Save return information
 	var player = get_tree().get_first_node_in_group("player")
@@ -119,12 +122,8 @@ func enter_dungeon(dungeon_id: String, portal: DungeonPortal) -> void:
 	return_scene = get_tree().current_scene.scene_file_path
 
 	# Start transition
-	_transition_to_scene(dungeon_scenes[dungeon_id], dungeon_id, portal)
+	_transition_to_scene(dungeon_scenes[dungeon_id], dungeon_id, dest_portal_id)
 
-	# Initialize enemy spawn system for the dungeon
-	if EnemySpawnSystem:
-		# EnemySpawnSystem will be initialized when the scene loads
-		pass
 
 func exit_dungeon(portal: DungeonPortal) -> void:
 	"""Exit from current dungeon"""
@@ -134,13 +133,18 @@ func exit_dungeon(portal: DungeonPortal) -> void:
 	is_transitioning = true
 	transition_started.emit()
 	
+	var dest_portal_id = ""
+	if portal:
+		dest_portal_id = portal.destination_portal_id
+	
 	# Determine return scene
 	var target_scene = return_scene if not return_scene.is_empty() else overworld_scene
 	
 	# Start transition
-	_transition_to_scene(target_scene, "", portal)
+	_transition_to_scene(target_scene, "", dest_portal_id)
 
-func _transition_to_scene(scene_path: String, dungeon_id: String, portal: DungeonPortal) -> void:
+
+func _transition_to_scene(scene_path: String, dungeon_id: String, dest_portal_id: String) -> void:
 	"""Handle the actual scene transition"""
 	# Fade out
 	if get_node_or_null("/root/CutsceneManager"):
@@ -150,6 +154,9 @@ func _transition_to_scene(scene_path: String, dungeon_id: String, portal: Dungeo
 	if SaveManager:
 		SaveManager.save_game()
 	
+	# Clear active portals as they will be freed
+	active_portals.clear()
+	
 	# Load new scene
 	var result = get_tree().change_scene_to_file(scene_path)
 	if result != OK:
@@ -157,21 +164,21 @@ func _transition_to_scene(scene_path: String, dungeon_id: String, portal: Dungeo
 		is_transitioning = false
 		return
 	
-	# Wait for scene to be ready
-	await get_tree().create_timer(0.1).timeout
+	# Wait for scene to be ready and portals to register
+	await get_tree().create_timer(0.2).timeout
 	
 	# Update dungeon state
 	var old_dungeon = current_dungeon
 	current_dungeon = dungeon_id
 	
-	# Emit appropriate signal
+	# Emit appropriate signal (without portal object as it might be from old scene)
 	if not dungeon_id.is_empty():
-		dungeon_entered.emit(dungeon_id, portal)
+		dungeon_entered.emit(dungeon_id, null)
 	else:
-		dungeon_exited.emit(old_dungeon, portal)
+		dungeon_exited.emit(old_dungeon, null)
 	
 	# Position player at spawn point
-	_position_player_at_spawn(portal)
+	_position_player_at_spawn(dest_portal_id)
 	
 	# Fade in
 	if get_node_or_null("/root/CutsceneManager"):
@@ -180,7 +187,8 @@ func _transition_to_scene(scene_path: String, dungeon_id: String, portal: Dungeo
 	is_transitioning = false
 	transition_completed.emit()
 
-func _position_player_at_spawn(portal: DungeonPortal) -> void:
+
+func _position_player_at_spawn(dest_portal_id: String) -> void:
 	"""Position the player at the appropriate spawn point"""
 	var player = get_tree().get_first_node_in_group("player")
 	if not player:
@@ -195,19 +203,28 @@ func _position_player_at_spawn(portal: DungeonPortal) -> void:
 			player.global_position = return_position
 			return
 	
-	# Look for matching spawn point
-	if portal and portal.has_method("get_spawn_point"):
-		spawn_point = portal.get_spawn_point()
+	# Look for matching destination portal
+	if not dest_portal_id.is_empty() and dest_portal_id in active_portals:
+		var portal = active_portals[dest_portal_id]
+		if portal and portal.has_method("get_spawn_point"):
+			spawn_point = portal.get_spawn_point()
 	
 	if not spawn_point:
-		# Find any spawn point
+		# Try to find an "EntrancePortal" or similar if no dest ID
+		for portal in active_portals.values():
+			if is_instance_valid(portal):
+				spawn_point = portal.get_spawn_point()
+				break
+	
+	if not spawn_point:
+		# Find any spawn point from the group
 		var spawn_points = get_tree().get_nodes_in_group("spawn_points")
 		if spawn_points.size() > 0:
 			spawn_point = spawn_points[0]
 	
 	if spawn_point:
 		player.global_position = spawn_point.global_position
-		if spawn_point.has("rotation"):
+		if "rotation" in spawn_point:
 			player.rotation = spawn_point.rotation
 
 # =============================================================================

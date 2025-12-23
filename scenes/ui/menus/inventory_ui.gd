@@ -29,6 +29,9 @@ var _equipment_panel: PanelContainer
 var _inventory_grid: GridContainer
 var _equipment_slots: Dictionary = {}  ## EquipmentSlot -> ItemSlot
 var _inventory_slots: Array[ItemSlot] = []
+var _current_page: int = 0
+var _page_label: Label
+const ITEMS_PER_PAGE: int = 48
 var _tooltip: ItemTooltip
 var _gold_label: Label
 var _player_level_label: Label
@@ -163,8 +166,10 @@ func _create_equipment_slot(slot_type: Enums.EquipmentSlot, label_text: String) 
 
 
 func _create_inventory_panel(parent: Control) -> void:
+	"""Create inventory grid panel"""
 	_main_panel = PanelContainer.new()
 	_main_panel.name = "InventoryPanel"
+	_main_panel.custom_minimum_size = Vector2(600, 500)
 	_apply_panel_style(_main_panel)
 	parent.add_child(_main_panel)
 	
@@ -197,8 +202,8 @@ func _create_inventory_panel(parent: Control) -> void:
 	_inventory_grid.add_theme_constant_override("v_separation", slot_spacing)
 	vbox.add_child(_inventory_grid)
 	
-	# Create inventory slots
-	for i in range(Constants.INVENTORY_SIZE):
+	# Create inventory slots for current page
+	for i in range(ITEMS_PER_PAGE):
 		var slot = ItemSlot.new()
 		slot.slot_index = i
 		slot.slot_size = slot_size
@@ -209,9 +214,43 @@ func _create_inventory_panel(parent: Control) -> void:
 		slot.item_dropped.connect(_on_item_dropped)
 		_inventory_grid.add_child(slot)
 		_inventory_slots.append(slot)
+	
+	# Pagination UI
+	var pagination = HBoxContainer.new()
+	pagination.alignment = BoxContainer.ALIGNMENT_CENTER
+	pagination.add_theme_constant_override("separation", 20)
+	vbox.add_child(pagination)
+	
+	var prev_btn = Button.new()
+	prev_btn.text = "<"
+	prev_btn.pressed.connect(_on_prev_page_pressed)
+	pagination.add_child(prev_btn)
+	
+	_page_label = Label.new()
+	_page_label.text = "Page 1"
+	pagination.add_child(_page_label)
+	
+	var next_btn = Button.new()
+	next_btn.text = ">"
+	next_btn.pressed.connect(_on_next_page_pressed)
+	pagination.add_child(next_btn)
+
+
+func _on_prev_page_pressed() -> void:
+	if _current_page > 0:
+		_current_page -= 1
+		_refresh_display()
+
+
+func _on_next_page_pressed() -> void:
+	var total_pages = ceili(float(Constants.INVENTORY_SIZE) / ITEMS_PER_PAGE)
+	if _current_page < total_pages - 1:
+		_current_page += 1
+		_refresh_display()
 
 
 func _create_tooltip() -> void:
+
 	_tooltip = ItemTooltip.new()
 	_tooltip.name = "ItemTooltip"
 	add_child(_tooltip)
@@ -331,15 +370,32 @@ func _refresh_inventory() -> void:
 	if _inventory_system == null:
 		return
 	
+	var total_pages = ceili(float(Constants.INVENTORY_SIZE) / ITEMS_PER_PAGE)
+	_current_page = clamp(_current_page, 0, total_pages - 1)
+	
+	if _page_label:
+		_page_label.text = "Page %d / %d" % [_current_page + 1, total_pages]
+	
 	for i in range(_inventory_slots.size()):
 		var slot = _inventory_slots[i]
-		var item = _inventory_system.get_item(i)
-		if item:
-			# Get stack count from item (defaults to 1 if not set)
-			var quantity = item.stack_count if item.stack_count > 0 else 1
-			slot.set_item(item, quantity)
+		var inventory_index = _current_page * ITEMS_PER_PAGE + i
+		
+		# Set the slot index so interactions affect the right item
+		slot.slot_index = inventory_index
+		
+		if inventory_index < Constants.INVENTORY_SIZE:
+			var item = _inventory_system.get_item(inventory_index)
+			if item:
+				# Get stack count from item (defaults to 1 if not set)
+				var quantity = item.stack_count if item.stack_count > 0 else 1
+				slot.set_item(item, quantity)
+				slot.visible = true
+			else:
+				slot.clear()
+				slot.visible = true
 		else:
 			slot.clear()
+			slot.visible = false
 
 
 func _refresh_equipment() -> void:

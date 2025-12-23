@@ -65,6 +65,9 @@ var _equipment_panel: Control
 var _inventory_grid: GridContainer
 var _equipment_slots: Dictionary = {}
 var _inventory_slots: Array[ItemSlot] = []
+var _current_page: int = 0
+var _page_label: Label
+const ITEMS_PER_PAGE: int = 48
 var _gold_label: Label
 var _player_level_label: Label
 var _inventory_tooltip: ItemTooltip
@@ -119,6 +122,7 @@ var _fast_travel_panel: Control
 # =============================================================================
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_create_ui()
 	visible = false  # Start invisible instead of using hide()
 	layer = 100  # UI layer
@@ -135,6 +139,19 @@ func _process(_delta: float) -> void:
 		if _is_open:
 			close()
 		else:
+			# Default to Pause tab when opening via Escape
+			_switch_tab(MenuTab.PAUSE)
+			open()
+			
+	# Handle inventory input - open directly to inventory
+	elif Input.is_action_just_pressed("inventory"):
+		if _is_open:
+			if _current_tab == MenuTab.INVENTORY:
+				close()
+			else:
+				_switch_tab(MenuTab.INVENTORY)
+		else:
+			_switch_tab(MenuTab.INVENTORY)
 			open()
 
 
@@ -142,15 +159,12 @@ func _input(event: InputEvent) -> void:
 	if not _is_open:
 		return
 	
-	# Close on Esc/Pause
-	if event.is_action_pressed("pause"):
-		close()
-		get_viewport().set_input_as_handled()
+	# Close on Esc/Pause - Handled in _process
 	
 	# Tab shortcuts (when menu is open)
-	elif event.is_action_pressed("inventory"):  # Tab or I
-		_switch_tab(MenuTab.INVENTORY)
-		get_viewport().set_input_as_handled()
+	if event.is_action_pressed("inventory"):  # Tab or I
+		# Handled in _process now
+		pass
 	
 	elif event.is_action_pressed("skill_tree"):  # K
 		_switch_tab(MenuTab.SKILLS)
@@ -298,7 +312,7 @@ func _create_ui() -> void:
 func _create_pause_tab() -> void:
 	"""Create the pause menu tab"""
 	_pause_panel = PanelContainer.new()
-	_pause_panel.name = "PauseTab"
+	_pause_panel.name = "Pause"
 	_apply_panel_style(_pause_panel)
 	_tab_container.add_child(_pause_panel)
 	
@@ -354,7 +368,7 @@ func _create_pause_tab() -> void:
 func _create_inventory_tab() -> void:
 	"""Create the inventory tab"""
 	_inventory_panel = PanelContainer.new()
-	_inventory_panel.name = "InventoryTab"
+	_inventory_panel.name = "Inventory"
 	_apply_panel_style(_inventory_panel)
 	_tab_container.add_child(_inventory_panel)
 	
@@ -482,8 +496,8 @@ func _create_inventory_grid_panel(parent: Control) -> void:
 	_inventory_grid.add_theme_constant_override("v_separation", slot_spacing)
 	vbox.add_child(_inventory_grid)
 	
-	# Create inventory slots
-	for i in range(Constants.INVENTORY_SIZE):
+	# Create inventory slots for a single page
+	for i in range(ITEMS_PER_PAGE):
 		var slot = ItemSlot.new()
 		slot.slot_index = i
 		slot.slot_size = slot_size
@@ -494,12 +508,45 @@ func _create_inventory_grid_panel(parent: Control) -> void:
 		slot.item_dropped.connect(_on_item_dropped)
 		_inventory_grid.add_child(slot)
 		_inventory_slots.append(slot)
+	
+	# Pagination UI
+	var pagination = HBoxContainer.new()
+	pagination.alignment = BoxContainer.ALIGNMENT_CENTER
+	pagination.add_theme_constant_override("separation", 20)
+	vbox.add_child(pagination)
+	
+	var prev_btn = Button.new()
+	prev_btn.text = "<"
+	prev_btn.pressed.connect(_on_prev_page_pressed)
+	pagination.add_child(prev_btn)
+	
+	_page_label = Label.new()
+	_page_label.text = "Page 1"
+	pagination.add_child(_page_label)
+	
+	var next_btn = Button.new()
+	next_btn.text = ">"
+	next_btn.pressed.connect(_on_next_page_pressed)
+	pagination.add_child(next_btn)
+
+
+func _on_prev_page_pressed() -> void:
+	if _current_page > 0:
+		_current_page -= 1
+		_refresh_inventory_display()
+
+
+func _on_next_page_pressed() -> void:
+	var total_pages = ceili(float(Constants.INVENTORY_SIZE) / ITEMS_PER_PAGE)
+	if _current_page < total_pages - 1:
+		_current_page += 1
+		_refresh_inventory_display()
 
 
 func _create_skills_tab() -> void:
 	"""Create the skill tree tab"""
 	_skills_panel = PanelContainer.new()
-	_skills_panel.name = "SkillsTab"
+	_skills_panel.name = "Skills"
 	_apply_panel_style(_skills_panel)
 	_tab_container.add_child(_skills_panel)
 	
@@ -735,13 +782,30 @@ func _refresh_inventory_items() -> void:
 	if _inventory_system == null:
 		return
 	
+	var total_pages = ceili(float(Constants.INVENTORY_SIZE) / ITEMS_PER_PAGE)
+	_current_page = clamp(_current_page, 0, total_pages - 1)
+	
+	if _page_label:
+		_page_label.text = "Page %d / %d" % [_current_page + 1, total_pages]
+	
 	for i in range(_inventory_slots.size()):
 		var slot = _inventory_slots[i]
-		var item = _inventory_system.get_item(i)
-		if item:
-			slot.set_item(item.item, item.get("quantity", 1))
+		var inventory_index = _current_page * ITEMS_PER_PAGE + i
+		
+		# Set the slot index so interactions affect the right item
+		slot.slot_index = inventory_index
+		
+		if inventory_index < Constants.INVENTORY_SIZE:
+			var item = _inventory_system.get_item(inventory_index)
+			if item:
+				slot.set_item(item.item, item.get("quantity", 1))
+				slot.visible = true
+			else:
+				slot.clear()
+				slot.visible = true
 		else:
 			slot.clear()
+			slot.visible = false
 
 
 func _refresh_equipment_display() -> void:
@@ -1205,15 +1269,17 @@ func _on_skill_points_changed(_new_amount: int) -> void:
 
 func _create_stats_tab() -> void:
 	"""Create the stats allocation tab"""
-	# Instantiate the StatAllocationUI script
 	_stats_ui = StatAllocationUIScript.new()
-	_stats_ui.name = "StatsTab"
+	_stats_ui.name = "Stats"
+	_stats_ui.is_embedded = true
+	
+	# We add it directly to tab container as it now handles its own internal layout
 	_tab_container.add_child(_stats_ui)
+	
 	_stats_ui.closed.connect(_on_stats_closed)
 
 func _on_stats_closed() -> void:
 	"""Handle stats UI closed"""
-	# Could add any additional cleanup here if needed
 	pass
 
 
@@ -1224,7 +1290,7 @@ func _on_stats_closed() -> void:
 func _create_settings_tab() -> void:
 	"""Create the settings tab - integrates audio, video, and gameplay settings"""
 	_settings_panel = PanelContainer.new()
-	_settings_panel.name = "SettingsTab"
+	_settings_panel.name = "Settings"
 	_apply_panel_style(_settings_panel)
 	_tab_container.add_child(_settings_panel)
 	
@@ -1378,7 +1444,7 @@ func _create_settings_tab() -> void:
 func _create_shop_tab() -> void:
 	"""Create the shop tab"""
 	_shop_panel = PanelContainer.new()
-	_shop_panel.name = "ShopTab"
+	_shop_panel.name = "Shop"
 	_apply_panel_style(_shop_panel)
 	_tab_container.add_child(_shop_panel)
 	
@@ -1406,7 +1472,7 @@ func _create_shop_tab() -> void:
 func _create_crafting_tab() -> void:
 	"""Create the crafting tab"""
 	_crafting_panel = PanelContainer.new()
-	_crafting_panel.name = "CraftingTab"
+	_crafting_panel.name = "Crafting"
 	_apply_panel_style(_crafting_panel)
 	_tab_container.add_child(_crafting_panel)
 	
@@ -1434,7 +1500,7 @@ func _create_crafting_tab() -> void:
 func _create_refinement_tab() -> void:
 	"""Create the refinement tab"""
 	_refinement_panel = PanelContainer.new()
-	_refinement_panel.name = "RefinementTab"
+	_refinement_panel.name = "Refinement"
 	_apply_panel_style(_refinement_panel)
 	_tab_container.add_child(_refinement_panel)
 	
@@ -1462,7 +1528,7 @@ func _create_refinement_tab() -> void:
 func _create_storage_tab() -> void:
 	"""Create the storage tab"""
 	_storage_panel = PanelContainer.new()
-	_storage_panel.name = "StorageTab"
+	_storage_panel.name = "Storage"
 	_apply_panel_style(_storage_panel)
 	_tab_container.add_child(_storage_panel)
 	
@@ -1490,7 +1556,7 @@ func _create_storage_tab() -> void:
 func _create_quests_tab() -> void:
 	"""Create the quests tab"""
 	_quests_panel = PanelContainer.new()
-	_quests_panel.name = "QuestsTab"
+	_quests_panel.name = "Quests"
 	_apply_panel_style(_quests_panel)
 	_tab_container.add_child(_quests_panel)
 	
@@ -1518,7 +1584,7 @@ func _create_quests_tab() -> void:
 func _create_fast_travel_tab() -> void:
 	"""Create the fast travel tab"""
 	_fast_travel_panel = PanelContainer.new()
-	_fast_travel_panel.name = "FastTravelTab"
+	_fast_travel_panel.name = "Map"
 	_apply_panel_style(_fast_travel_panel)
 	_tab_container.add_child(_fast_travel_panel)
 	

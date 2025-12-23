@@ -347,8 +347,9 @@ func _on_level_up(new_level: int, skill_points: int) -> void:
 
 
 func _show_level_up_notification(level: int, skill_points: int) -> void:
+	var stat_points = SaveManager.player_data.get("stat_points_per_level", 3)
 	var level_up_label = Label.new()
-	level_up_label.text = "LEVEL UP! Level %d\n+%d Skill Points" % [level, skill_points]
+	level_up_label.text = "LEVEL UP! Level %d\n+%d Skill Points\n+%d Stat Points" % [level, skill_points, stat_points]
 	level_up_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	level_up_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 	level_up_label.add_theme_font_size_override("font_size", 32)

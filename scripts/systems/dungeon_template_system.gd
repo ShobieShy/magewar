@@ -253,30 +253,30 @@ const MATERIAL_DROPS = {
 # =============================================================================
 
 ## Get scaling data for a dungeon level
-static func get_dungeon_scaling(dungeon_level: int) -> Dictionary:
+func get_dungeon_scaling(dungeon_level: int) -> Dictionary:
 	return DUNGEON_SCALING.get(dungeon_level, DUNGEON_SCALING[1])
 
 ## Get enemy pool for a dungeon level
-static func get_enemy_pool(dungeon_level: int) -> Dictionary:
+func get_enemy_pool(dungeon_level: int) -> Dictionary:
 	return DUNGEON_ENEMY_POOLS.get(dungeon_level, DUNGEON_ENEMY_POOLS[1])
 
 ## Get loot scaling for a dungeon level
-static func get_loot_scaling(dungeon_level: int) -> Dictionary:
+func get_loot_scaling(dungeon_level: int) -> Dictionary:
 	return LOOT_SCALING.get(dungeon_level, LOOT_SCALING[1])
 
 ## Get material drops for a dungeon level
-static func get_material_drops(dungeon_level: int) -> Array:
+func get_material_drops(dungeon_level: int) -> Array:
 	return MATERIAL_DROPS.get(dungeon_level, MATERIAL_DROPS[1])
 
 ## Select random encounter template
-static func get_random_encounter(room_type: String = "medium_room") -> Dictionary:
+func get_random_encounter(room_type: String = "medium_room") -> Dictionary:
 	var room_template = ROOM_TEMPLATES.get(room_type, ROOM_TEMPLATES["medium_room"])
 	var encounters = room_template.possible_encounters
 	var encounter_name = encounters[randi() % encounters.size()]
 	return ENCOUNTER_TEMPLATES[encounter_name]
 
 ## Generate loot table for dungeon level and tier
-static func generate_loot_table(dungeon_level: int, tier: String) -> Array:
+func generate_loot_table(dungeon_level: int, tier: String) -> Array:
 	var loot_table = []
 	var scaling = get_loot_scaling(dungeon_level)
 

@@ -1,7 +1,7 @@
 ## AssemblyStation - Magic Assembly Station for crafting staffs and wands
 ## Interactable station where players combine parts to create weapons
 class_name AssemblyStation
-extends Interactable
+extends StaticBody3D
 
 # =============================================================================
 # SIGNALS
@@ -24,14 +24,17 @@ signal item_crafted(item_type: String)
 
 var _assembly_ui: Control = null
 var _is_using: bool = false
+var _interactable: Interactable = null
 
 # =============================================================================
 # INITIALIZATION
 # =============================================================================
 
 func _ready() -> void:
-	super._ready()
-	interaction_prompt = "[E] Use " + station_name
+	_interactable = get_node_or_null("Interactable")
+	if _interactable:
+		_interactable.interaction_prompt = "[E] Use " + station_name
+		_interactable.interaction_started.connect(_perform_interaction)
 
 # =============================================================================
 # INTERACTION

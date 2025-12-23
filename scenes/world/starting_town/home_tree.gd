@@ -64,10 +64,15 @@ func _create_storage_chest() -> void:
 	if chest_script == null:
 		return
 	
-	storage_chest = Area3D.new()
+	storage_chest = StaticBody3D.new()
 	storage_chest.set_script(chest_script)
 	storage_chest.name = "StorageChest"
 	storage_chest.chest_name = "Home Storage"
+	
+	# Add interactable child
+	var interactable = Area3D.new()
+	interactable.set_script(load("res://scripts/components/interactable.gd"))
+	storage_chest.add_child(interactable)
 	
 	var spawn_marker = get_node_or_null("StorageChestSpawn")
 	if spawn_marker:
@@ -103,10 +108,15 @@ func _create_assembly_station() -> void:
 	if station_script == null:
 		return
 	
-	assembly_station = Area3D.new()
+	assembly_station = StaticBody3D.new()
 	assembly_station.set_script(station_script)
 	assembly_station.name = "AssemblyStation"
 	assembly_station.station_name = "Home Workbench"
+	
+	# Add interactable child
+	var interactable = Area3D.new()
+	interactable.set_script(load("res://scripts/components/interactable.gd"))
+	assembly_station.add_child(interactable)
 	
 	var spawn_marker = get_node_or_null("AssemblyStationSpawn")
 	if spawn_marker:

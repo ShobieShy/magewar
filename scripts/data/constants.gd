@@ -113,7 +113,7 @@ const RARITY_COLORS: Dictionary = {
 	Enums.Rarity.UNIQUE: Color.GOLD
 }
 
-const INVENTORY_SIZE: int = 40
+const INVENTORY_SIZE: int = 144
 const STORAGE_SIZE: int = 100             # Home Tree storage chest
 const LOOT_PICKUP_RANGE: float = 2.0
 const LOOT_DESPAWN_TIME: float = 300.0    # 5 minutes

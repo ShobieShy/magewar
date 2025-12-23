@@ -153,7 +153,7 @@ func _setup_visuals() -> void:
 	material.albedo_color = portal_color
 	material.emission_enabled = true
 	material.emission = portal_color
-	material.emission_energy = portal_energy
+	material.emission_energy_multiplier = portal_energy
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	material.albedo_color.a = 0.8
 	mesh_instance.material_override = material
@@ -297,11 +297,11 @@ func _play_activation_effect() -> void:
 	# Flash effect
 	if mesh_instance and mesh_instance.material_override:
 		var material = mesh_instance.material_override
-		var original_energy = material.emission_energy
+		var original_energy = material.emission_energy_multiplier
 		
 		var tween = create_tween()
-		tween.tween_property(material, "emission_energy", original_energy * 3, 0.2)
-		tween.tween_property(material, "emission_energy", original_energy, 0.5)
+		tween.tween_property(material, "emission_energy_multiplier", original_energy * 3, 0.2)
+		tween.tween_property(material, "emission_energy_multiplier", original_energy, 0.5)
 	
 	# Particle burst
 	if particles:

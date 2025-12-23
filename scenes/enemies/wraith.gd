@@ -182,7 +182,7 @@ func _setup_visual_effects() -> void:
 	beam_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	beam_material.emission_enabled = true
 	beam_material.emission = Color.PURPLE
-	beam_material.emission_energy = 2.0
+	beam_material.emission_energy_multiplier = 2.0
 	beam_mesh.material_override = beam_material
 	drain_beam.add_child(beam_mesh)
 	drain_beam.visible = false
