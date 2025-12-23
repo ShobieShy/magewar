@@ -120,8 +120,8 @@ var _fast_travel_panel: Control
 
 func _ready() -> void:
 	_create_ui()
-	hide()
-	layer = 128  # Ensure it's on top
+	visible = false  # Start invisible instead of using hide()
+	layer = 100  # UI layer
 	
 	# Connect to managers
 	SaveManager.gold_changed.connect(_on_gold_changed)
@@ -200,6 +200,7 @@ func open() -> void:
 	_refresh_inventory_display()
 	_update_skill_tree_display()
 	
+	print("DEBUG: Menu opened, visible=%s, layer=%d, paused=%s" % [visible, layer, get_tree().paused])
 	menu_opened.emit()
 
 
@@ -240,22 +241,29 @@ func set_inventory_system(inventory_system: Node) -> void:
 # =============================================================================
 
 func _create_ui() -> void:
-	# Background dimmer
+	# Background dimmer - fills entire screen
 	var dimmer = ColorRect.new()
 	dimmer.color = Color(0, 0, 0, 0.5)
-	dimmer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	dimmer.anchor_left = 0.0
+	dimmer.anchor_top = 0.0
+	dimmer.anchor_right = 1.0
+	dimmer.anchor_bottom = 1.0
 	dimmer.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(dimmer)
 	
-	# Main container
-	_main_container = Control.new()
-	_main_container.name = "MainContainer"
-	_main_container.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	add_child(_main_container)
-	
+	# Main VBox container - centered
 	var main_vbox = VBoxContainer.new()
-	main_vbox.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	_main_container.add_child(main_vbox)
+	main_vbox.name = "MainVBox"
+	main_vbox.anchor_left = 0.5
+	main_vbox.anchor_top = 0.5
+	main_vbox.anchor_right = 0.5
+	main_vbox.anchor_bottom = 0.5
+	main_vbox.offset_left = -500  # Half of width (1000/2)
+	main_vbox.offset_top = -300   # Half of height (600/2)
+	main_vbox.offset_right = 500
+	main_vbox.offset_bottom = 300
+	add_child(main_vbox)
+	_main_container = main_vbox  # Store reference
 	
 	# Tab container for switching between menus
 	_tab_container = TabContainer.new()
@@ -277,6 +285,8 @@ func _create_ui() -> void:
 	_create_quests_tab()
 	_create_fast_travel_tab()
 	
+	print("DEBUG: UnifiedMenuUI created with %d tabs" % _tab_container.get_tab_count())
+	
 	# Create tooltip and context menu (shared across tabs)
 	_inventory_tooltip = ItemTooltip.new()
 	_inventory_tooltip.name = "ItemTooltip"
@@ -286,9 +296,6 @@ func _create_ui() -> void:
 	_context_menu.name = "ContextMenu"
 	_context_menu.id_pressed.connect(_on_context_menu_selected)
 	add_child(_context_menu)
-	
-	# Center the main container
-	main_vbox.position = Vector2(-main_vbox.size.x / 2, -main_vbox.size.y / 2)
 
 
 func _create_pause_tab() -> void:
