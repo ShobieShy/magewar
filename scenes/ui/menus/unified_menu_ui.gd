@@ -1,8 +1,11 @@
-## UnifiedMenuUI - Integrated pause menu, inventory, and skill tree
+## UnifiedMenuUI - Integrated pause menu, inventory, skill tree, and stats
 ## Single unified interface accessed via Esc to toggle
-## Tabs to switch between Pause Menu, Inventory, and Skill Tree
+## Tabs to switch between Pause Menu, Inventory, Skill Tree, and Stats
 class_name UnifiedMenuUI
 extends CanvasLayer
+
+# Preload StatAllocationUI script
+const StatAllocationUIScript = preload("res://scenes/ui/menus/stat_allocation_ui.gd")
 
 # =============================================================================
 # SIGNALS
@@ -22,7 +25,15 @@ signal join_requested
 enum MenuTab {
 	PAUSE = 0,
 	INVENTORY = 1,
-	SKILLS = 2
+	SKILLS = 2,
+	STATS = 3,
+	SETTINGS = 4,
+	SHOP = 5,
+	CRAFTING = 6,
+	REFINEMENT = 7,
+	STORAGE = 8,
+	QUESTS = 9,
+	FAST_TRAVEL = 10
 }
 
 # =============================================================================
@@ -40,6 +51,7 @@ var _tab_container: TabContainer
 var _pause_panel: Control
 var _inventory_panel: Control
 var _skills_panel: Control
+var _stats_ui: Control  ## StatAllocationUI instance
 
 # Pause Menu Components
 var _resume_button: Button
@@ -72,6 +84,27 @@ var _unlock_button: Button
 var _set_active_button: Button
 var _points_label: Label
 var _selected_skill: SkillData = null
+
+# Settings Components
+var _settings_panel: Control
+
+# Shop Components
+var _shop_panel: Control
+
+# Crafting Components
+var _crafting_panel: Control
+
+# Refinement Components
+var _refinement_panel: Control
+
+# Storage Components
+var _storage_panel: Control
+
+# Quests Components
+var _quests_panel: Control
+
+# Fast Travel Components
+var _fast_travel_panel: Control
 
 # =============================================================================
 # EXPORTED PROPERTIES
@@ -109,20 +142,44 @@ func _input(event: InputEvent) -> void:
 	if not _is_open:
 		return
 	
-	# Close on Esc
+	# Close on Esc/Pause
 	if event.is_action_pressed("pause"):
 		close()
 		get_viewport().set_input_as_handled()
 	
-	# Switch to inventory tab on Tab/I
-	elif event.is_action_pressed("inventory"):
+	# Tab shortcuts (when menu is open)
+	elif event.is_action_pressed("inventory"):  # Tab or I
 		_switch_tab(MenuTab.INVENTORY)
 		get_viewport().set_input_as_handled()
 	
-	# Switch to skills tab on K
-	elif event.is_action_pressed("skill_tree"):
+	elif event.is_action_pressed("skill_tree"):  # K
 		_switch_tab(MenuTab.SKILLS)
 		get_viewport().set_input_as_handled()
+	
+	# Numeric shortcuts for other tabs
+	elif event is InputEventKey and event.pressed:
+		match event.keycode:
+			KEY_S:  # Settings
+				_switch_tab(MenuTab.SETTINGS)
+				get_viewport().set_input_as_handled()
+			KEY_H:  # sHop
+				_switch_tab(MenuTab.SHOP)
+				get_viewport().set_input_as_handled()
+			KEY_C:  # Crafting
+				_switch_tab(MenuTab.CRAFTING)
+				get_viewport().set_input_as_handled()
+			KEY_R:  # Refinement
+				_switch_tab(MenuTab.REFINEMENT)
+				get_viewport().set_input_as_handled()
+			KEY_D:  # storAge/depot
+				_switch_tab(MenuTab.STORAGE)
+				get_viewport().set_input_as_handled()
+			KEY_Q:  # Quests
+				_switch_tab(MenuTab.QUESTS)
+				get_viewport().set_input_as_handled()
+			KEY_M:  # Map/fast travel
+				_switch_tab(MenuTab.FAST_TRAVEL)
+				get_viewport().set_input_as_handled()
 
 
 # =============================================================================
@@ -211,6 +268,14 @@ func _create_ui() -> void:
 	_create_pause_tab()
 	_create_inventory_tab()
 	_create_skills_tab()
+	_create_stats_tab()
+	_create_settings_tab()
+	_create_shop_tab()
+	_create_crafting_tab()
+	_create_refinement_tab()
+	_create_storage_tab()
+	_create_quests_tab()
+	_create_fast_travel_tab()
 	
 	# Create tooltip and context menu (shared across tabs)
 	_inventory_tooltip = ItemTooltip.new()
@@ -602,6 +667,23 @@ func _switch_tab(tab: MenuTab) -> void:
 			_refresh_inventory_display()
 		MenuTab.SKILLS:
 			_update_skill_tree_display()
+		MenuTab.STATS:
+			if _stats_ui and _stats_ui.is_visible_in_tree():
+				_stats_ui.open()
+		MenuTab.SETTINGS:
+			pass  # Settings tab is static
+		MenuTab.SHOP:
+			pass  # Shop tab populated by ShopManager
+		MenuTab.CRAFTING:
+			pass  # Crafting tab is static
+		MenuTab.REFINEMENT:
+			pass  # Refinement tab is static
+		MenuTab.STORAGE:
+			pass  # Storage tab is static
+		MenuTab.QUESTS:
+			pass  # Quests tab is static
+		MenuTab.FAST_TRAVEL:
+			pass  # Fast Travel tab is static
 
 
 func _on_tab_changed(tab_index: int) -> void:
@@ -613,6 +695,23 @@ func _on_tab_changed(tab_index: int) -> void:
 			_refresh_inventory_display()
 		MenuTab.SKILLS:
 			_update_skill_tree_display()
+		MenuTab.STATS:
+			if _stats_ui:
+				_stats_ui.open()
+		MenuTab.SETTINGS:
+			pass  # Settings tab is static
+		MenuTab.SHOP:
+			pass  # Shop tab populated by ShopManager
+		MenuTab.CRAFTING:
+			pass  # Crafting tab is static
+		MenuTab.REFINEMENT:
+			pass  # Refinement tab is static
+		MenuTab.STORAGE:
+			pass  # Storage tab is static
+		MenuTab.QUESTS:
+			pass  # Quests tab is static
+		MenuTab.FAST_TRAVEL:
+			pass  # Fast Travel tab is static
 
 
 # =============================================================================
@@ -1095,6 +1194,219 @@ func _on_skill_points_changed(_new_amount: int) -> void:
 	if _selected_skill:
 		_update_skill_details()
 
+
+# =============================================================================
+# STATS TAB
+# =============================================================================
+
+func _create_stats_tab() -> void:
+	"""Create the stats allocation tab"""
+	# Instantiate the StatAllocationUI script
+	_stats_ui = StatAllocationUIScript.new()
+	_stats_ui.name = "StatsTab"
+	_tab_container.add_child(_stats_ui)
+	_stats_ui.closed.connect(_on_stats_closed)
+
+func _on_stats_closed() -> void:
+	"""Handle stats UI closed"""
+	# Could add any additional cleanup here if needed
+	pass
+
+
+# =============================================================================
+# SETTINGS TAB
+# =============================================================================
+
+func _create_settings_tab() -> void:
+	"""Create the settings tab"""
+	_settings_panel = PanelContainer.new()
+	_settings_panel.name = "SettingsTab"
+	_apply_panel_style(_settings_panel)
+	_tab_container.add_child(_settings_panel)
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 12)
+	_settings_panel.add_child(vbox)
+	
+	var title = Label.new()
+	title.text = "Settings"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 24)
+	vbox.add_child(title)
+	
+	var placeholder = Label.new()
+	placeholder.text = "[Settings content coming soon]\nUse main Settings menu from Pause tab"
+	placeholder.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	placeholder.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	vbox.add_child(placeholder)
+
+
+# =============================================================================
+# SHOP TAB
+# =============================================================================
+
+func _create_shop_tab() -> void:
+	"""Create the shop tab"""
+	_shop_panel = PanelContainer.new()
+	_shop_panel.name = "ShopTab"
+	_apply_panel_style(_shop_panel)
+	_tab_container.add_child(_shop_panel)
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 12)
+	_shop_panel.add_child(vbox)
+	
+	var title = Label.new()
+	title.text = "Shop"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 24)
+	vbox.add_child(title)
+	
+	var placeholder = Label.new()
+	placeholder.text = "[Interact with a Shopkeeper to view their shop]"
+	placeholder.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	placeholder.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	vbox.add_child(placeholder)
+
+
+# =============================================================================
+# CRAFTING TAB
+# =============================================================================
+
+func _create_crafting_tab() -> void:
+	"""Create the crafting tab"""
+	_crafting_panel = PanelContainer.new()
+	_crafting_panel.name = "CraftingTab"
+	_apply_panel_style(_crafting_panel)
+	_tab_container.add_child(_crafting_panel)
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 12)
+	_crafting_panel.add_child(vbox)
+	
+	var title = Label.new()
+	title.text = "Crafting"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 24)
+	vbox.add_child(title)
+	
+	var placeholder = Label.new()
+	placeholder.text = "[Crafting content coming soon]\nPress C to access Crafting"
+	placeholder.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	placeholder.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	vbox.add_child(placeholder)
+
+
+# =============================================================================
+# REFINEMENT TAB
+# =============================================================================
+
+func _create_refinement_tab() -> void:
+	"""Create the refinement tab"""
+	_refinement_panel = PanelContainer.new()
+	_refinement_panel.name = "RefinementTab"
+	_apply_panel_style(_refinement_panel)
+	_tab_container.add_child(_refinement_panel)
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 12)
+	_refinement_panel.add_child(vbox)
+	
+	var title = Label.new()
+	title.text = "Refinement"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 24)
+	vbox.add_child(title)
+	
+	var placeholder = Label.new()
+	placeholder.text = "[Refinement content coming soon]\nPress R to access Refinement"
+	placeholder.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	placeholder.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	vbox.add_child(placeholder)
+
+
+# =============================================================================
+# STORAGE TAB
+# =============================================================================
+
+func _create_storage_tab() -> void:
+	"""Create the storage tab"""
+	_storage_panel = PanelContainer.new()
+	_storage_panel.name = "StorageTab"
+	_apply_panel_style(_storage_panel)
+	_tab_container.add_child(_storage_panel)
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 12)
+	_storage_panel.add_child(vbox)
+	
+	var title = Label.new()
+	title.text = "Storage"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 24)
+	vbox.add_child(title)
+	
+	var placeholder = Label.new()
+	placeholder.text = "[Storage content coming soon]\nPress D to access Storage"
+	placeholder.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	placeholder.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	vbox.add_child(placeholder)
+
+
+# =============================================================================
+# QUESTS TAB
+# =============================================================================
+
+func _create_quests_tab() -> void:
+	"""Create the quests tab"""
+	_quests_panel = PanelContainer.new()
+	_quests_panel.name = "QuestsTab"
+	_apply_panel_style(_quests_panel)
+	_tab_container.add_child(_quests_panel)
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 12)
+	_quests_panel.add_child(vbox)
+	
+	var title = Label.new()
+	title.text = "Quests"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 24)
+	vbox.add_child(title)
+	
+	var placeholder = Label.new()
+	placeholder.text = "[Quest Log content coming soon]\nPress Q to access Quests"
+	placeholder.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	placeholder.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	vbox.add_child(placeholder)
+
+
+# =============================================================================
+# FAST TRAVEL TAB
+# =============================================================================
+
+func _create_fast_travel_tab() -> void:
+	"""Create the fast travel tab"""
+	_fast_travel_panel = PanelContainer.new()
+	_fast_travel_panel.name = "FastTravelTab"
+	_apply_panel_style(_fast_travel_panel)
+	_tab_container.add_child(_fast_travel_panel)
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 12)
+	_fast_travel_panel.add_child(vbox)
+	
+	var title = Label.new()
+	title.text = "Fast Travel"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 24)
+	vbox.add_child(title)
+	
+	var placeholder = Label.new()
+	placeholder.text = "[Fast Travel content coming soon]\nPress M to access Map"
+	placeholder.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	placeholder.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	vbox.add_child(placeholder)
 
 # =============================================================================
 # CLEANUP
