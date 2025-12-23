@@ -347,6 +347,47 @@ func _on_join_ip_pressed() -> void:
 	_show_save_selection()
 
 
+func _on_settings_pressed() -> void:
+	if _settings_menu:
+		_settings_menu.open()
+
+
+func _on_quit_pressed() -> void:
+	GameManager.quit_game()
+
+
+func _on_ready_pressed() -> void:
+	var is_ready = ready_button.button_pressed
+	
+	# Local update
+	GameManager.set_player_ready(NetworkManager.local_peer_id, is_ready)
+	_update_player_list()
+	_update_lobby_buttons()
+	
+	# Network sync
+	if NetworkManager.network_mode == Enums.NetworkMode.STEAM:
+		NetworkManager.rpc_broadcast(self, "_rpc_sync_ready_state", [NetworkManager.local_peer_id, is_ready])
+	else:
+		_rpc_sync_ready_state.rpc(NetworkManager.local_peer_id, is_ready)
+
+
+func _on_start_pressed() -> void:
+	if not GameManager.is_host:
+		return
+	
+	NetworkManager.request_game_start()
+
+
+func _on_leave_lobby_pressed() -> void:
+	NetworkManager.disconnect_from_game()
+	_show_main_menu()
+
+
+func _on_refresh_pressed() -> void:
+	lobby_list.clear()
+	if SteamManager.is_initialized:
+		SteamManager.request_lobby_list()
+
 
 func _on_back_pressed() -> void:
 	_show_main_menu()
