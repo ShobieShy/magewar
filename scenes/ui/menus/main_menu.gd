@@ -241,6 +241,7 @@ func _on_save_selected(slot_id: String) -> void:
 	SaveManager.load_player_data(slot_id)
 	SaveManager.load_world_data(slot_id)
 	_save_selection_ui.visible = false
+	_char_creation_ui.visible = false
 	
 	if _pending_network_action == "host":
 		print("Hosting game with slot: ", slot_id)
@@ -275,6 +276,8 @@ func _show_lobby() -> void:
 	main_buttons.visible = false
 	lobby_panel.visible = true
 	join_panel.visible = false
+	_save_selection_ui.visible = false
+	_char_creation_ui.visible = false
 	_update_player_list()
 	_update_lobby_buttons()
 
@@ -283,6 +286,8 @@ func _show_join_panel() -> void:
 	main_buttons.visible = false
 	lobby_panel.visible = false
 	join_panel.visible = true
+	_save_selection_ui.visible = false
+	_char_creation_ui.visible = false
 
 
 func _update_steam_status() -> void:

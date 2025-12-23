@@ -510,3 +510,10 @@ func request_game_start() -> void:
 		match network_mode:
 			Enums.NetworkMode.STEAM:
 				_broadcast_steam_packet({"type": "game_start"})
+			Enums.NetworkMode.ENET:
+				_rpc_game_start.rpc()
+
+
+@rpc("authority", "call_local", "reliable")
+func _rpc_game_start() -> void:
+	game_start_requested.emit()

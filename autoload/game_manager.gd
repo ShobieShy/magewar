@@ -248,6 +248,18 @@ func register_player(peer_id: int, display_name: String = "", steam_id: int = 0,
 		players[peer_id] = PlayerInfo.new(peer_id, display_name, steam_id, char_data)
 		player_joined.emit(peer_id)
 		print("Player registered: ", peer_id, " (", display_name, ")")
+	else:
+		# Update existing info
+		var info = players[peer_id]
+		if not display_name.is_empty():
+			info.display_name = display_name
+		if steam_id != 0:
+			info.steam_id = steam_id
+		if not char_data.is_empty():
+			info.character_data = char_data
+		print("Player info updated: ", peer_id, " (", info.display_name, ")")
+		player_joined.emit(peer_id)
+		print("Player registered: ", peer_id, " (", display_name, ")")
 
 
 func unregister_player(peer_id: int) -> void:
