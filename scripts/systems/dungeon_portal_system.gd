@@ -39,7 +39,8 @@ var dungeon_scenes: Dictionary = {
 	"town_square": "res://scenes/world/starting_town/town_square.tscn",
 	"home_tree": "res://scenes/world/starting_town/home_tree.tscn",
 	"mage_association": "res://scenes/world/starting_town/mage_association.tscn",
-	"landfill": "res://scenes/world/landfill/landfill.tscn"
+	"landfill": "res://scenes/world/landfill/landfill.tscn",
+	"test_arena": "res://scenes/world/test_arena.tscn"
 }
 
 # Main hub scene for returning from dungeons
@@ -160,12 +161,17 @@ func _transition_to_scene(scene_path: String, dungeon_id: String, dest_portal_id
 	# Clear active portals as they will be freed
 	active_portals.clear()
 	
-	# Load new scene
-	var result = get_tree().change_scene_to_file(scene_path)
-	if result != OK:
-		push_error("Failed to load scene: " + scene_path)
-		is_transitioning = false
-		return
+	# Try to use Game node if it exists for seamless world transition
+	var game = get_tree().current_scene
+	if game and game.has_method("load_world"):
+		game.load_world(scene_path)
+	else:
+		# Fallback to full scene change
+		var result = get_tree().change_scene_to_file(scene_path)
+		if result != OK:
+			push_error("Failed to load scene: " + scene_path)
+			is_transitioning = false
+			return
 	
 	# Wait for scene to be ready and portals to register
 	await get_tree().create_timer(0.2).timeout
@@ -347,6 +353,10 @@ func get_dungeon_info(dungeon_id: String) -> Dictionary:
 			info.name = "The Landfill"
 			info.level_range = [1, 3]
 			info.description = "A place of waste and filth, and the source of a growing corruption."
+		"test_arena":
+			info.name = "Test Arena"
+			info.level_range = [1, 20]
+			info.description = "A training ground for testing spells and combat skills."
 	
 	return info
 

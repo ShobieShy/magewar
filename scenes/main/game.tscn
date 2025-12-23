@@ -1,34 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://dqr5k2xmv8n2c"]
+[gd_scene load_steps=5 format=3 uid="uid://dqr5k2xmv8n2c"]
 
 [ext_resource type="Script" path="res://scenes/main/game.gd" id="1_game"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud/player_hud.tscn" id="2_player_hud"]
-[ext_resource type="PackedScene" path="res://scenes/enemies/skeleton.tscn" id="3_skeleton"]
-[ext_resource type="PackedScene" path="res://scenes/enemies/goblin.tscn" id="4_goblin"]
-[ext_resource type="PackedScene" path="res://scenes/enemies/troll.tscn" id="5_troll"]
-[ext_resource type="PackedScene" path="res://scenes/enemies/wraith.tscn" id="6_wraith"]
-[ext_resource type="PackedScene" path="res://scenes/enemies/filth_slime.tscn" id="7_slime"]
-[ext_resource type="PackedScene" path="res://scenes/objects/loot_chest.tscn" id="8_chest"]
-[ext_resource type="PackedScene" path="res://scenes/main/shopkeeper.tscn" id="9_shopkeeper"]
-[ext_resource type="PackedScene" path="res://scenes/objects/dungeon_portal.tscn" id="10_portal"]
-
-[sub_resource type="Environment" id="Environment_1"]
-background_mode = 1
-background_color = Color(0.2, 0.3, 0.4, 1)
-ambient_light_source = 2
-ambient_light_color = Color(0.4, 0.4, 0.5, 1)
-ambient_light_energy = 0.5
-tonemap_mode = 2
-glow_enabled = true
 
 [node name="Game" type="Node3D"]
 script = ExtResource("1_game")
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_1")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.866, -0.354, 0.354, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 10, 20, 10)
-shadow_enabled = true
 
 [node name="SpawnPoints" type="Node3D" parent="."]
 
@@ -41,125 +17,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1, 0)
 [node name="SpawnPoint3" type="Marker3D" parent="SpawnPoints"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 0)
 
-[node name="SpawnPoint4" type="Marker3D" parent="SpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 3)
-
-[node name="SpawnPoint5" type="Marker3D" parent="SpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1, 3)
-
-[node name="SpawnPoint6" type="Marker3D" parent="SpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 3)
-
-[node name="TestArena" type="Node3D" parent="."]
-
-[node name="Floor" type="CSGBox3D" parent="TestArena"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
-use_collision = true
-size = Vector3(50, 1, 50)
-
-[node name="Wall1" type="CSGBox3D" parent="TestArena"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -25)
-use_collision = true
-size = Vector3(50, 5, 1)
-
-[node name="Wall2" type="CSGBox3D" parent="TestArena"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 25)
-use_collision = true
-size = Vector3(50, 5, 1)
-
-[node name="Wall3" type="CSGBox3D" parent="TestArena"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 2, 0)
-use_collision = true
-size = Vector3(1, 5, 50)
-
-[node name="Wall4" type="CSGBox3D" parent="TestArena"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 2, 0)
-use_collision = true
-size = Vector3(1, 5, 50)
-
-[node name="Obstacle1" type="CSGBox3D" parent="TestArena"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, 5)
-use_collision = true
-size = Vector3(3, 2, 3)
-
-[node name="Obstacle2" type="CSGBox3D" parent="TestArena"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1, -5)
-use_collision = true
-size = Vector3(3, 2, 3)
-
-[node name="Ramp" type="CSGBox3D" parent="TestArena"]
-transform = Transform3D(0.966, 0.259, 0, -0.259, 0.966, 0, 0, 0, 1, 10, 0.5, 0)
-use_collision = true
-size = Vector3(6, 0.5, 3)
+[node name="World" type="Node3D" parent="."]
 
 [node name="Players" type="Node3D" parent="."]
-
-[node name="Enemies" type="Node3D" parent="."]
-
-[node name="Skeleton" parent="Enemies" instance=ExtResource("3_skeleton")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1, 10)
-
-[node name="Goblin" parent="Enemies" instance=ExtResource("4_goblin")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1, 10)
-
-[node name="Troll" parent="Enemies" instance=ExtResource("5_troll")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 10)
-
-[node name="Wraith" parent="Enemies" instance=ExtResource("6_wraith")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, 10)
-
-[node name="Slime" parent="Enemies" instance=ExtResource("7_slime")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 1, 10)
-
-[node name="Objects" type="Node3D" parent="."]
-
-[node name="LootChest" parent="Objects" instance=ExtResource("8_chest")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -8)
-
-[node name="Shopkeeper" parent="Objects" instance=ExtResource("9_shopkeeper")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1, 0)
-
-[node name="DungeonPortal" parent="Objects" instance=ExtResource("10_portal")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -10)
-portal_id = "portal_d1"
-dungeon_id = "dungeon_1"
-destination_portal_id = "entrance"
-portal_name = "Abandoned Mine"
-
-[node name="DungeonPortal2" parent="Objects" instance=ExtResource("10_portal")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, -10)
-portal_id = "portal_d2"
-dungeon_id = "dungeon_2"
-destination_portal_id = "entrance"
-portal_name = "Haunted Catacombs"
-
-[node name="DungeonPortal3" parent="Objects" instance=ExtResource("10_portal")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -10)
-portal_id = "portal_d3"
-dungeon_id = "dungeon_3"
-destination_portal_id = "entrance"
-portal_name = "Crystal Cave"
-
-[node name="DungeonPortal4" parent="Objects" instance=ExtResource("10_portal")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -15)
-portal_id = "portal_d4"
-dungeon_id = "dungeon_4"
-destination_portal_id = "entrance"
-portal_name = "Ancient Ruins"
-
-[node name="DungeonPortal5" parent="Objects" instance=ExtResource("10_portal")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, -15)
-portal_id = "portal_d5"
-dungeon_id = "dungeon_5"
-destination_portal_id = "entrance"
-portal_name = "Forbidden Sanctum"
-
-[node name="TownPortal" parent="Objects" instance=ExtResource("10_portal")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -15)
-portal_id = "portal_town"
-dungeon_id = "town_square"
-destination_portal_id = "town_center"
-portal_name = "Starting Town"
 
 [node name="HUD" type="CanvasLayer" parent="."]
 

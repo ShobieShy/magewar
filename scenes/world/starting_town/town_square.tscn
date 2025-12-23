@@ -222,3 +222,11 @@ dungeon_id = "dungeon_5"
 destination_portal_id = "entrance"
 portal_name = "Forbidden Sanctum"
 portal_color = Color(0.8, 0.1, 0.1, 1)
+
+[node name="PortalArena" parent="Portals" instance=ExtResource("3_dportal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 0)
+portal_id = "portal_arena"
+dungeon_id = "test_arena"
+destination_portal_id = "entrance"
+portal_name = "Test Arena"
+portal_color = Color(0.6, 0.6, 0.6, 1)

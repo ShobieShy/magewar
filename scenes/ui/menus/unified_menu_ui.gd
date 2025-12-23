@@ -14,9 +14,7 @@ const StatAllocationUIScript = preload("res://scenes/ui/menus/stat_allocation_ui
 signal menu_opened
 signal menu_closed
 # signal tab_changed(tab_name: String)  # Currently unused but kept for future implementation
-signal settings_requested
 signal quit_to_menu_requested
-signal join_requested
 
 # =============================================================================
 # ENUMS
@@ -56,8 +54,14 @@ var _stats_ui: Control  ## StatAllocationUI instance
 # Pause Menu Components
 var _resume_button: Button
 var _join_button: Button
-var _settings_button: Button
+# var _settings_button: Button
 var _quit_button: Button
+
+# Join Popup Components
+var _join_popup: Window
+var _friends_list: ItemList
+var _refresh_friends_button: Button
+var _join_selected_button: Button
 
 # Inventory Components
 # var _inventory_ui: Control  # Currently unused but kept for future implementation
@@ -297,6 +301,7 @@ func _create_ui() -> void:
 	_create_storage_tab()
 	_create_quests_tab()
 	_create_fast_travel_tab()
+	_create_join_popup()
 	
 	# Create tooltip and context menu (shared across tabs)
 	_inventory_tooltip = ItemTooltip.new()
@@ -346,12 +351,12 @@ func _create_pause_tab() -> void:
 	_join_button.pressed.connect(_on_join_pressed)
 	vbox.add_child(_join_button)
 	
-	# Settings button
-	_settings_button = Button.new()
-	_settings_button.text = "Settings"
-	_settings_button.custom_minimum_size = Vector2(300, 50)
-	_settings_button.pressed.connect(_on_settings_pressed)
-	vbox.add_child(_settings_button)
+	# Settings button - REMOVED
+	# _settings_button = Button.new()
+	# _settings_button.text = "Settings"
+	# _settings_button.custom_minimum_size = Vector2(300, 50)
+	# _settings_button.pressed.connect(_on_settings_pressed)
+	# vbox.add_child(_settings_button)
 	
 	# Quit button
 	_quit_button = Button.new()
@@ -999,19 +1004,62 @@ func _add_skill_stat_line(text: String, color: Color) -> void:
 # PAUSE MENU BUTTON HANDLERS
 # =============================================================================
 
+func _on_join_pressed() -> void:
+	"""Handle join button"""
+	_join_popup.popup_centered()
+	_populate_friends_list()
+
+
+func _populate_friends_list() -> void:
+	"""Populate the friends list with Steam friends playing the game"""
+	_friends_list.clear()
+	_join_selected_button.disabled = true
+	
+	if not SteamManager.is_initialized:
+		_friends_list.add_item("Steam not initialized")
+		return
+		
+	var friends = SteamManager.get_friends_playing_this_game()
+	
+	if friends.is_empty():
+		_friends_list.add_item("No friends playing right now")
+		return
+		
+	for friend in friends:
+		var idx = _friends_list.add_item(friend.name)
+		_friends_list.set_item_metadata(idx, friend)
+
+
+func _on_friend_selected(index: int) -> void:
+	"""Handle friend selection"""
+	_join_selected_button.disabled = false
+
+
+func _on_join_friend_confirmed() -> void:
+	"""Join the selected friend"""
+	var selected = _friends_list.get_selected_items()
+	if selected.is_empty():
+		return
+		
+	var idx = selected[0]
+	var friend_data = _friends_list.get_item_metadata(idx)
+	
+	if friend_data and friend_data.has("lobby_id") and friend_data.lobby_id > 0:
+		_join_popup.hide()
+		close() # Close the menu
+		SteamManager.join_lobby(friend_data.lobby_id)
+	else:
+		# If no lobby ID, maybe try inviting them? Or just can't join.
+		# For now, just print logic.
+		print("Cannot join friend - no lobby found")
+
+
 func _on_resume_pressed() -> void:
 	"""Handle resume button"""
 	close()
 
 
-func _on_join_pressed() -> void:
-	"""Handle join button - placeholder for multiplayer"""
-	join_requested.emit()
 
-
-func _on_settings_pressed() -> void:
-	"""Handle settings button"""
-	settings_requested.emit()
 
 
 func _on_quit_pressed() -> void:
@@ -1603,6 +1651,68 @@ func _create_fast_travel_tab() -> void:
 	placeholder.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	placeholder.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
 	vbox.add_child(placeholder)
+
+
+func _create_join_popup() -> void:
+	"""Create the join friend popup"""
+	_join_popup = Window.new()
+	_join_popup.name = "JoinFriendPopup"
+	_join_popup.title = "Join Friend"
+	_join_popup.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_MAIN_WINDOW_SCREEN
+	_join_popup.size = Vector2(400, 500)
+	_join_popup.visible = false
+	_join_popup.transient = true
+	_join_popup.exclusive = true
+	_join_popup.close_requested.connect(func(): _join_popup.hide())
+	add_child(_join_popup)
+	
+	var panel = PanelContainer.new()
+	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_apply_panel_style(panel)
+	_join_popup.add_child(panel)
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 12)
+	panel.add_child(vbox)
+	
+	# Title
+	var title = Label.new()
+	title.text = "Friends Playing Magewar"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 18)
+	vbox.add_child(title)
+	
+	# List
+	_friends_list = ItemList.new()
+	_friends_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_friends_list.item_selected.connect(_on_friend_selected)
+	vbox.add_child(_friends_list)
+	
+	# Buttons
+	var hbox = HBoxContainer.new()
+	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	hbox.add_theme_constant_override("separation", 16)
+	vbox.add_child(hbox)
+	
+	_refresh_friends_button = Button.new()
+	_refresh_friends_button.text = "Refresh"
+	_refresh_friends_button.custom_minimum_size = Vector2(100, 40)
+	_refresh_friends_button.pressed.connect(_populate_friends_list)
+	hbox.add_child(_refresh_friends_button)
+	
+	_join_selected_button = Button.new()
+	_join_selected_button.text = "Join"
+	_join_selected_button.custom_minimum_size = Vector2(100, 40)
+	_join_selected_button.disabled = true
+	_join_selected_button.pressed.connect(_on_join_friend_confirmed)
+	hbox.add_child(_join_selected_button)
+	
+	var close_btn = Button.new()
+	close_btn.text = "Close"
+	close_btn.custom_minimum_size = Vector2(100, 40)
+	close_btn.pressed.connect(func(): _join_popup.hide())
+	hbox.add_child(close_btn)
+
 
 # =============================================================================
 # CLEANUP

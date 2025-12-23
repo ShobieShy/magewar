@@ -89,6 +89,12 @@ func is_paused() -> bool:
 # =============================================================================
 
 func load_scene(scene_path: String) -> void:
+	# Try seamless world transition first if possible
+	if current_scene and current_scene.has_method("load_world"):
+		current_scene.load_world(scene_path)
+		scene_loading_completed.emit(scene_path)
+		return
+
 	current_state = Enums.GameState.LOADING
 	scene_loading_started.emit(scene_path)
 	

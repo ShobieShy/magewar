@@ -18,6 +18,7 @@ const TOWN_SHOP_DATA = preload("res://resources/shops/town_shop.tres")
 
 @onready var spawn_points: Node3D = $SpawnPoints
 @onready var players_node: Node3D = $Players
+@onready var world_node: Node3D = $World
 @onready var hud: CanvasLayer = $HUD
 @onready var player_hud: Control = $HUD/PlayerHUD
 
@@ -28,6 +29,7 @@ const TOWN_SHOP_DATA = preload("res://resources/shops/town_shop.tres")
 var _spawn_index: int = 0
 var unified_menu: UnifiedMenuUI = null
 var settings_menu: Control = null
+var current_world: Node = null
 
 # =============================================================================
 # BUILT-IN CALLBACKS
@@ -35,6 +37,7 @@ var settings_menu: Control = null
 
 func _ready() -> void:
 	GameManager.current_state = Enums.GameState.PLAYING
+	GameManager.current_scene = self
 	
 	# Register shops
 	_register_shops()
@@ -42,6 +45,9 @@ func _ready() -> void:
 	# Connect network signals
 	NetworkManager.player_connected.connect(_on_player_connected)
 	NetworkManager.player_disconnected.connect(_on_player_disconnected)
+	
+	# Load initial world (Town Square)
+	_load_initial_world()
 	
 	# Spawn local player
 	_spawn_local_player()
@@ -59,6 +65,44 @@ func _ready() -> void:
 	
 	# Start auto-save
 	SaveManager.start_auto_save()
+
+
+func _load_initial_world() -> void:
+	# Default to town square
+	load_world("res://scenes/world/starting_town/town_square.tscn")
+
+
+func load_world(world_path: String) -> void:
+	"""Load a new world scene into the World container"""
+	if current_world:
+		current_world.queue_free()
+		current_world = null
+	
+	if not ResourceLoader.exists(world_path):
+		push_error("World not found: " + world_path)
+		return
+	
+	var world_scene = load(world_path)
+	if world_scene:
+		current_world = world_scene.instantiate()
+		world_node.add_child(current_world)
+		print("Loaded world: ", world_path)
+		
+		# Update spawn points if the new world has them
+		_update_spawn_points()
+
+
+func _update_spawn_points() -> void:
+	"""Update spawn points from the current world"""
+	# If world has a specific spawn points node, use it
+	var world_spawns = current_world.find_child("SpawnPoints", true, false)
+	if not world_spawns:
+		world_spawns = current_world.find_child("PlayerSpawn", true, false)
+	
+	if world_spawns:
+		# We could either copy the points or just use the node
+		# For now, let's just make sure GameManager can find spawn points in groups
+		pass
 
 
 func _exit_tree() -> void:
@@ -125,13 +169,31 @@ func _spawn_remote_player(peer_id: int) -> void:
 
 
 func _get_next_spawn_position() -> Vector3:
+	# Try to find spawn points in the current world first
+	if current_world:
+		var world_spawns = current_world.find_child("SpawnPoints", true, false)
+		if not world_spawns:
+			world_spawns = current_world.find_child("NPCSpawns", true, false) # Fallback
+		
+		if world_spawns and world_spawns.get_child_count() > 0:
+			var spawn_children = world_spawns.get_children()
+			var spawn_point = spawn_children[_spawn_index % spawn_children.size()]
+			_spawn_index += 1
+			return spawn_point.global_position
+		
+		# Try looking for a single PlayerSpawn marker
+		var player_spawn_node = current_world.find_child("PlayerSpawn", true, false)
+		if player_spawn_node:
+			return player_spawn_node.global_position
+
+	# Fallback to local spawn points in Game scene
 	var spawn_children = spawn_points.get_children()
-	if spawn_children.size() == 0:
-		return Vector3.ZERO
+	if spawn_children.size() > 0:
+		var spawn_point = spawn_children[_spawn_index % spawn_children.size()]
+		_spawn_index += 1
+		return spawn_point.global_position
 	
-	var spawn_point = spawn_children[_spawn_index % spawn_children.size()]
-	_spawn_index += 1
-	return spawn_point.global_position
+	return Vector3.ZERO
 
 
 func _despawn_player(peer_id: int) -> void:
@@ -215,9 +277,9 @@ func _setup_unified_menu() -> void:
 		unified_menu.set_inventory_system(player.inventory)
 	
 	# Connect unified menu signals
-	unified_menu.settings_requested.connect(_on_unified_menu_settings)
 	unified_menu.quit_to_menu_requested.connect(_on_unified_menu_quit)
-	unified_menu.join_requested.connect(_on_unified_menu_join)
+	# unified_menu.settings_requested.connect(_on_unified_menu_settings)
+	# unified_menu.join_requested.connect(_on_unified_menu_join)
 
 
 func _get_local_player() -> Node:
@@ -229,33 +291,34 @@ func _get_local_player() -> Node:
 	return null
 
 
-func _on_unified_menu_settings() -> void:
-	"""Handle settings request from unified menu"""
+# func _on_unified_menu_settings() -> void:
+# 	"""Handle settings request from unified menu"""
+# 	pass
 	
-	if settings_menu == null:
-		# Load and instantiate settings menu dynamically
-		var SettingsMenuScript = load(SETTINGS_MENU_SCRIPT)
-		if SettingsMenuScript:
-			settings_menu = SettingsMenuScript.new()
-			add_child(settings_menu)
-			settings_menu.settings_closed.connect(_on_settings_menu_closed)
-		else:
-			push_error("Failed to load settings menu script")
-			return
+	# if settings_menu == null:
+	# 	# Load and instantiate settings menu dynamically
+	# 	var SettingsMenuScript = load(SETTINGS_MENU_SCRIPT)
+	# 	if SettingsMenuScript:
+	# 		settings_menu = SettingsMenuScript.new()
+	# 		add_child(settings_menu)
+	# 		settings_menu.settings_closed.connect(_on_settings_menu_closed)
+	# 	else:
+	# 		push_error("Failed to load settings menu script")
+	# 		return
 	
-	# Show the settings menu
-	settings_menu.show()
+	# # Show the settings menu
+	# settings_menu.show()
 
 
-func _on_settings_menu_closed() -> void:
-	"""Handle settings menu closed"""
-	if settings_menu:
-		settings_menu.queue_free()
-		settings_menu = null
+# func _on_settings_menu_closed() -> void:
+# 	"""Handle settings menu closed"""
+# 	if settings_menu:
+# 		settings_menu.queue_free()
+# 		settings_menu = null
 	
-	# Show unified menu again
-	if unified_menu:
-		unified_menu.open()
+# 	# Show unified menu again
+# 	if unified_menu:
+# 		unified_menu.open()
 
 
 func _on_unified_menu_quit() -> void:
@@ -268,9 +331,10 @@ func _on_unified_menu_quit() -> void:
 	get_tree().change_scene_to_file(MAIN_MENU_SCENE)
 
 
-func _on_unified_menu_join() -> void:
-	"""Handle join request from unified menu"""
-	# This would open a join/lobby UI
-	# For now, just a placeholder
-	if unified_menu:
-		unified_menu.close()
+# func _on_unified_menu_join() -> void:
+# 	"""Handle join request from unified menu"""
+# 	pass
+# 	# This would open a join/lobby UI
+# 	# For now, just a placeholder
+# 	if unified_menu:
+# 		unified_menu.close()

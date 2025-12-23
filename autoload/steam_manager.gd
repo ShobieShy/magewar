@@ -247,6 +247,30 @@ func invite_friend(friend_id: int) -> bool:
 		return false
 	return Steam.inviteUserToLobby(current_lobby_id, friend_id)
 
+
+func get_friends_playing_this_game() -> Array:
+	## Get list of friends currently playing this game
+	var friends = []
+	if not is_initialized:
+		return friends
+	
+	var friend_count = Steam.getFriendCount(Steam.FRIEND_FLAG_IMMEDIATE)
+	var app_id = Steam.getAppID()
+	
+	for i in range(friend_count):
+		var friend_steam_id = Steam.getFriendByIndex(i, Steam.FRIEND_FLAG_IMMEDIATE)
+		var game_info = Steam.getFriendGamePlayed(friend_steam_id)
+		
+		# Check if they are playing the same game
+		if not game_info.is_empty() and int(game_info.get("id", 0)) == app_id:
+			friends.append({
+				"steam_id": friend_steam_id,
+				"name": Steam.getFriendPersonaName(friend_steam_id),
+				"lobby_id": game_info.get("lobby", 0)
+			})
+			
+	return friends
+
 # =============================================================================
 # STEAM CALLBACKS
 # =============================================================================
