@@ -1218,27 +1218,153 @@ func _on_stats_closed() -> void:
 # =============================================================================
 
 func _create_settings_tab() -> void:
-	"""Create the settings tab"""
+	"""Create the settings tab - integrates audio, video, and gameplay settings"""
 	_settings_panel = PanelContainer.new()
 	_settings_panel.name = "SettingsTab"
 	_apply_panel_style(_settings_panel)
 	_tab_container.add_child(_settings_panel)
 	
-	var vbox = VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 12)
-	_settings_panel.add_child(vbox)
+	var scroll = ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_settings_panel.add_child(scroll)
 	
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 16)
+	scroll.add_child(vbox)
+	
+	# Title
 	var title = Label.new()
 	title.text = "Settings"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 24)
 	vbox.add_child(title)
 	
-	var placeholder = Label.new()
-	placeholder.text = "[Settings content coming soon]\nUse main Settings menu from Pause tab"
-	placeholder.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	placeholder.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
-	vbox.add_child(placeholder)
+	# Audio Settings
+	var audio_title = Label.new()
+	audio_title.text = "Audio"
+	audio_title.add_theme_font_size_override("font_size", 18)
+	audio_title.add_theme_color_override("font_color", Color(0.8, 0.8, 1.0))
+	vbox.add_child(audio_title)
+	
+	# Master Volume
+	var master_hbox = HBoxContainer.new()
+	master_hbox.add_theme_constant_override("separation", 16)
+	vbox.add_child(master_hbox)
+	
+	var master_label = Label.new()
+	master_label.text = "Master Volume:"
+	master_label.custom_minimum_size = Vector2(150, 0)
+	master_hbox.add_child(master_label)
+	
+	var master_slider = HSlider.new()
+	master_slider.min_value = 0
+	master_slider.max_value = 100
+	master_slider.step = 1
+	master_slider.value = 80
+	master_slider.custom_minimum_size = Vector2(200, 0)
+	master_hbox.add_child(master_slider)
+	
+	# Music Volume
+	var music_hbox = HBoxContainer.new()
+	music_hbox.add_theme_constant_override("separation", 16)
+	vbox.add_child(music_hbox)
+	
+	var music_label = Label.new()
+	music_label.text = "Music Volume:"
+	music_label.custom_minimum_size = Vector2(150, 0)
+	music_hbox.add_child(music_label)
+	
+	var music_slider = HSlider.new()
+	music_slider.min_value = 0
+	music_slider.max_value = 100
+	music_slider.step = 1
+	music_slider.value = 70
+	music_slider.custom_minimum_size = Vector2(200, 0)
+	music_hbox.add_child(music_slider)
+	
+	# SFX Volume
+	var sfx_hbox = HBoxContainer.new()
+	sfx_hbox.add_theme_constant_override("separation", 16)
+	vbox.add_child(sfx_hbox)
+	
+	var sfx_label = Label.new()
+	sfx_label.text = "SFX Volume:"
+	sfx_label.custom_minimum_size = Vector2(150, 0)
+	sfx_hbox.add_child(sfx_label)
+	
+	var sfx_slider = HSlider.new()
+	sfx_slider.min_value = 0
+	sfx_slider.max_value = 100
+	sfx_slider.step = 1
+	sfx_slider.value = 80
+	sfx_slider.custom_minimum_size = Vector2(200, 0)
+	sfx_hbox.add_child(sfx_slider)
+	
+	# Separator
+	vbox.add_child(HSeparator.new())
+	
+	# Gameplay Settings
+	var gameplay_title = Label.new()
+	gameplay_title.text = "Gameplay"
+	gameplay_title.add_theme_font_size_override("font_size", 18)
+	gameplay_title.add_theme_color_override("font_color", Color(0.8, 0.8, 1.0))
+	vbox.add_child(gameplay_title)
+	
+	# Mouse Sensitivity
+	var mouse_hbox = HBoxContainer.new()
+	mouse_hbox.add_theme_constant_override("separation", 16)
+	vbox.add_child(mouse_hbox)
+	
+	var mouse_label = Label.new()
+	mouse_label.text = "Mouse Sensitivity:"
+	mouse_label.custom_minimum_size = Vector2(150, 0)
+	mouse_hbox.add_child(mouse_label)
+	
+	var mouse_slider = HSlider.new()
+	mouse_slider.min_value = 0.1
+	mouse_slider.max_value = 2.0
+	mouse_slider.step = 0.1
+	mouse_slider.value = 1.0
+	mouse_slider.custom_minimum_size = Vector2(200, 0)
+	mouse_hbox.add_child(mouse_slider)
+	
+	# Damage Numbers
+	var damage_hbox = HBoxContainer.new()
+	damage_hbox.add_theme_constant_override("separation", 16)
+	vbox.add_child(damage_hbox)
+	
+	var damage_label = Label.new()
+	damage_label.text = "Show Damage Numbers:"
+	damage_label.custom_minimum_size = Vector2(150, 0)
+	damage_hbox.add_child(damage_label)
+	
+	var damage_check = CheckBox.new()
+	damage_check.button_pressed = true
+	damage_hbox.add_child(damage_check)
+	
+	# Friendly Fire
+	var friendly_hbox = HBoxContainer.new()
+	friendly_hbox.add_theme_constant_override("separation", 16)
+	vbox.add_child(friendly_hbox)
+	
+	var friendly_label = Label.new()
+	friendly_label.text = "Friendly Fire:"
+	friendly_label.custom_minimum_size = Vector2(150, 0)
+	friendly_hbox.add_child(friendly_label)
+	
+	var friendly_check = CheckBox.new()
+	friendly_check.button_pressed = false
+	friendly_hbox.add_child(friendly_check)
+	
+	# Separator
+	vbox.add_child(HSeparator.new())
+	
+	# Info
+	var info = Label.new()
+	info.text = "Settings are saved automatically"
+	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	vbox.add_child(info)
 
 
 # =============================================================================
