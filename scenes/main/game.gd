@@ -10,6 +10,7 @@ const PLAYER_SCENE = preload("res://scenes/player/player.tscn")
 const UNIFIED_MENU_SCENE = preload("res://scenes/ui/menus/unified_menu_ui.gd")
 const SETTINGS_MENU_SCRIPT = "res://scenes/ui/menus/settings_menu.gd"
 const MAIN_MENU_SCENE = "res://scenes/ui/menus/main_menu.tscn"
+const TOWN_SHOP_DATA = preload("res://resources/shops/town_shop.tres")
 
 # =============================================================================
 # NODE REFERENCES
@@ -34,6 +35,9 @@ var settings_menu: Control = null
 
 func _ready() -> void:
 	GameManager.current_state = Enums.GameState.PLAYING
+	
+	# Register shops
+	_register_shops()
 	
 	# Connect network signals
 	NetworkManager.player_connected.connect(_on_player_connected)
@@ -67,6 +71,16 @@ func _input(_event: InputEvent) -> void:
 	# Mouse mode is controlled exclusively by pause menu
 	# Pause menu handles escape key for pause/unpause
 	pass
+
+# =============================================================================
+# SHOP REGISTRATION
+# =============================================================================
+
+func _register_shops() -> void:
+	"""Register all available shops with ShopManager"""
+	if TOWN_SHOP_DATA:
+		ShopManager.register_shop(TOWN_SHOP_DATA)
+		print("Registered town shop: ", TOWN_SHOP_DATA.shop_id)
 
 # =============================================================================
 # PLAYER SPAWNING
