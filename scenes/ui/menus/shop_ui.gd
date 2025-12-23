@@ -370,6 +370,10 @@ func _update_details() -> void:
 		_clear_details()
 		return
 	
+	# Safety check - ensure UI is initialized
+	if not _item_name_label:
+		return
+	
 	var item: ItemData = null
 	var price: int = 0
 	var max_qty: int = 1
@@ -406,32 +410,46 @@ func _update_details() -> void:
 	_item_name_label.add_theme_color_override("font_color", item.get_rarity_color())
 	
 	var action_text = "Sell" if _current_tab == 1 else "Buy"
-	_item_price_label.text = "%s: %d Gold" % [action_text, price]
+	if _item_price_label:
+		_item_price_label.text = "%s: %d Gold" % [action_text, price]
 	
 	# Check affordability for buy tabs
 	if _current_tab != 1:
 		var can_afford = SaveManager.has_gold(price)
-		_item_price_label.add_theme_color_override("font_color", Color.GOLD if can_afford else Color.RED)
-		_action_button.disabled = not can_afford
+		if _item_price_label:
+			_item_price_label.add_theme_color_override("font_color", Color.GOLD if can_afford else Color.RED)
+		if _action_button:
+			_action_button.disabled = not can_afford
 	else:
-		_item_price_label.add_theme_color_override("font_color", Color.GOLD)
-		_action_button.disabled = false
+		if _item_price_label:
+			_item_price_label.add_theme_color_override("font_color", Color.GOLD)
+		if _action_button:
+			_action_button.disabled = false
 	
-	_item_description.text = item.get_tooltip()
+	if _item_description:
+		_item_description.text = item.get_tooltip()
 	
-	_quantity_spinbox.max_value = max_qty
-	_quantity_spinbox.value = min(_quantity_spinbox.value, max_qty)
+	if _quantity_spinbox:
+		_quantity_spinbox.max_value = max_qty
+		_quantity_spinbox.value = min(_quantity_spinbox.value, max_qty)
 	
-	_action_button.text = action_text
+	if _action_button:
+		_action_button.text = action_text
 
 
 func _clear_details() -> void:
+	if not _item_name_label:
+		return
 	_item_name_label.text = "Select an item"
 	_item_name_label.add_theme_color_override("font_color", Color.WHITE)
-	_item_price_label.text = ""
-	_item_description.text = ""
-	_quantity_spinbox.value = 1
-	_action_button.disabled = true
+	if _item_price_label:
+		_item_price_label.text = ""
+	if _item_description:
+		_item_description.text = ""
+	if _quantity_spinbox:
+		_quantity_spinbox.value = 1
+	if _action_button:
+		_action_button.disabled = true
 
 # =============================================================================
 # EVENT HANDLERS
