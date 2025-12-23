@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scenes/world/starting_town/town_square.gd" id="1_town"]
 [ext_resource type="PackedScene" uid="uid://portal_base" path="res://scenes/world/portal.tscn" id="2_portal"]
+[ext_resource type="PackedScene" uid="uid://dportal001" path="res://scenes/objects/dungeon_portal.tscn" id="3_dportal"]
 
 [sub_resource type="StandardMaterial3D" id="mat_cobblestone"]
 albedo_color = Color(0.45, 0.42, 0.4, 1)
@@ -158,29 +159,66 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0.5, -2)
 
 [node name="Portals" type="Node3D" parent="."]
 
-[node name="PortalLandfill" parent="Portals" instance=ExtResource("2_portal")]
+[node name="PortalLandfill" parent="Portals" instance=ExtResource("3_dportal")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -15)
-portal_id = "landfill"
+portal_id = "portal_landfill"
+dungeon_id = "landfill"
+destination_portal_id = "entrance"
 portal_name = "Landfill"
-destination_scene = "res://scenes/world/landfill/landfill.tscn"
-is_active = false
+portal_color = Color(0.4, 0.4, 0.2, 1)
 
-[node name="PortalTownCenter" parent="Portals" instance=ExtResource("2_portal")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-portal_id = "town_center"
-portal_name = "Town Center"
-is_active = true
+[node name="PortalHome" parent="Portals" instance=ExtResource("3_dportal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 16)
+portal_id = "portal_home"
+dungeon_id = "home_tree"
+destination_portal_id = "entrance"
+portal_name = "Home Tree"
+portal_color = Color(0.2, 0.8, 0.2, 1)
 
-[node name="MageAssociationEntrance" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -16)
-collision_layer = 64
-collision_mask = 2
+[node name="PortalMage" parent="Portals" instance=ExtResource("3_dportal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -16)
+portal_id = "portal_mage"
+dungeon_id = "mage_association"
+destination_portal_id = "entrance"
+portal_name = "Mage Association"
+portal_color = Color(0.2, 0.2, 0.8, 1)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MageAssociationEntrance"]
+[node name="PortalD1" parent="Portals" instance=ExtResource("3_dportal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 15)
+portal_id = "portal_d1"
+dungeon_id = "dungeon_1"
+destination_portal_id = "entrance"
+portal_name = "Abandoned Mine"
+portal_color = Color(0.5, 0.3, 0.1, 1)
 
-[node name="HomeTreeEntrance" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 16)
-collision_layer = 64
-collision_mask = 2
+[node name="PortalD2" parent="Portals" instance=ExtResource("3_dportal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, 15)
+portal_id = "portal_d2"
+dungeon_id = "dungeon_2"
+destination_portal_id = "entrance"
+portal_name = "Haunted Catacombs"
+portal_color = Color(0.3, 0.1, 0.5, 1)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="HomeTreeEntrance"]
+[node name="PortalD3" parent="Portals" instance=ExtResource("3_dportal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, -15)
+portal_id = "portal_d3"
+dungeon_id = "dungeon_3"
+destination_portal_id = "entrance"
+portal_name = "Crystal Cave"
+portal_color = Color(0.1, 0.6, 0.8, 1)
+
+[node name="PortalD4" parent="Portals" instance=ExtResource("3_dportal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, -15)
+portal_id = "portal_d4"
+dungeon_id = "dungeon_4"
+destination_portal_id = "entrance"
+portal_name = "Ancient Ruins"
+portal_color = Color(0.6, 0.6, 0.4, 1)
+
+[node name="PortalD5" parent="Portals" instance=ExtResource("3_dportal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -25)
+portal_id = "portal_d5"
+dungeon_id = "dungeon_5"
+destination_portal_id = "entrance"
+portal_name = "Forbidden Sanctum"
+portal_color = Color(0.8, 0.1, 0.1, 1)

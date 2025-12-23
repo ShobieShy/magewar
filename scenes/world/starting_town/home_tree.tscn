@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scenes/world/starting_town/home_tree.gd" id="1_home"]
 [ext_resource type="Script" path="res://scenes/world/storage_chest.gd" id="2_storage"]
 [ext_resource type="Script" path="res://scenes/world/assembly_station.gd" id="3_assembly"]
+[ext_resource type="PackedScene" uid="uid://dportal001" path="res://scenes/objects/dungeon_portal.tscn" id="4_dportal"]
 
 [sub_resource type="StandardMaterial3D" id="mat_wood"]
 albedo_color = Color(0.35, 0.25, 0.18, 1)
@@ -182,10 +183,11 @@ collision_mask = 2
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Bed"]
 shape = SubResource("SphereShape3D_1")
 
-[node name="ExitArea" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 6.5)
-collision_layer = 64
-collision_mask = 2
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ExitArea"]
-shape = SubResource("SphereShape3D_1")
+[node name="EntrancePortal" parent="." instance=ExtResource("4_dportal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.5)
+portal_id = "entrance"
+portal_type = 1
+dungeon_id = "town_square"
+destination_portal_id = "portal_home"
+portal_name = "Exit to Town"
+portal_color = Color(0.2, 0.8, 0.2, 1)

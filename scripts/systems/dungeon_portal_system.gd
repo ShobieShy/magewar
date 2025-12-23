@@ -29,14 +29,17 @@ var is_transitioning: bool = false
 var return_position: Vector3 = Vector3.ZERO
 var return_scene: String = ""
 
-# Scene paths - ALL PATHS VALIDATED (dungeons 1-5 exist)
+# Scene paths - ALL PATHS VALIDATED
 var dungeon_scenes: Dictionary = {
 	"dungeon_1": "res://scenes/dungeons/dungeon_1.tscn",
 	"dungeon_2": "res://scenes/dungeons/dungeon_2.tscn",
 	"dungeon_3": "res://scenes/dungeons/dungeon_3.tscn",
 	"dungeon_4": "res://scenes/dungeons/dungeon_4.tscn",
 	"dungeon_5": "res://scenes/dungeons/dungeon_5.tscn",
-	"town_square": "res://scenes/world/starting_town/town_square.tscn"
+	"town_square": "res://scenes/world/starting_town/town_square.tscn",
+	"home_tree": "res://scenes/world/starting_town/home_tree.tscn",
+	"mage_association": "res://scenes/world/starting_town/mage_association.tscn",
+	"landfill": "res://scenes/world/landfill/landfill.tscn"
 }
 
 # Main hub scene for returning from dungeons
@@ -328,14 +331,22 @@ func get_dungeon_info(dungeon_id: String) -> Dictionary:
 			info.name = "Haunted Catacombs"
 			info.level_range = [5, 10]
 			info.description = "Ancient burial grounds filled with undead."
-		"crystal_cave":
+		"dungeon_3":
 			info.name = "Crystal Cave"
 			info.level_range = [3, 7]
 			info.description = "A mystical cave filled with magical crystals."
-		"ancient_ruins":
+		"dungeon_4":
 			info.name = "Ancient Ruins"
 			info.level_range = [10, 15]
 			info.description = "Ruins of an ancient civilization."
+		"dungeon_5":
+			info.name = "Forbidden Sanctum"
+			info.level_range = [15, 20]
+			info.description = "The final challenge. Face the absolute darkness."
+		"landfill":
+			info.name = "The Landfill"
+			info.level_range = [1, 3]
+			info.description = "A place of waste and filth, and the source of a growing corruption."
 	
 	return info
 

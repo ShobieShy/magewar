@@ -27,7 +27,6 @@ signal exit_triggered()
 @onready var storage_chest: Node3D = $StorageChest
 @onready var assembly_station: Node3D = $AssemblyStation
 @onready var bed: Node3D = $Bed
-@onready var exit_area: Area3D = $ExitArea
 
 # =============================================================================
 # BUILT-IN CALLBACKS
@@ -37,7 +36,6 @@ func _ready() -> void:
 	_setup_storage()
 	_setup_assembly()
 	_setup_bed()
-	_setup_exit()
 	
 	# Register spawn point
 	FastTravelManager.register_spawn_point("home_tree", get_player_spawn_position())
@@ -155,21 +153,6 @@ func _on_bed_used(player: Node) -> void:
 	
 	# Show notification
 	print("Game saved. Health restored.")
-
-# =============================================================================
-# EXIT
-# =============================================================================
-
-func _setup_exit() -> void:
-	if exit_area:
-		exit_area.body_entered.connect(_on_exit_entered)
-
-
-func _on_exit_entered(body: Node) -> void:
-	if body is Player and body.is_local_player:
-		exit_triggered.emit()
-		# Return to town square
-		GameManager.load_scene("res://scenes/world/starting_town/town_square.tscn")
 
 # =============================================================================
 # UTILITY

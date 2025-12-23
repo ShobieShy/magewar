@@ -27,7 +27,6 @@ signal exit_triggered()
 @onready var quest_board: Node3D = $QuestBoard
 @onready var skill_trainer_npc: Node3D = $SkillTrainerNPC
 @onready var spell_vendor_npc: Node3D = $SpellVendorNPC
-@onready var exit_area: Area3D = $ExitArea
 
 # =============================================================================
 # PROPERTIES
@@ -42,7 +41,6 @@ var _skill_tree_ui: Control = null
 
 func _ready() -> void:
 	_setup_services()
-	_setup_exit()
 	
 	# Register spawn point
 	FastTravelManager.register_spawn_point("mage_association", get_player_spawn_position())
@@ -120,16 +118,6 @@ func _open_skill_tree() -> void:
 		
 		if _skill_tree_ui.has_method("open"):
 			_skill_tree_ui.open()
-
-# =============================================================================
-# EXIT
-# =============================================================================
-
-func _on_exit_entered(body: Node) -> void:
-	if body is Player and body.is_local_player:
-		exit_triggered.emit()
-		# Return to town square
-		GameManager.load_scene("res://scenes/world/starting_town/town_square.tscn")
 
 # =============================================================================
 # UTILITY

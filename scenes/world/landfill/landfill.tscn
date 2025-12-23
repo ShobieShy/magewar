@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scenes/world/landfill/landfill.gd" id="1_landfill"]
 [ext_resource type="Script" path="res://scripts/systems/enemy_spawner.gd" id="2_spawner"]
-[ext_resource type="PackedScene" uid="uid://portal_base" path="res://scenes/world/portal.tscn" id="3_portal"]
+[ext_resource type="PackedScene" uid="uid://dportal001" path="res://scenes/objects/dungeon_portal.tscn" id="3_portal"]
 
 [sub_resource type="StandardMaterial3D" id="mat_ground"]
 albedo_color = Color(0.25, 0.22, 0.18, 1)
@@ -143,6 +143,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 1, 10)
 
 [node name="Portal" parent="." instance=ExtResource("3_portal")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 20)
-portal_id = "landfill"
+portal_id = "entrance"
+portal_type = 1
+dungeon_id = "town_square"
+destination_portal_id = "portal_landfill"
+portal_name = "Exit to Town"
+portal_color = Color(0.4, 0.4, 0.2, 1)
 is_active = false
-requires_boss_defeat = true

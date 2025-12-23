@@ -86,8 +86,9 @@ surface_material_override/0 = SubResource("Material_stone")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.8)
 portal_id = "entrance"
 portal_type = 1
-dungeon_id = ""
-portal_name = "Exit to Overworld"
+dungeon_id = "town_square"
+destination_portal_id = "portal_d1"
+portal_name = "Exit to Town"
 
 [node name="MainCorridor" type="Node3D" parent="."]
 
@@ -332,9 +333,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 50)
 
 [node name="ExitPortal" parent="TreasureRoom" instance=ExtResource("portal")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 54.8)
+portal_id = "exit"
 portal_type = 1
-dungeon_id = ""
-portal_name = "Exit to Overworld"
+dungeon_id = "town_square"
+destination_portal_id = "portal_d1"
+portal_name = "Exit to Town"
 
 [node name="Lights" type="Node3D" parent="."]
 
