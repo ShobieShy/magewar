@@ -523,8 +523,13 @@ func _use_item(slot: ItemSlot) -> void:
 
 func _equip_item(slot: ItemSlot) -> void:
 	if _inventory_system and slot.slot_index >= 0:
-		_inventory_system.equip_item(slot.slot_index)
-		_refresh_display()
+		# Get the item from inventory and equip it
+		var item = _inventory_system.get_item(slot.slot_index)
+		if item and item is EquipmentData:
+			_inventory_system.equip_item(item, slot.slot_index)
+			_refresh_display()
+		else:
+			push_warning("Cannot equip non-equipment item or item not found")
 
 
 func _unequip_item(slot: ItemSlot) -> void:
