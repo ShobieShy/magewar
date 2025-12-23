@@ -330,6 +330,8 @@ func _on_player_entered(_player: Node, _portal: Node) -> void:
 	"""Player entered the dungeon"""
 	player_entered = true
 	print("Player entered " + dungeon_name)
+	if QuestManager:
+		QuestManager.report_area_entered(dungeon_id)
 
 func _on_player_exited(_player: Node, _portal: Node) -> void:
 	"""Player exited the dungeon"""
@@ -352,6 +354,9 @@ func _on_boss_died(_enemy: Node) -> void:
 	
 	print("Boss defeated! Treasure room unlocked.")
 	
+	if QuestManager:
+		QuestManager.report_kill(Enums.EnemyType.BOSS, "ancient_troll")
+
 	# Unlock treasure room
 	unlock_treasure_room()
 

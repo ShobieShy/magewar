@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/quests/quest_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/quests/quest_objective.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+objective_id = "reach_peaks"
+description = "Climb the Shattered Peaks (Dungeon 5)"
+objective_type = 4  ; DISCOVER_AREA
+target_id = "dungeon_5"
+target_count = 1
+is_optional = false
+is_hidden = false
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+objective_id = "defeat_drake_boss"
+description = "Defeat the Storm Drake"
+objective_type = 5  ; DEFEAT_BOSS
+target_id = "storm_drake"
+target_count = 1
+is_optional = false
+is_hidden = false
+required_location = "dungeon_5"
+
+[resource]
+script = ExtResource("1")
+quest_id = "chapter6_shattered_peaks"
+quest_name = "Peak Performance"
+description = "The final challenge awaits at the summit of the Shattered Peaks. Confront the Storm Drake that guards the ancient aerial ruins."
+quest_giver = "npc_bob"
+is_main_quest = true
+chapter = 6
+objectives = [SubResource("1"), SubResource("2")]
+require_all_objectives = true
+required_level = 20
+required_quests = ["chapter5_whispering_woods"]
+required_items = []
+required_location = "dungeon_5_entrance"
+reward_experience = 15000
+reward_gold = 5000
+reward_items = ["storm_staff", "dragon_scale"]
+reward_skill_points = 5
+unlock_location = ""
+unlock_portal = ""
+auto_complete = true
+turn_in_npc = ""
+next_quest = "main_quest_vague_intro"
+dialogue_on_accept = ""
+dialogue_on_progress = ""
+dialogue_on_complete = ""

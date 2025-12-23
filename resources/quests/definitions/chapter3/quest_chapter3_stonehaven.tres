@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/quests/quest_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/quests/quest_objective.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+objective_id = "reach_stonehaven"
+description = "Travel to Stonehaven Mines (Dungeon 2)"
+objective_type = 4  ; DISCOVER_AREA
+target_id = "dungeon_2"
+target_count = 1
+is_optional = false
+is_hidden = false
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+objective_id = "defeat_mining_boss"
+description = "Defeat the Corrupted Mining Construct"
+objective_type = 5  ; DEFEAT_BOSS
+target_id = "mining_mech"
+target_count = 1
+is_optional = false
+is_hidden = false
+required_location = "dungeon_2"
+
+[resource]
+script = ExtResource("1")
+quest_id = "chapter3_stonehaven"
+quest_name = "Into the Depths"
+description = "Communication with Stonehaven has ceased. Investigate the mines and clear out whatever has taken over the excavation site."
+quest_giver = "npc_bob"
+is_main_quest = true
+chapter = 3
+objectives = [SubResource("1"), SubResource("2")]
+require_all_objectives = true
+required_level = 5
+required_quests = ["chapter2_willowbrook"]
+required_items = []
+required_location = "dungeon_2_entrance"
+reward_experience = 2000
+reward_gold = 500
+reward_items = ["miners_helmet", "strength_potion"]
+reward_skill_points = 2
+unlock_location = "dungeon_3_entrance"
+unlock_portal = ""
+auto_complete = true
+turn_in_npc = ""
+next_quest = "chapter4_sylvandar"
+dialogue_on_accept = ""
+dialogue_on_progress = ""
+dialogue_on_complete = ""

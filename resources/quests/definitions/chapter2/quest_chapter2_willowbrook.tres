@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/quests/quest_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/quests/quest_objective.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+objective_id = "reach_willowbrook"
+description = "Travel to Willowbrook (Dungeon 1)"
+objective_type = 4  ; DISCOVER_AREA
+target_id = "dungeon_1"
+target_count = 1
+is_optional = false
+is_hidden = false
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+objective_id = "defeat_troll_boss"
+description = "Defeat the Ancient Troll"
+objective_type = 5  ; DEFEAT_BOSS
+target_id = "ancient_troll"
+target_count = 1
+is_optional = false
+is_hidden = false
+required_location = "dungeon_1"
+
+[resource]
+script = ExtResource("1")
+quest_id = "chapter2_willowbrook"
+quest_name = "The Goblin Raid"
+description = "Willowbrook is under attack by goblins and trolls. The farmer needs your help to repel the raid and defeat the leader hiding in the mines."
+quest_giver = "npc_bob"
+is_main_quest = true
+chapter = 2
+objectives = [SubResource("1"), SubResource("2")]
+require_all_objectives = true
+required_level = 2
+required_quests = ["chapter1_fast_travel_crystal"]
+required_items = []
+required_location = ""
+reward_experience = 1000
+reward_gold = 200
+reward_items = ["steel_sword", "minor_healing_potion"]
+reward_skill_points = 2
+unlock_location = "dungeon_2_entrance"
+unlock_portal = ""
+auto_complete = true
+turn_in_npc = ""
+next_quest = "chapter3_stonehaven"
+dialogue_on_accept = ""
+dialogue_on_progress = ""
+dialogue_on_complete = ""

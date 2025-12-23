@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/quests/quest_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/quests/quest_objective.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+objective_id = "reach_sylvandar"
+description = "Travel to Sylvandar (Dungeon 3)"
+objective_type = 4  ; DISCOVER_AREA
+target_id = "dungeon_3"
+target_count = 1
+is_optional = false
+is_hidden = false
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+objective_id = "defeat_treant_boss"
+description = "Defeat the Corrupted Treant"
+objective_type = 5  ; DEFEAT_BOSS
+target_id = "corrupted_treant"
+target_count = 1
+is_optional = false
+is_hidden = false
+required_location = "dungeon_3"
+
+[resource]
+script = ExtResource("1")
+quest_id = "chapter4_sylvandar"
+quest_name = "Elven Secrets"
+description = "The Ley Lines in Sylvandar are being corrupted. Aid the elves by entering their sacred grove and cleansing the source of the corruption."
+quest_giver = "npc_bob"
+is_main_quest = true
+chapter = 4
+objectives = [SubResource("1"), SubResource("2")]
+require_all_objectives = true
+required_level = 10
+required_quests = ["chapter3_stonehaven"]
+required_items = []
+required_location = "dungeon_3_entrance"
+reward_experience = 4000
+reward_gold = 1000
+reward_items = ["elven_bow", "nature_gem"]
+reward_skill_points = 3
+unlock_location = "dungeon_4_entrance"
+unlock_portal = ""
+auto_complete = true
+turn_in_npc = ""
+next_quest = "chapter5_whispering_woods"
+dialogue_on_accept = ""
+dialogue_on_progress = ""
+dialogue_on_complete = ""
