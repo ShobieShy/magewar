@@ -74,10 +74,6 @@ func _setup_spell_vendor() -> void:
 		spell_vendor_npc.set_shop_id("spell_vendor")
 
 
-func _setup_exit() -> void:
-	if exit_area:
-		exit_area.body_entered.connect(_on_exit_entered)
-
 # =============================================================================
 # QUEST BOARD
 # =============================================================================

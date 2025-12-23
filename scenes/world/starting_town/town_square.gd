@@ -27,8 +27,6 @@ signal portal_activated(portal_id: String)
 @onready var player_spawn: Marker3D = $PlayerSpawn
 @onready var npc_spawns: Node3D = $NPCSpawns
 @onready var portal_landfill: Node3D = $Portals/PortalLandfill
-@onready var mage_association_entrance: Area3D = $MageAssociationEntrance
-@onready var home_tree_entrance: Area3D = $HomeTreeEntrance
 
 # =============================================================================
 # PROPERTIES
@@ -43,7 +41,6 @@ var _npcs: Dictionary = {}  # npc_id -> NPC node
 func _ready() -> void:
 	_spawn_npcs()
 	_setup_portals()
-	_setup_entrances()
 	_setup_shop()
 	_spawn_vendor_npc()
 	_spawn_skill_trainer_npc()
@@ -192,31 +189,6 @@ func unlock_portal(portal_id: String) -> void:
 				portal_landfill.set_active(true)
 	
 	portal_activated.emit(portal_id)
-
-# =============================================================================
-# BUILDING ENTRANCES
-# =============================================================================
-
-func _setup_entrances() -> void:
-	# Setup Mage Association entrance
-	if mage_association_entrance:
-		mage_association_entrance.body_entered.connect(_on_mage_association_entered)
-	
-	# Setup Home Tree entrance
-	if home_tree_entrance:
-		home_tree_entrance.body_entered.connect(_on_home_tree_entered)
-
-
-func _on_mage_association_entered(body: Node) -> void:
-	if body is Player and body.is_local_player:
-		# Transition to Mage Association interior
-		GameManager.load_scene("res://scenes/world/starting_town/mage_association.tscn")
-
-
-func _on_home_tree_entered(body: Node) -> void:
-	if body is Player and body.is_local_player:
-		# Transition to Home Tree interior
-		GameManager.load_scene("res://scenes/world/starting_town/home_tree.tscn")
 
 # =============================================================================
 # UTILITY
