@@ -235,7 +235,8 @@ func set_active(active: bool) -> void:
 			particles.emitting = show_particles
 		if light:
 			light.visible = true
-		collision_shape.disabled = false
+		if collision_shape:
+			collision_shape.disabled = false
 	else:
 		deactivated.emit()
 		if mesh_instance:
@@ -244,7 +245,14 @@ func set_active(active: bool) -> void:
 			particles.emitting = false
 		if light:
 			light.visible = false
-		collision_shape.disabled = true
+		if collision_shape:
+			collision_shape.disabled = true
+
+func activate() -> void:
+	set_active(true)
+
+func deactivate() -> void:
+	set_active(false)
 
 func can_use_portal(player: Node) -> bool:
 	"""Check if player can use this portal"""
@@ -340,10 +348,20 @@ func get_spawn_point() -> Node3D:
 		if child.is_in_group("spawn_points"):
 			return child
 	
-	# Return position slightly in front of portal
+	# Create a temporary node for the spawn position if no child found
 	var spawn = Node3D.new()
-	spawn.global_position = global_position + transform.basis.z * 2.0
+	spawn.global_position = get_spawn_position()
 	return spawn
+
+func get_spawn_position() -> Vector3:
+	"""Get the global position where players should spawn when arriving"""
+	# If we have a child spawn point, use it
+	for child in get_children():
+		if child.is_in_group("spawn_points"):
+			return child.global_position
+	
+	# Default to 2 meters in front of the portal
+	return global_position + transform.basis.z * 2.0
 
 # =============================================================================
 # COLLISION DETECTION
