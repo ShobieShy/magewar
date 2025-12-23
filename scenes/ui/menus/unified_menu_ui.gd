@@ -54,7 +54,7 @@ var _stats_ui: Control  ## StatAllocationUI instance
 # Pause Menu Components
 var _resume_button: Button
 var _join_button: Button
-# var _settings_button: Button
+var _settings_button: Button
 var _quit_button: Button
 
 # Join Popup Components
@@ -351,12 +351,12 @@ func _create_pause_tab() -> void:
 	_join_button.pressed.connect(_on_join_pressed)
 	vbox.add_child(_join_button)
 	
-	# Settings button - REMOVED
-	# _settings_button = Button.new()
-	# _settings_button.text = "Settings"
-	# _settings_button.custom_minimum_size = Vector2(300, 50)
-	# _settings_button.pressed.connect(_on_settings_pressed)
-	# vbox.add_child(_settings_button)
+	# Settings button
+	_settings_button = Button.new()
+	_settings_button.text = "Settings"
+	_settings_button.custom_minimum_size = Vector2(300, 50)
+	_settings_button.pressed.connect(_on_settings_pressed)
+	vbox.add_child(_settings_button)
 	
 	# Quit button
 	_quit_button = Button.new()
@@ -1060,6 +1060,17 @@ func _on_resume_pressed() -> void:
 	close()
 
 
+func _on_settings_pressed() -> void:
+	"""Handle settings button"""
+	# Open settings as a child of the unified menu
+	var settings_menu_script = load("res://scenes/ui/menus/settings_menu.gd")
+	if settings_menu_script:
+		var settings = settings_menu_script.new()
+		add_child(settings)
+		settings.open()
+		settings.settings_closed.connect(func(): settings.queue_free())
+
+
 
 
 
@@ -1236,8 +1247,10 @@ func _use_item(slot: ItemSlot) -> void:
 func _equip_item(slot: ItemSlot) -> void:
 	"""Equip an item"""
 	if _inventory_system and slot.slot_index >= 0:
-		_inventory_system.equip_item(slot.slot_index)
-		_refresh_inventory_display()
+		var item = _inventory_system.get_item(slot.slot_index)
+		if item:
+			_inventory_system.equip_item(item, slot.slot_index)
+			_refresh_inventory_display()
 
 
 func _unequip_item(slot: ItemSlot) -> void:
