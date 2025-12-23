@@ -21,6 +21,7 @@ const PLAYER_SCHEMA = {
 	"active_ability": {"type": "string", "required": false},
 	"stats": {"type": "Dictionary", "required": false},
 	"allocated_stats": {"type": "Dictionary", "required": false},
+	"character": {"type": "Dictionary", "required": false},
 	"unallocated_stat_points": {"type": "int", "required": false, "min": 0},
 	"stat_points_per_level": {"type": "int", "required": false, "min": 0},
 	"health": {"type": "float", "required": false, "min": 0},

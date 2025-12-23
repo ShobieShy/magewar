@@ -74,6 +74,11 @@ func _load_initial_world() -> void:
 
 func load_world(world_path: String) -> void:
 	"""Load a new world scene into the World container"""
+	# Prevent recursion/nesting of Game scene
+	if world_path.ends_with("game.tscn") or world_path == scene_file_path:
+		push_error("Attempted to load Game scene into itself: " + world_path)
+		return
+
 	if current_world:
 		current_world.queue_free()
 		current_world = null

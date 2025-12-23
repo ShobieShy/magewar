@@ -15,12 +15,11 @@ extends Control
 @onready var address_input: LineEdit = $JoinPanel/VBox/AddressInput
 @onready var lobby_list: ItemList = $JoinPanel/VBox/LobbyList
 
-# =============================================================================
-# PROPERTIES
-# =============================================================================
-
-var _available_lobbies: Array = []
-var _settings_menu: Control = null
+# Custom UI components
+var _save_selection_ui: Control = null
+var _char_creation_ui: Control = null
+var _pending_network_action: String = "" # "host" or "join"
+var _target_lobby_id: int = 0
 
 # Settings menu script class
 const SettingsMenuScript = preload("res://scenes/ui/menus/settings_menu.gd")
@@ -36,6 +35,9 @@ func _ready() -> void:
 	_settings_menu = SettingsMenuScript.new()
 	add_child(_settings_menu)
 	_settings_menu.settings_closed.connect(_on_settings_closed)
+	
+	# Create save selection and character creation UIs
+	_setup_custom_uis()
 	
 	# Connect signals
 	SteamManager.steam_initialized.connect(_on_steam_initialized)
@@ -54,10 +56,201 @@ func _ready() -> void:
 # UI STATE
 # =============================================================================
 
+func _setup_custom_uis() -> void:
+	# Save Selection UI
+	_save_selection_ui = _create_save_selection_ui()
+	add_child(_save_selection_ui)
+	_save_selection_ui.visible = false
+	_save_selection_ui.save_selected.connect(_on_save_selected)
+	_save_selection_ui.new_save_requested.connect(_on_new_save_requested)
+	_save_selection_ui.cancelled.connect(_show_main_menu)
+	
+	# Character Creation UI
+	_char_creation_ui = _create_char_creation_ui()
+	add_child(_char_creation_ui)
+	_char_creation_ui.visible = false
+	_char_creation_ui.character_created.connect(_on_character_created)
+	_char_creation_ui.cancelled.connect(_on_char_creation_cancelled)
+
+
+func _create_save_selection_ui() -> Control:
+	var ui = Control.new()
+	ui.name = "SaveSelectionUI"
+	ui.set_script(load("res://scenes/ui/menus/save_selection_ui.gd"))
+	ui.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	
+	var panel = PanelContainer.new()
+	panel.name = "Panel"
+	panel.custom_minimum_size = Vector2(400, 500)
+	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	ui.add_child(panel)
+	
+	var vbox = VBoxContainer.new()
+	vbox.name = "VBox"
+	panel.add_child(vbox)
+	
+	var title = Label.new()
+	title.text = "Select Save Slot"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 24)
+	vbox.add_child(title)
+	
+	var save_list = ItemList.new()
+	save_list.name = "SaveList"
+	save_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_child(save_list)
+	
+	var btn_hbox = HBoxContainer.new()
+	btn_hbox.name = "BtnHBox"
+	btn_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_child(btn_hbox)
+	
+	var load_btn = Button.new()
+	load_btn.name = "LoadButton"
+	load_btn.text = "Load"
+	btn_hbox.add_child(load_btn)
+	
+	var new_btn = Button.new()
+	new_btn.name = "NewButton"
+	new_btn.text = "New"
+	btn_hbox.add_child(new_btn)
+	
+	var del_btn = Button.new()
+	del_btn.name = "DeleteButton"
+	del_btn.text = "Delete"
+	btn_hbox.add_child(del_btn)
+	
+	var cancel_btn = Button.new()
+	cancel_btn.name = "CancelButton"
+	cancel_btn.text = "Cancel"
+	btn_hbox.add_child(cancel_btn)
+	
+	return ui
+
+
+func _create_char_creation_ui() -> Control:
+	var ui = Control.new()
+	ui.name = "CharacterCreationUI"
+	ui.set_script(load("res://scenes/ui/menus/character_creation_ui.gd"))
+	ui.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	
+	var panel = PanelContainer.new()
+	panel.name = "Panel"
+	panel.custom_minimum_size = Vector2(400, 400)
+	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	ui.add_child(panel)
+	
+	var vbox = VBoxContainer.new()
+	vbox.name = "VBox"
+	panel.add_child(vbox)
+	
+	var title = Label.new()
+	title.text = "Character Creation"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 24)
+	vbox.add_child(title)
+	
+	vbox.add_child(Label.new())
+	vbox.get_child(vbox.get_child_count()-1).text = "Name:"
+	
+	var name_in = LineEdit.new()
+	name_in.name = "NameInput"
+	name_in.placeholder_text = "Enter name..."
+	vbox.add_child(name_in)
+	
+	var color_hbox = HBoxContainer.new()
+	color_hbox.name = "ColorHBox"
+	vbox.add_child(color_hbox)
+	color_hbox.add_child(Label.new())
+	color_hbox.get_child(0).text = "Capsule Color:"
+	var cp = ColorPickerButton.new()
+	cp.name = "ColorPickerButton"
+	cp.color = Color.WHITE
+	color_hbox.add_child(cp)
+	
+	var magic_hbox = HBoxContainer.new()
+	magic_hbox.name = "MagicHBox"
+	vbox.add_child(magic_hbox)
+	magic_hbox.add_child(Label.new())
+	magic_hbox.get_child(0).text = "Magic Type:"
+	var opt = OptionButton.new()
+	opt.name = "MagicOptionButton"
+	magic_hbox.add_child(opt)
+	
+	var btn_hbox = HBoxContainer.new()
+	btn_hbox.name = "BtnHBox"
+	btn_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_child(btn_hbox)
+	
+	var create_btn = Button.new()
+	create_btn.name = "CreateButton"
+	create_btn.text = "Create"
+	btn_hbox.add_child(create_btn)
+	
+	var cancel_btn = Button.new()
+	cancel_btn.name = "CancelButton"
+	cancel_btn.text = "Cancel"
+	btn_hbox.add_child(cancel_btn)
+	
+	return ui
+
+
 func _show_main_menu() -> void:
 	main_buttons.visible = true
 	lobby_panel.visible = false
 	join_panel.visible = false
+	_save_selection_ui.visible = false
+	_char_creation_ui.visible = false
+
+
+func _show_save_selection() -> void:
+	main_buttons.visible = false
+	lobby_panel.visible = false
+	join_panel.visible = false
+	_save_selection_ui.visible = true
+	_char_creation_ui.visible = false
+	_save_selection_ui.refresh()
+
+
+func _show_char_creation() -> void:
+	main_buttons.visible = false
+	lobby_panel.visible = false
+	join_panel.visible = false
+	_save_selection_ui.visible = false
+	_char_creation_ui.visible = true
+
+
+func _on_save_selected(slot_id: String) -> void:
+	SaveManager.load_player_data(slot_id)
+	SaveManager.load_world_data(slot_id)
+	_save_selection_ui.visible = false
+	
+	if _pending_network_action == "host":
+		print("Hosting game with slot: ", slot_id)
+		NetworkManager.host_game(SteamManager.is_initialized)
+	elif _pending_network_action == "join":
+		print("Joining game with slot: ", slot_id)
+		if _target_lobby_id != 0:
+			NetworkManager.join_game("", 0, _target_lobby_id)
+		else:
+			var address = address_input.text.strip_edges()
+			if address.is_empty(): address = "127.0.0.1"
+			NetworkManager.join_game(address, Constants.DEFAULT_PORT)
+
+
+func _on_new_save_requested() -> void:
+	_show_char_creation()
+
+
+func _on_character_created(char_name: String, char_data: Dictionary) -> void:
+	# Generate a new unique slot name
+	var slot_name = "save_" + str(Time.get_unix_time_from_system())
+	SaveManager.create_new_save(slot_name, char_name, char_data)
+	_on_save_selected(slot_name)
+
+
+func _on_char_creation_cancelled() -> void:
+	_show_save_selection()
 
 
 func _show_lobby() -> void:
@@ -106,54 +299,14 @@ func _update_lobby_buttons() -> void:
 # =============================================================================
 
 func _on_host_pressed() -> void:
-	print("Hosting game...")
-	NetworkManager.host_game(SteamManager.is_initialized)
+	_pending_network_action = "host"
+	_show_save_selection()
 
 
 func _on_join_pressed() -> void:
 	_show_join_panel()
 	
 	# Request Steam lobby list if available
-	if SteamManager.is_initialized:
-		SteamManager.request_lobby_list()
-
-
-func _on_settings_pressed() -> void:
-	if _settings_menu:
-		_settings_menu.open()
-
-
-func _on_quit_pressed() -> void:
-	GameManager.quit_game()
-
-
-func _on_ready_pressed() -> void:
-	var is_ready = ready_button.button_pressed
-	GameManager.set_player_ready(NetworkManager.local_peer_id, is_ready)
-	_update_player_list()
-	_update_lobby_buttons()
-	
-	# Sync ready state over network to all peers
-	if is_multiplayer_authority():
-		_rpc_sync_ready_state.rpc(NetworkManager.local_peer_id, is_ready)
-	else:
-		push_warning("Cannot sync ready state: not multiplayer authority")
-
-
-func _on_start_pressed() -> void:
-	if not GameManager.is_host:
-		return
-	
-	NetworkManager.request_game_start()
-
-
-func _on_leave_lobby_pressed() -> void:
-	NetworkManager.disconnect_from_game()
-	_show_main_menu()
-
-
-func _on_refresh_pressed() -> void:
-	lobby_list.clear()
 	if SteamManager.is_initialized:
 		SteamManager.request_lobby_list()
 
@@ -165,16 +318,16 @@ func _on_join_selected_pressed() -> void:
 	
 	var index = selected[0]
 	if index < _available_lobbies.size():
-		var lobby_id = _available_lobbies[index]
-		NetworkManager.join_game("", 0, lobby_id)
+		_target_lobby_id = _available_lobbies[index]
+		_pending_network_action = "join"
+		_show_save_selection()
 
 
 func _on_join_ip_pressed() -> void:
-	var address = address_input.text.strip_edges()
-	if address.is_empty():
-		address = "127.0.0.1"
-	
-	NetworkManager.join_game(address, Constants.DEFAULT_PORT)
+	_target_lobby_id = 0
+	_pending_network_action = "join"
+	_show_save_selection()
+
 
 
 func _on_back_pressed() -> void:

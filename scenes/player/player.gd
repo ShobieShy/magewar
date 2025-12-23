@@ -51,6 +51,7 @@ const STARTER_STAFF_SCENE = preload("res://resources/items/weapons/starter_staff
 @onready var spell_caster: SpellCaster = $SpellCaster
 @onready var weapon_holder: Node3D = $CameraPivot/Camera3D/WeaponHolder
 @onready var raycast: RayCast3D = $CameraPivot/Camera3D/RayCast3D
+@onready var mesh_instance: MeshInstance3D = $MeshInstance3D
 
 # Inventory management
 var _inventory_system: InventorySystem = null
@@ -100,15 +101,12 @@ func _ready() -> void:
 		_default_height = collision_shape.shape.height
 		_crouch_height = _default_height * 0.5
 	
+	# Apply character appearance (needs to be done for all players)
+	# We use call_deferred because peer_id might not be set yet if just spawned
+	call_deferred("_apply_character_data")
+	
 	# Set up for local vs remote player
 	if is_local_player:
-		camera.current = true
-		# Connect stats signals
-		stats.died.connect(_on_died)
-		stats.respawned.connect(_on_respawned)
-		# Equip starter weapon
-		_equip_starter_weapon()
-		# Apply allocated stat points from save data
 		if SaveManager and SaveManager.player_data:
 			var allocated_stats = SaveManager.player_data.get("allocated_stats", {})
 			if not allocated_stats.is_empty():
@@ -295,6 +293,41 @@ func _update_player_state() -> void:
 # =============================================================================
 # WEAPONS
 # =============================================================================
+
+func _apply_character_data() -> void:
+	var char_data = {}
+	
+	if is_local_player:
+		if SaveManager and SaveManager.player_data.has("character"):
+			char_data = SaveManager.player_data.character
+	else:
+		# For remote players, get data from GameManager
+		var peer_id = _extract_peer_id_from_name()
+		var info = GameManager.get_player_info(peer_id)
+		if info:
+			char_data = info.character_data
+	
+	if char_data.is_empty():
+		return
+	
+	# Apply color
+	if char_data.has("color") and mesh_instance:
+		var color_str = char_data.color
+		var color = Color.from_string(color_str, Color.WHITE)
+		
+		# Create a unique material for this player
+		var material = StandardMaterial3D.new()
+		material.albedo_color = color
+		mesh_instance.set_surface_override_material(0, material)
+
+
+func _extract_peer_id_from_name() -> int:
+	# Assume name is "Player_123"
+	var parts = name.split("_")
+	if parts.size() >= 2:
+		return int(parts[1])
+	return 0
+
 
 func _equip_starter_weapon() -> void:
 	## Equips the starter staff for new players

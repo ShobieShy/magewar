@@ -24,6 +24,7 @@ signal save_data_corrupted(data_type: String)  # Emitted if corrupted data is de
 var player_data: Dictionary = {}
 var world_data: Dictionary = {}
 var settings_data: Dictionary = {}
+var current_slot: String = "default"
 
 var _auto_save_timer: Timer = null
 var _is_saving: bool = false
@@ -46,9 +47,77 @@ func _ready() -> void:
 	# Load settings on startup
 	load_settings()
 	
-	# Load player data on startup
-	load_player_data()
-	load_world_data()
+	# Load last used slot if available
+	var last_slot = settings_data.get("gameplay", {}).get("last_save_slot", "default")
+	current_slot = last_slot
+	
+	# Don't auto-load player data on startup if we're in the main menu
+	# The main menu will handle loading the selected slot
+
+# =============================================================================
+# SLOT MANAGEMENT
+# =============================================================================
+
+func get_save_slots() -> Array[Dictionary]:
+	"""Returns a list of all available save slots with their info"""
+	var slots: Array[Dictionary] = []
+	var dir = DirAccess.open("user://")
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while file_name != "":
+			if file_name.begins_with("player_save_") and file_name.ends_with(".dat"):
+				var slot_name = file_name.trim_prefix("player_save_").trim_suffix(".dat")
+				var data = _load_from_file("user://" + file_name)
+				if not data.is_empty():
+					var player = data.get("player", {})
+					slots.append({
+						"id": slot_name,
+						"name": player.get("name", "Unknown"),
+						"level": player.get("level", 1),
+						"timestamp": data.get("timestamp", 0),
+						"character": player.get("character", {})
+					})
+			file_name = dir.get_next()
+	
+	# Sort by timestamp (newest first)
+	slots.sort_custom(func(a, b): return a.timestamp > b.timestamp)
+	return slots
+
+
+func create_new_save(slot_name: String, char_name: String, char_data: Dictionary) -> bool:
+	"""Initialize a new save slot with character data"""
+	current_slot = slot_name
+	player_data = _get_default_player_data()
+	player_data.name = char_name
+	player_data.character = char_data
+	
+	world_data = _get_default_world_data()
+	
+	# Save immediately to create files
+	save_all()
+	return true
+
+
+func delete_save(slot_name: String) -> void:
+	"""Delete all files associated with a save slot"""
+	var dir = DirAccess.open("user://")
+	if dir:
+		var p_path = "player_save_%s.dat" % slot_name
+		var w_path = "world_save_%s.dat" % slot_name
+		if dir.file_exists(p_path):
+			dir.remove(p_path)
+		if dir.file_exists(w_path):
+			dir.remove(w_path)
+
+
+func get_player_save_path(slot: String = current_slot) -> String:
+	return "user://player_save_%s.dat" % slot
+
+
+func get_world_save_path(slot: String = current_slot) -> String:
+	return "user://world_save_%s.dat" % slot
+
 
 # =============================================================================
 # SAVE OPERATIONS
@@ -104,7 +173,7 @@ func save_player_data() -> void:
 		"player": player_data
 	}
 
-	var success = _save_to_file(Constants.PLAYER_SAVE_FILE, save_dict)
+	var success = _save_to_file(get_player_save_path(), save_dict)
 
 	# Network synchronization - broadcast save data
 	if get_node_or_null("/root/SaveNetworkManager") and NetworkManager and NetworkManager.network_mode != Enums.NetworkMode.OFFLINE and success:
@@ -131,7 +200,7 @@ func save_world_data() -> void:
 		"world": world_data
 	}
 
-	var success = _save_to_file(Constants.WORLD_SAVE_FILE, save_dict)
+	var success = _save_to_file(get_world_save_path(), save_dict)
 
 	# Network synchronization - broadcast world data (only host)
 	if get_node_or_null("/root/SaveNetworkManager") and NetworkManager and NetworkManager.network_mode != Enums.NetworkMode.OFFLINE and success:
@@ -142,6 +211,11 @@ func save_world_data() -> void:
 
 
 func save_settings() -> void:
+	# Ensure last used slot is saved
+	if not settings_data.has("gameplay"):
+		settings_data["gameplay"] = {}
+	settings_data["gameplay"]["last_save_slot"] = current_slot
+	
 	var config = ConfigFile.new()
 	
 	for section in settings_data.keys():
@@ -156,8 +230,9 @@ func save_settings() -> void:
 # LOAD OPERATIONS
 # =============================================================================
 
-func load_player_data() -> Dictionary:
-	var data = _load_from_file(Constants.PLAYER_SAVE_FILE)
+func load_player_data(slot: String = current_slot) -> Dictionary:
+	current_slot = slot
+	var data = _load_from_file(get_player_save_path(slot))
 	
 	if data.is_empty():
 		player_data = _get_default_player_data()
@@ -197,8 +272,9 @@ func load_player_data() -> Dictionary:
 	return player_data
 
 
-func load_world_data() -> Dictionary:
-	var data = _load_from_file(Constants.WORLD_SAVE_FILE)
+func load_world_data(slot: String = current_slot) -> Dictionary:
+	current_slot = slot
+	var data = _load_from_file(get_world_save_path(slot))
 	
 	if data.is_empty():
 		world_data = _get_default_world_data()

@@ -127,7 +127,18 @@ func enter_dungeon(dungeon_id: String, portal: DungeonPortal) -> void:
 	var player = get_tree().get_first_node_in_group("player")
 	if player:
 		return_position = player.global_position
-	return_scene = get_tree().current_scene.scene_file_path
+	
+	# Determine correct return scene
+	# If running via Game container, we want the world scene, not the container itself
+	var current_scene = get_tree().current_scene
+	if current_scene.name == "Game" and current_scene.get("current_world") != null:
+		var world = current_scene.current_world
+		if world and not world.scene_file_path.is_empty():
+			return_scene = world.scene_file_path
+		else:
+			return_scene = overworld_scene
+	else:
+		return_scene = current_scene.scene_file_path
 
 	# Start transition
 	_transition_to_scene(dungeon_scenes[dungeon_id], dungeon_id, dest_portal_id)

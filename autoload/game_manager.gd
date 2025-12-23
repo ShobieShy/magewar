@@ -233,17 +233,19 @@ class PlayerInfo:
 	var display_name: String = ""
 	var steam_id: int = 0
 	var is_ready: bool = false
+	var character_data: Dictionary = {}
 	var player_node: Node = null
 	
-	func _init(p_peer_id: int, p_name: String = "", p_steam_id: int = 0) -> void:
+	func _init(p_peer_id: int, p_name: String = "", p_steam_id: int = 0, p_char_data: Dictionary = {}) -> void:
 		peer_id = p_peer_id
 		display_name = p_name
 		steam_id = p_steam_id
+		character_data = p_char_data
 
 
-func register_player(peer_id: int, display_name: String = "", steam_id: int = 0) -> void:
+func register_player(peer_id: int, display_name: String = "", steam_id: int = 0, char_data: Dictionary = {}) -> void:
 	if not players.has(peer_id):
-		players[peer_id] = PlayerInfo.new(peer_id, display_name, steam_id)
+		players[peer_id] = PlayerInfo.new(peer_id, display_name, steam_id, char_data)
 		player_joined.emit(peer_id)
 		print("Player registered: ", peer_id, " (", display_name, ")")
 

@@ -130,7 +130,8 @@ func _on_steam_lobby_created(_lobby_id: int, result: int) -> void:
 		_peer_to_steam[1] = SteamManager.steam_id
 		
 		GameManager.is_host = true
-		GameManager.register_player(1, SteamManager.steam_username, SteamManager.steam_id)
+		var char_data = SaveManager.player_data.get("character", {})
+		GameManager.register_player(1, SteamManager.steam_username, SteamManager.steam_id, char_data)
 		
 		server_started.emit()
 	else:
@@ -156,7 +157,8 @@ func _on_steam_lobby_joined(_lobby_id: int, result: int) -> void:
 				"type": "join_request",
 				"steam_id": SteamManager.steam_id,
 				"name": SteamManager.steam_username,
-				"peer_id": local_peer_id
+				"peer_id": local_peer_id,
+				"character": SaveManager.player_data.get("character", {})
 			})
 	else:
 		connection_state = Enums.ConnectionState.FAILED
@@ -199,12 +201,13 @@ func _handle_join_request(steam_id: int, data: Dictionary) -> void:
 	
 	var peer_id = data.get("peer_id", _generate_peer_id())
 	var player_name = data.get("name", "Unknown")
+	var char_data = data.get("character", {})
 	
 	# Register new player
 	_steam_to_peer[steam_id] = peer_id
 	_peer_to_steam[peer_id] = steam_id
 	
-	GameManager.register_player(peer_id, player_name, steam_id)
+	GameManager.register_player(peer_id, player_name, steam_id, char_data)
 	
 	# Send acceptance and full player list
 	_send_steam_packet(steam_id, {
@@ -228,7 +231,12 @@ func _handle_player_list(data: Dictionary) -> void:
 	for peer_id_str in players.keys():
 		var peer_id = int(peer_id_str)
 		var player_data = players[peer_id_str]
-		GameManager.register_player(peer_id, player_data.get("name", ""), player_data.get("steam_id", 0))
+		GameManager.register_player(
+			peer_id, 
+			player_data.get("name", ""), 
+			player_data.get("steam_id", 0),
+			player_data.get("character", {})
+		)
 
 
 func _broadcast_player_list() -> void:
@@ -237,7 +245,8 @@ func _broadcast_player_list() -> void:
 		var info = GameManager.players[peer_id]
 		players_data[str(peer_id)] = {
 			"name": info.display_name,
-			"steam_id": info.steam_id
+			"steam_id": info.steam_id,
+			"character": info.character_data
 		}
 	
 	for steam_id in SteamManager.lobby_members:
@@ -291,7 +300,8 @@ func _host_enet_game(port: int) -> bool:
 	local_peer_id = 1
 	
 	GameManager.is_host = true
-	GameManager.register_player(1, "Host")
+	var char_data = SaveManager.player_data.get("character", {})
+	GameManager.register_player(1, "Host", 0, char_data)
 	
 	connection_state = Enums.ConnectionState.CONNECTED
 	server_started.emit()
@@ -346,7 +356,50 @@ func _on_connected_to_server() -> void:
 	print("Connected to server")
 	local_peer_id = multiplayer.get_unique_id()
 	connection_state = Enums.ConnectionState.CONNECTED
-	GameManager.register_player(local_peer_id, "Player " + str(local_peer_id))
+	var char_data = SaveManager.player_data.get("character", {})
+	var player_name = SaveManager.player_data.get("name", "Player " + str(local_peer_id))
+	
+	GameManager.register_player(local_peer_id, player_name, 0, char_data)
+	
+	# Send info to server
+	_rpc_client_info.rpc_id(1, player_name, char_data)
+
+
+@rpc("any_peer", "call_local", "reliable")
+func _rpc_client_info(player_name: String, char_data: Dictionary) -> void:
+	var sender_id = multiplayer.get_remote_sender_id()
+	if is_server:
+		print("Received client info from ", sender_id, ": ", player_name)
+		GameManager.register_player(sender_id, player_name, 0, char_data)
+		# Update other clients
+		_broadcast_player_list_enet()
+
+
+func _broadcast_player_list_enet() -> void:
+	if not is_server or network_mode != Enums.NetworkMode.ENET:
+		return
+	
+	var players_data = {}
+	for peer_id in GameManager.players.keys():
+		var info = GameManager.players[peer_id]
+		players_data[str(peer_id)] = {
+			"name": info.display_name,
+			"character": info.character_data
+		}
+	
+	_rpc_sync_player_list_enet.rpc(players_data)
+
+
+@rpc("authority", "call_local", "reliable")
+func _rpc_sync_player_list_enet(players: Dictionary) -> void:
+	if is_server: return # Server already has info
+	
+	for peer_id_str in players.keys():
+		var peer_id = int(peer_id_str)
+		if peer_id == local_peer_id: continue # Skip self
+		
+		var data = players[peer_id_str]
+		GameManager.register_player(peer_id, data.name, 0, data.character)
 
 
 func _on_connection_failed() -> void:

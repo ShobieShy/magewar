@@ -348,7 +348,7 @@ func _deposit_item(inventory_index: int) -> bool:
 		return false
 	
 	# Check storage capacity
-	if _storage_items.size() >= _capacity:
+	if _storage_items.size() >= _storage_capacity:
 		return false
 	
 	var item = _inventory_system.get_item(inventory_index)
