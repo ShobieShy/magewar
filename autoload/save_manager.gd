@@ -71,6 +71,25 @@ func save_player_data() -> void:
 	if _is_saving:
 		return
 
+	# Update player_data from current runtime state before saving
+	if GameManager and NetworkManager:
+		var local_id = NetworkManager.local_peer_id
+		var player_info = GameManager.get_player_info(local_id)
+		
+		if player_info and player_info.player_node:
+			var player = player_info.player_node
+			# Check if player has inventory property
+			if "inventory" in player and player.inventory:
+				var inv_save = player.inventory.get_save_data()
+				
+				# Update player_data with inventory state
+				if inv_save.has("inventory"):
+					player_data.inventory = inv_save.inventory
+				if inv_save.has("equipment"):
+					player_data.equipment = inv_save.equipment
+				if inv_save.has("materials"):
+					player_data.materials = inv_save.materials
+
 	# Network synchronization - request save lock
 	if get_node_or_null("/root/SaveNetworkManager") and NetworkManager and NetworkManager.network_mode != Enums.NetworkMode.OFFLINE:
 		if not get_node("/root/SaveNetworkManager").request_save_lock("player", multiplayer.get_unique_id()):

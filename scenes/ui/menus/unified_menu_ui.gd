@@ -803,7 +803,8 @@ func _refresh_inventory_items() -> void:
 		if inventory_index < Constants.INVENTORY_SIZE:
 			var item = _inventory_system.get_item(inventory_index)
 			if item:
-				slot.set_item(item.item, item.get("quantity", 1))
+				var quantity = item.stack_count if item.stack_count > 0 else 1
+				slot.set_item(item, quantity)
 				slot.visible = true
 			else:
 				slot.clear()

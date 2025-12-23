@@ -113,6 +113,12 @@ func _ready() -> void:
 			var allocated_stats = SaveManager.player_data.get("allocated_stats", {})
 			if not allocated_stats.is_empty():
 				stats.apply_allocated_stats(allocated_stats)
+			
+			# Load inventory and equipment
+			if ItemDatabase:
+				# Trigger inventory initialization if needed
+				var inv = self.inventory
+				inv.load_save_data(SaveManager.player_data, ItemDatabase._items)
 	else:
 		# Remote players don't need active camera
 		camera.current = false

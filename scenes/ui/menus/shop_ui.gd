@@ -328,9 +328,10 @@ func _refresh_sell_tab() -> void:
 		return
 	
 	for i in range(Constants.INVENTORY_SIZE):
-		var item_entry = _inventory_system.get_item(i)
-		if item_entry and item_entry.has("item"):
-			var slot = _create_slot(item_entry.item, item_entry.get("quantity", 1), i, 1)
+		var item = _inventory_system.get_item(i)
+		if item:
+			var quantity = item.stack_count if item.stack_count > 0 else 1
+			var slot = _create_slot(item, quantity, i, 1)
 			_sell_grid.add_child(slot)
 			_item_slots[1].append(slot)
 
@@ -500,11 +501,11 @@ func _on_action_pressed() -> void:
 							_inventory_system.add_item(item)
 		1:  # Sell
 			if _inventory_system:
-				var entry = _inventory_system.get_item(_selected_index)
-				if entry and entry.has("item"):
-					success = ShopManager.sell_item(entry.item, quantity)
+				var item = _inventory_system.get_item(_selected_index)
+				if item:
+					success = ShopManager.sell_item(item, quantity)
 					if success:
-						_inventory_system.remove_item(_selected_index, quantity)
+						_inventory_system.remove_item_quantity(_selected_index, quantity)
 		2:  # Buyback
 			success = ShopManager.buyback_item(_selected_index, quantity)
 			if success:

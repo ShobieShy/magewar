@@ -270,9 +270,10 @@ func _refresh_inventory() -> void:
 		slot.slot_unhovered.connect(_on_slot_unhovered)
 		slot.item_dropped.connect(_on_inventory_slot_dropped)
 		
-		var entry = _inventory_system.get_item(i)
-		if entry and entry.has("item"):
-			slot.set_item(entry.item, entry.get("quantity", 1))
+		var item = _inventory_system.get_item(i)
+		if item:
+			var quantity = item.stack_count if item.stack_count > 0 else 1
+			slot.set_item(item, quantity)
 		
 		_inventory_grid.add_child(slot)
 		_inventory_slots.append(slot)
@@ -299,10 +300,10 @@ func _refresh_storage() -> void:
 		# Set item if present
 		if i < _storage_items.size():
 			var entry = _storage_items[i]
-			if entry and entry.has("item"):
+			if entry:
 				var item = _load_item(entry)
 				if item:
-					slot.set_item(item, entry.get("quantity", 1))
+					slot.set_item(item, entry.get("stack", 1))
 		
 		_storage_grid.add_child(slot)
 		_storage_slots.append(slot)
@@ -324,14 +325,16 @@ func _update_storage_count() -> void:
 
 func _load_item(entry: Dictionary) -> ItemData:
 	## Load item resource from entry dictionary
-	if entry.has("item") and entry.item is ItemData:
-		return entry.item
+	if entry.has("id"):
+		var item_id = entry.id
+		if ItemDatabase:
+			return ItemDatabase.get_item(item_id)
 	
-	# Try to load by item_id
+	# Legacy check
 	if entry.has("item_id"):
 		var item_id = entry.item_id
-		# Would load from ItemDatabase if available
-		# return ItemDatabase.get_item(item_id)
+		if ItemDatabase:
+			return ItemDatabase.get_item(item_id)
 	
 	return null
 
@@ -341,15 +344,18 @@ func _load_item(entry: Dictionary) -> ItemData:
 
 func _deposit_item(inventory_index: int) -> bool:
 	## Move item from inventory to storage
-	if _storage_items.size() >= _storage_capacity:
-		return false
-	
 	if _inventory_system == null:
 		return false
 	
-	var entry = _inventory_system.get_item(inventory_index)
-	if entry == null or not entry.has("item"):
+	# Check storage capacity
+	if _storage_items.size() >= _capacity:
 		return false
+	
+	var item = _inventory_system.get_item(inventory_index)
+	if item == null:
+		return false
+	
+	var entry = item.get_save_data()
 	
 	# Remove from inventory
 	_inventory_system.remove_item(inventory_index)
@@ -359,6 +365,7 @@ func _deposit_item(inventory_index: int) -> bool:
 	
 	item_deposited.emit(entry)
 	return true
+
 
 
 func _withdraw_item(storage_index: int) -> bool:
@@ -380,8 +387,14 @@ func _withdraw_item(storage_index: int) -> bool:
 		return false
 	
 	# Add to inventory
-	if entry.has("item") and entry.item is ItemData:
-		_inventory_system.add_item(entry.item, entry.get("quantity", 1))
+	if entry.has("id"):
+		var item = ItemDatabase.get_item(entry.id)
+		if item:
+			var quantity = entry.get("stack", 1)
+			var item_to_add = item.duplicate_item()
+			if item_to_add.stackable:
+				item_to_add.stack_count = quantity
+			_inventory_system.add_item(item_to_add)
 	
 	item_withdrawn.emit(entry)
 	return true
@@ -395,8 +408,8 @@ func _deposit_all() -> int:
 	var deposited = 0
 	# Work backwards to avoid index shifting issues
 	for i in range(Constants.INVENTORY_SIZE - 1, -1, -1):
-		var entry = _inventory_system.get_item(i)
-		if entry and entry.has("item"):
+		var item = _inventory_system.get_item(i)
+		if item:
 			if _deposit_item(i):
 				deposited += 1
 	

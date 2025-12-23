@@ -1,19 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://mage_association"]
+[gd_scene load_steps=8 format=3 uid="uid://drd1dqk0640df"]
 
-[ext_resource type="Script" path="res://scenes/world/starting_town/mage_association.gd" id="1_mage"]
+[ext_resource type="Script" uid="uid://bhsn2bxxnj3h7" path="res://scenes/world/starting_town/mage_association.gd" id="1_mage"]
 [ext_resource type="PackedScene" uid="uid://dportal001" path="res://scenes/objects/dungeon_portal.tscn" id="2_dportal"]
-
-[sub_resource type="StandardMaterial3D" id="mat_floor"]
-albedo_color = Color(0.35, 0.3, 0.28, 1)
-
-[sub_resource type="StandardMaterial3D" id="mat_wall"]
-albedo_color = Color(0.5, 0.45, 0.42, 1)
-
-[sub_resource type="StandardMaterial3D" id="mat_wood"]
-albedo_color = Color(0.4, 0.3, 0.2, 1)
-
-[sub_resource type="StandardMaterial3D" id="mat_carpet"]
-albedo_color = Color(0.5, 0.2, 0.2, 1)
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -21,6 +9,18 @@ background_color = Color(0.15, 0.12, 0.1, 1)
 ambient_light_source = 2
 ambient_light_color = Color(0.7, 0.65, 0.55, 1)
 ambient_light_energy = 0.5
+
+[sub_resource type="StandardMaterial3D" id="mat_floor"]
+albedo_color = Color(0.35, 0.3, 0.28, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_carpet"]
+albedo_color = Color(0.5, 0.2, 0.2, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_wall"]
+albedo_color = Color(0.5, 0.45, 0.42, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_wood"]
+albedo_color = Color(0.4, 0.3, 0.2, 1)
 
 [node name="MageAssociation" type="Node3D"]
 script = ExtResource("1_mage")
@@ -51,13 +51,12 @@ omni_range = 6.0
 [node name="Interior" type="Node3D" parent="NavigationRegion3D"]
 
 [node name="Floor" type="CSGBox3D" parent="NavigationRegion3D/Interior"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 1.0985718)
 use_collision = true
-size = Vector3(14, 0.2, 10)
+size = Vector3(14, 0.2, 12.197144)
 material = SubResource("mat_floor")
 
 [node name="Carpet" type="CSGBox3D" parent="NavigationRegion3D/Interior"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 use_collision = true
 size = Vector3(6, 0.05, 8)
 material = SubResource("mat_carpet")

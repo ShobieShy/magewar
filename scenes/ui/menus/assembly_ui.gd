@@ -497,15 +497,15 @@ func _refresh_inventory() -> void:
 	
 	# Show only parts and gems
 	for i in range(Constants.INVENTORY_SIZE):
-		var entry = _inventory_system.get_item(i)
-		if entry == null or not entry.has("item"):
+		var item = _inventory_system.get_item(i)
+		if item == null:
 			continue
 		
-		var item = entry.item
 		if item is StaffPartData or item is GemData:
 			var slot = ItemSlot.new()
 			slot.slot_index = i
-			slot.set_item(item, entry.get("quantity", 1))
+			var quantity = item.stack_count if item.stack_count > 0 else 1
+			slot.set_item(item, quantity)
 			slot.slot_clicked.connect(_on_inventory_slot_clicked)
 			slot.slot_hovered.connect(_on_slot_hovered)
 			slot.slot_unhovered.connect(_on_slot_unhovered)

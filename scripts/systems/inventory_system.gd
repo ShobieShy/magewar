@@ -113,6 +113,25 @@ func remove_item(slot: int) -> ItemData:
 	return item
 
 
+func remove_item_quantity(slot: int, count: int = 1) -> bool:
+	## Removes a specific quantity of an item from a slot
+	if slot < 0 or slot >= inventory_size:
+		return false
+	
+	var item = inventory[slot]
+	if item == null:
+		return false
+	
+	if item.stackable and item.stack_count > count:
+		item.stack_count -= count
+		inventory_changed.emit()
+		return true
+	else:
+		# Remove entire stack
+		remove_item(slot)
+		return true
+
+
 func remove_item_by_id(item_id: String, count: int = 1) -> int:
 	## Removes items by ID. Returns number actually removed.
 	var removed = 0

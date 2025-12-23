@@ -69,3 +69,10 @@ func use(_user: Node) -> bool:
 
 func duplicate_item() -> ItemData:
 	return duplicate(true)
+
+
+func get_save_data() -> Dictionary:
+	return {
+		"id": item_id,
+		"stack": stack_count if stackable else 1
+	}

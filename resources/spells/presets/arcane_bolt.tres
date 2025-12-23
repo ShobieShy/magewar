@@ -1,49 +1,23 @@
-[gd_resource type="Resource" script_class="SpellData" load_steps=3 format=3 uid="uid://spell_arcane_bolt"]
+[gd_resource type="Resource" script_class="SpellData" load_steps=5 format=3 uid="uid://dxcrlkar2mxam"]
 
-[ext_resource type="Script" path="res://resources/spells/spell_data.gd" id="1_spell"]
-[ext_resource type="Script" path="res://resources/spells/effects/damage_effect.gd" id="2_damage"]
+[ext_resource type="Script" uid="uid://dlsk7njecw1jy" path="res://resources/spells/spell_effect.gd" id="1_p5lxu"]
+[ext_resource type="Script" uid="uid://bcry8sd0socb2" path="res://resources/spells/spell_data.gd" id="1_spell"]
+[ext_resource type="Script" uid="uid://bi07yx144akuy" path="res://resources/spells/effects/damage_effect.gd" id="2_damage"]
 
 [sub_resource type="Resource" id="damage_effect_1"]
 script = ExtResource("2_damage")
-effect_type = 0
+base_damage = 15.0
+element = 9
 effect_name = "Arcane Damage"
 description = "Deals arcane damage"
-target_type = 0
-delay = 0.0
-duration = 0.0
-base_damage = 15.0
-damage_type = 1
-element = 9
-damage_variance = 0.1
-crit_multiplier = 1.5
-knockback_force = 0.0
-knockback_up = 0.0
 
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Arcane Bolt"
 description = "A simple bolt of arcane energy. Fast and reliable."
 element = 9
-magika_cost = 10.0
 cooldown = 0.5
-cast_time = 0.0
-can_move_while_casting = true
-can_be_interrupted = true
-delivery_type = 1
-range = 50.0
-target_type = 0
 projectile_speed = 40.0
-projectile_count = 1
-projectile_spread = 0.0
-projectile_gravity = 0.0
-projectile_homing = 0.0
-projectile_pierce = 0
-projectile_bounce = 0
 projectile_lifetime = 3.0
 aoe_radius = 0.0
-effects = [SubResource("damage_effect_1")]
-damage_multiplier = 1.0
-cost_multiplier = 1.0
-cooldown_multiplier = 1.0
-range_multiplier = 1.0
-aoe_multiplier = 1.0
+effects = Array[ExtResource("1_p5lxu")]([SubResource("damage_effect_1")])
