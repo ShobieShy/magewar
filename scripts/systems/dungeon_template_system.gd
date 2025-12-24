@@ -285,8 +285,20 @@ func get_random_encounter(room_type: String = "medium_room") -> Dictionary:
 	var encounter_name = encounters[randi() % encounters.size()]
 	return ENCOUNTER_TEMPLATES[encounter_name]
 
-## Generate loot table for dungeon level and tier
-func generate_loot_table(dungeon_level: int, tier: String) -> Array:
+## Select an enemy type based on weighted probabilities
+func select_weighted_enemy(weights: Dictionary) -> String:
+	var total_weight = 0
+	for weight in weights.values():
+		total_weight += weight
+
+	var random_value = randi() % total_weight
+
+	for enemy_type in weights.keys():
+		random_value -= weights[enemy_type]
+		if random_value <= 0:
+			return enemy_type
+
+	return weights.keys()[0] if not weights.is_empty() else "goblin"
 	var loot_table = []
 	var scaling = get_loot_scaling(dungeon_level)
 
@@ -327,4 +339,18 @@ func generate_loot_table(dungeon_level: int, tier: String) -> Array:
 					"max": 2
 				})
 
-	return loot_table
+
+## Select an enemy type based on weighted probabilities
+func select_weighted_enemy(weights: Dictionary) -> String:
+	var total_weight = 0
+	for weight in weights.values():
+		total_weight += weight
+
+	var random_value = randi() % total_weight
+
+	for enemy_type in weights.keys():
+		random_value -= weights[enemy_type]
+		if random_value <= 0:
+			return enemy_type
+
+	return weights.keys()[0] if not weights.is_empty() else "goblin"

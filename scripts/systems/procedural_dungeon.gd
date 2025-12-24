@@ -136,10 +136,7 @@ func spawn_random_enemy() -> void:
 	# Add some random offset
 	spawn_pos += Vector3(randf_range(-2, 2), 0, randf_range(-2, 2))
 	
-	var enemy_type = DungeonTemplateSystem.select_weighted_enemy(enemy_pool) # Assuming this function exists or I'll implement it locally if not
-	# Wait, I noticed DungeonTemplateSystem doesn't have select_weighted_enemy. Dungeon1 had it locally.
-	# I should implement it here or use a shared utility.
-	# For now, I'll implement it here.
+	var enemy_type = DungeonTemplateSystem.select_weighted_enemy(enemy_pool)
 	
 	spawn_enemy(enemy_type, spawn_pos)
 
@@ -262,21 +259,3 @@ func cleanup_enemies() -> void:
 			enemy.queue_free()
 	active_enemies.clear()
 	enemies_remaining = 0
-
-# =============================================================================
-# HELPERS
-# =============================================================================
-
-func select_weighted_enemy(weights: Dictionary) -> String:
-	var total_weight = 0
-	for weight in weights.values():
-		total_weight += weight
-
-	var random_value = randi() % total_weight
-
-	for enemy_type in weights.keys():
-		random_value -= weights[enemy_type]
-		if random_value <= 0:
-			return enemy_type
-
-	return "goblin"
