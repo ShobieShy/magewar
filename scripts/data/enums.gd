@@ -225,7 +225,15 @@ enum EnemyType {
 	TROLL,         ## Troll enemy
 	WRAITH,        ## Wraith enemy
 	GOBLIN,        ## Goblin enemy
-	SKELETON       ## Skeleton enemy
+	SKELETON,      ## Skeleton enemy
+	DRAGON,        ## Dragon enemy
+	ORC,           ## Orc enemy
+	VAMPIRE,       ## Vampire enemy
+	WEREWOLF,      ## Werewolf enemy
+	ZOMBIE,        ## Zombie enemy
+	GIANT,         ## Giant enemy
+	HARPY,         ## Harpy enemy
+	BASILISK       ## Basilisk enemy
 }
 
 enum AIState {

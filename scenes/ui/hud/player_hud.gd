@@ -19,6 +19,13 @@ extends Control
 @onready var interact_prompt: Label = $InteractPrompt
 @onready var crosshair: CenterContainer = $Crosshair
 
+# Target Tooltip nodes
+var _target_tooltip_container: VBoxContainer
+var _target_name_label: Label
+var _target_health_bar: ProgressBar
+var _target_health_value: Label
+var _target_tween: Tween
+
 # =============================================================================
 # PROPERTIES
 # =============================================================================
@@ -51,6 +58,7 @@ func _ready() -> void:
 	_create_xp_bar()
 	_create_quest_tracker()
 	_create_active_ability_display()
+	_create_target_tooltip()
 	
 	# Connect to SaveManager signals
 	SaveManager.gold_changed.connect(_on_gold_changed)
@@ -512,3 +520,65 @@ func _update_active_ability_cooldown() -> void:
 		_active_ability_icon.modulate = Color(0.5, 0.5, 0.5)
 	elif _active_ability_icon:
 		_active_ability_icon.modulate = Color.WHITE
+
+# =============================================================================
+# TARGET TOOLTIP
+# =============================================================================
+
+func _create_target_tooltip() -> void:
+	_target_tooltip_container = VBoxContainer.new()
+	_target_tooltip_container.name = "TargetTooltip"
+	_target_tooltip_container.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+	_target_tooltip_container.offset_top = 20
+	_target_tooltip_container.custom_minimum_size = Vector2(300, 0)
+	_target_tooltip_container.modulate = Color(1, 1, 1, 0) # Start hidden
+	add_child(_target_tooltip_container)
+	
+	_target_name_label = Label.new()
+	_target_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_target_name_label.add_theme_font_size_override("font_size", 18)
+	_target_name_label.add_theme_color_override("font_shadow_color", Color.BLACK)
+	_target_name_label.add_theme_constant_override("shadow_offset_x", 1)
+	_target_name_label.add_theme_constant_override("shadow_offset_y", 1)
+	_target_tooltip_container.add_child(_target_name_label)
+	
+	var bar_container = HBoxContainer.new()
+	_target_tooltip_container.add_child(bar_container)
+	
+	_target_health_bar = ProgressBar.new()
+	_target_health_bar.custom_minimum_size = Vector2(200, 10)
+	_target_health_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_target_health_bar.show_percentage = false
+	bar_container.add_child(_target_health_bar)
+	
+	# Style Target Health Bar
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color.DARK_RED
+	_target_health_bar.add_theme_stylebox_override("fill", style)
+	
+	_target_health_value = Label.new()
+	_target_health_value.custom_minimum_size = Vector2(80, 0)
+	_target_health_value.add_theme_font_size_override("font_size", 12)
+	_target_health_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	bar_container.add_child(_target_health_value)
+
+func update_target_info(entity_name: String, health: float, max_health: float) -> void:
+	if not _target_tooltip_container:
+		return
+	
+	if entity_name == "":
+		if _target_tooltip_container.modulate.a > 0:
+			if _target_tween: _target_tween.kill()
+			_target_tween = create_tween()
+			_target_tween.tween_property(_target_tooltip_container, "modulate:a", 0.0, 0.2)
+		return
+	
+	_target_name_label.text = entity_name
+	_target_health_bar.max_value = max_health
+	_target_health_bar.value = health
+	_target_health_value.text = "%d/%d" % [int(health), int(max_health)]
+	
+	if _target_tooltip_container.modulate.a < 1.0:
+		if _target_tween: _target_tween.kill()
+		_target_tween = create_tween()
+		_target_tween.tween_property(_target_tooltip_container, "modulate:a", 1.0, 0.2)

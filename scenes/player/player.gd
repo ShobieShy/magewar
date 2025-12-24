@@ -75,6 +75,9 @@ var inventory: InventorySystem:
 			add_child(_inventory_system)
 		return _inventory_system
 
+## HUD reference
+var hud: Control = null
+
 # =============================================================================
 # PROPERTIES
 # =============================================================================
@@ -160,6 +163,7 @@ func _process(delta: float) -> void:
 		return
 	
 	_process_crouch(delta)
+	_process_target_tooltip()
 	
 	# Initialize inventory system if needed
 	if _inventory_system == null:
@@ -301,6 +305,38 @@ func _update_player_state() -> void:
 	else:
 		# IDLE by default
 		player_state = Enums.PlayerState.IDLE
+
+
+func _process_target_tooltip() -> void:
+	if hud == null or raycast == null:
+		return
+	
+	if raycast.is_colliding():
+		var collider = raycast.get_collider()
+		if collider is EnemyBase:
+			var entity_name = collider.enemy_name
+			var health = 0.0
+			var max_h = 0.0
+			
+			if collider.stats:
+				health = collider.stats.current_health
+				max_h = collider.stats.max_health
+			
+			hud.update_target_info(entity_name, health, max_h)
+			return
+		elif collider is Player and collider != self:
+			var entity_name = collider.name
+			var health = 0.0
+			var max_h = 0.0
+			
+			if collider.stats:
+				health = collider.stats.current_health
+				max_h = collider.stats.max_health
+			
+			hud.update_target_info(entity_name, health, max_h)
+			return
+	
+	hud.update_target_info("", 0, 0)
 
 # =============================================================================
 # WEAPONS

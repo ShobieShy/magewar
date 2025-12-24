@@ -152,6 +152,7 @@ func _spawn_local_player() -> void:
 	# Connect HUD to local player
 	if player_hud:
 		player_hud.initialize(player)
+		player.hud = player_hud
 	
 	print("Spawned local player at ", spawn_pos)
 

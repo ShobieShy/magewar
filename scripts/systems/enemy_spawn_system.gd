@@ -52,7 +52,15 @@ var enemy_types: Dictionary = {
 		"skeleton": preload("res://scenes/enemies/skeleton.tscn"),
 		"skeleton_archer": preload("res://scenes/enemies/skeleton_archer.tscn"),
 		"skeleton_berserker": preload("res://scenes/enemies/skeleton_berserker.tscn"),
-		"skeleton_commander": preload("res://scenes/enemies/skeleton_commander.tscn")
+		"skeleton_commander": preload("res://scenes/enemies/skeleton_commander.tscn"),
+		"dragon": preload("res://scenes/enemies/enemy_base.tscn"),
+		"orc": preload("res://scenes/enemies/enemy_base.tscn"),
+		"vampire": preload("res://scenes/enemies/enemy_base.tscn"),
+		"werewolf": preload("res://scenes/enemies/enemy_base.tscn"),
+		"zombie": preload("res://scenes/enemies/enemy_base.tscn"),
+		"giant": preload("res://scenes/enemies/enemy_base.tscn"),
+		"harpy": preload("res://scenes/enemies/enemy_base.tscn"),
+		"basilisk": preload("res://scenes/enemies/enemy_base.tscn")
 	}
 
 # =============================================================================

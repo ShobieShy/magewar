@@ -77,7 +77,9 @@ const DUNGEON_ENEMY_POOLS = {
 		"skeleton_berserker": 8,
 		"skeleton_commander": 2,
 		"troll": 3,
-		"wraith": 2
+		"wraith": 2,
+		"zombie": 10,
+		"harpy": 5
 	},
 	2: {
 		"goblin": 20,
@@ -89,7 +91,9 @@ const DUNGEON_ENEMY_POOLS = {
 		"skeleton_berserker": 10,
 		"skeleton_commander": 4,
 		"troll": 5,
-		"wraith": 3
+		"wraith": 3,
+		"orc": 15,
+		"basilisk": 5
 	},
 	3: {
 		"goblin": 15,
@@ -101,7 +105,9 @@ const DUNGEON_ENEMY_POOLS = {
 		"skeleton_berserker": 12,
 		"skeleton_commander": 6,
 		"troll": 3,
-		"wraith": 2
+		"wraith": 2,
+		"werewolf": 10,
+		"vampire": 8
 	},
 	4: {
 		"goblin": 10,
@@ -113,7 +119,8 @@ const DUNGEON_ENEMY_POOLS = {
 		"skeleton_berserker": 15,
 		"skeleton_commander": 8,
 		"troll": 1,
-		"wraith": 1
+		"wraith": 1,
+		"giant": 10
 	},
 	5: {
 		"goblin": 5,
@@ -125,7 +132,8 @@ const DUNGEON_ENEMY_POOLS = {
 		"skeleton_berserker": 18,
 		"skeleton_commander": 10,
 		"troll": 0,
-		"wraith": 1
+		"wraith": 1,
+		"dragon": 5
 	}
 }
 
@@ -299,6 +307,9 @@ func select_weighted_enemy(weights: Dictionary) -> String:
 			return enemy_type
 
 	return weights.keys()[0] if not weights.is_empty() else "goblin"
+
+## Generate a loot table based on tier and dungeon level
+func get_loot_table(tier: String, dungeon_level: int) -> Array:
 	var loot_table = []
 	var scaling = get_loot_scaling(dungeon_level)
 
@@ -338,19 +349,5 @@ func select_weighted_enemy(weights: Dictionary) -> String:
 					"min": 1,
 					"max": 2
 				})
-
-
-## Select an enemy type based on weighted probabilities
-func select_weighted_enemy(weights: Dictionary) -> String:
-	var total_weight = 0
-	for weight in weights.values():
-		total_weight += weight
-
-	var random_value = randi() % total_weight
-
-	for enemy_type in weights.keys():
-		random_value -= weights[enemy_type]
-		if random_value <= 0:
-			return enemy_type
-
-	return weights.keys()[0] if not weights.is_empty() else "goblin"
+	
+	return loot_table
