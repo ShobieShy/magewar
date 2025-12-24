@@ -126,6 +126,9 @@ func _ready() -> void:
 				# Trigger inventory initialization if needed
 				var inv = self.inventory
 				inv.load_save_data(SaveManager.player_data, ItemDatabase._items)
+				
+				# Ensure player has a weapon (starter staff if nothing loaded)
+				_equip_starter_weapon()
 	else:
 		# Remote players don't need active camera
 		camera.current = false

@@ -320,6 +320,10 @@ func _is_inventory_open() -> bool:
 
 func _can_cast_spell() -> bool:
 	"""Check if conditions are right for spell casting"""
+	# Verify ownership and equipped status
+	if owner_player == null or owner_player.current_weapon != self:
+		return false
+		
 	# Don't cast if inventory is open
 	if _is_inventory_open():
 		return false

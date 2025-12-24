@@ -29,6 +29,8 @@ var _tab_container: TabContainer
 var _staff_slots: Dictionary = {}  ## StaffPart -> ItemSlot
 var _wand_slots: Dictionary = {}
 var _gem_slots: Array[ItemSlot] = []
+var _disassemble_slot: ItemSlot
+var _disassemble_button: Button
 var _inventory_grid: GridContainer
 var _inventory_slots: Array[ItemSlot] = []
 var _preview_panel: VBoxContainer
@@ -152,6 +154,9 @@ func _create_assembly_panel(parent: Control) -> void:
 	# Wand tab
 	_create_wand_tab()
 	
+	# Disassemble tab
+	_create_disassemble_tab()
+	
 	# Right side: Weapon preview
 	_create_weapon_preview_panel(content_hbox)
 	
@@ -250,6 +255,46 @@ func _create_wand_tab() -> void:
 	gem_label.text = "Gem Slot"
 	gem_label.add_theme_font_size_override("font_size", 14)
 	vbox.add_child(gem_label)
+
+
+func _create_disassemble_tab() -> void:
+	var scroll = ScrollContainer.new()
+	scroll.name = "Disassemble"
+	_tab_container.add_child(scroll)
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 12)
+	scroll.add_child(vbox)
+	
+	var label = Label.new()
+	label.text = "Place Weapon to Disassemble"
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_color_override("font_color", Color(0.8, 0.8, 1.0))
+	vbox.add_child(label)
+	
+	var slot_container = CenterContainer.new()
+	vbox.add_child(slot_container)
+	
+	_disassemble_slot = ItemSlot.new()
+	_disassemble_slot.slot_size = Vector2(80, 80)
+	_disassemble_slot.slot_clicked.connect(_on_disassemble_slot_clicked)
+	_disassemble_slot.slot_hovered.connect(_on_slot_hovered)
+	_disassemble_slot.slot_unhovered.connect(_on_slot_unhovered)
+	_disassemble_slot.item_dropped.connect(_on_disassemble_slot_dropped)
+	slot_container.add_child(_disassemble_slot)
+	
+	var info_label = Label.new()
+	info_label.text = "Recover parts from crafted weapons.\nWarning: Weapon will be destroyed."
+	info_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info_label.add_theme_color_override("font_color", Color(1.0, 0.6, 0.6))
+	info_label.add_theme_font_size_override("font_size", 12)
+	vbox.add_child(info_label)
+	
+	_disassemble_button = Button.new()
+	_disassemble_button.text = "Disassemble Weapon"
+	_disassemble_button.custom_minimum_size = Vector2(0, 40)
+	_disassemble_button.pressed.connect(_on_disassemble_pressed)
+	vbox.add_child(_disassemble_button)
 
 
 func _create_part_slot(label_text: String, part_type: Enums.StaffPart, required: bool, parent: Control) -> ItemSlot:
@@ -495,13 +540,23 @@ func _refresh_inventory() -> void:
 	if _inventory_system == null:
 		return
 	
-	# Show only parts and gems
+	# Show only parts and gems (or crafted weapons if in disassemble tab)
 	for i in range(Constants.INVENTORY_SIZE):
 		var item = _inventory_system.get_item(i)
 		if item == null:
 			continue
 		
-		if item is StaffPartData or item is GemData:
+		var show_item = false
+		if _current_tab == 2: # Disassemble tab
+			# Show crafted weapons
+			if item.item_type == Enums.ItemType.EQUIPMENT and item.has_meta("crafted"):
+				show_item = true
+		else: # Assemble tabs
+			# Show parts and gems
+			if item is StaffPartData or item is GemData:
+				show_item = true
+		
+		if show_item:
 			var slot = ItemSlot.new()
 			slot.slot_index = i
 			var quantity = item.stack_count if item.stack_count > 0 else 1
@@ -523,9 +578,16 @@ func _clear_assembly() -> void:
 		slot.clear()
 	for slot in _gem_slots:
 		slot.clear()
+	
+	if _disassemble_slot:
+		_disassemble_slot.clear()
 
 
 func _update_preview() -> void:
+	if _current_tab == 2: # Disassemble
+		_update_disassemble_preview()
+		return
+		
 	var parts = _get_selected_parts()
 	
 	# Clear validation feedback
@@ -765,6 +827,7 @@ func _can_craft() -> bool:
 
 func _on_tab_changed(tab: int) -> void:
 	_current_tab = tab
+	_refresh_inventory() # Refresh to filter items based on tab
 	_update_preview()
 
 
@@ -772,6 +835,15 @@ func _on_inventory_slot_clicked(slot: ItemSlot, button: int) -> void:
 	if slot.item == null:
 		return
 	
+	if _current_tab == 2: # Disassemble
+		if slot.item.has_meta("crafted"):
+			_disassemble_slot.set_item(slot.item)
+			# Store source index if needed, but for disassemble we just need the item data usually
+			# or store it in slot metadata
+			_disassemble_slot.set_meta("source_index", slot.slot_index)
+			_update_preview()
+		return
+
 	if slot.item is StaffPartData:
 		_assign_part_to_slot(slot.item, slot.slot_index)
 	elif slot.item is GemData:
@@ -1111,8 +1183,123 @@ func _disconnect_all_signals() -> void:
 			if slot.slot_unhovered.connect(_on_slot_unhovered):
 				slot.slot_unhovered.disconnect(_on_slot_unhovered)
 	
+	if _disassemble_slot and is_instance_valid(_disassemble_slot):
+		if _disassemble_slot.slot_clicked.is_connected(_on_disassemble_slot_clicked):
+			_disassemble_slot.slot_clicked.disconnect(_on_disassemble_slot_clicked)
+		if _disassemble_slot.item_dropped.is_connected(_on_disassemble_slot_dropped):
+			_disassemble_slot.item_dropped.disconnect(_on_disassemble_slot_dropped)
+	
 	_inventory_slots.clear()
 	_staff_slots.clear()
 	_wand_slots.clear()
 	_gem_slots.clear()
 	_part_validation_labels.clear()
+	_disassemble_slot = null
+
+
+func _update_disassemble_preview() -> void:
+	# Hide assembly specific UI
+	_level_label.text = ""
+	_stats_label.text = ""
+	_update_gem_slots_display(0)
+	_update_weapon_preview({})
+	
+	# Show/Hide disassemble button
+	if _disassemble_slot and _disassemble_slot.item:
+		_disassemble_button.disabled = false
+		_disassemble_button.text = "Disassemble"
+		
+		# Show parts that will be recovered
+		var item = _disassemble_slot.item
+		var parts_text = "[u]Recoverable Parts:[/u]\n"
+		var parts_meta = item.get_meta("parts", {})
+		var gems_meta = item.get_meta("gems", [])
+		
+		for part_type in parts_meta:
+			var part_id = parts_meta[part_type]
+			# Just show count or basic info as we might not have easy access to item names without lookup
+			# Assuming ItemDatabase is globally available
+			var part_item = ItemDatabase.get_item(part_id)
+			if part_item:
+				parts_text += "- %s\n" % part_item.item_name
+		
+		for gem_id in gems_meta:
+			var gem_item = ItemDatabase.get_item(gem_id)
+			if gem_item:
+				parts_text += "- %s\n" % gem_item.item_name
+				
+		_stats_label.text = parts_text
+	else:
+		_disassemble_button.disabled = true
+		_stats_label.text = "Drop a crafted weapon here to see recoverable parts."
+
+
+func _on_disassemble_slot_clicked(slot: ItemSlot, button: int) -> void:
+	if button == MOUSE_BUTTON_RIGHT and slot.item != null:
+		slot.clear()
+		_update_preview()
+
+
+func _on_disassemble_slot_dropped(_slot: ItemSlot, data: Variant) -> void:
+	if data is Dictionary and data.has("item"):
+		var item = data.item
+		if item.item_type == Enums.ItemType.EQUIPMENT and item.has_meta("crafted"):
+			_disassemble_slot.set_item(item)
+			_disassemble_slot.set_meta("source_index", data.get("slot_index", -1))
+			_update_preview()
+		else:
+			_show_error("Only crafted weapons can be disassembled")
+
+
+func _on_disassemble_pressed() -> void:
+	if not _disassemble_slot.item:
+		return
+	
+	var item = _disassemble_slot.item
+	var source_index = _disassemble_slot.get_meta("source_index", -1)
+	
+	if source_index == -1:
+		_show_error("Invalid item source")
+		return
+		
+	# Use CraftingLogic if available, otherwise replicate logic (fallback)
+	# Assuming we added disassemble_weapon to CraftingLogic
+	# We need to find the CraftingLogic instance. It's not passed here.
+	# We can try to find it in the scene tree or assume user implemented it in a way we can reach.
+	# But wait, I added it to CraftingLogic.gd which is a script but not an Autoload.
+	# UnifiedMenuUI doesn't seem to hold reference to it.
+	# But typically in this project managers are Autoloads or singletons.
+	# Wait, `scripts/systems/crafting_logic.gd` is just a script. It might be instantiated by GameManager or similar.
+	# `scenes/world/assembly_station.gd` instantiates `AssemblyUI`.
+	
+	# I will implement the logic directly here to be safe and self-contained for the UI
+	
+	if _inventory_system:
+		# Check space
+		if _inventory_system.get_free_slot_count() < 8:
+			_show_error("Not enough inventory space")
+			return
+			
+		var parts_meta = item.get_meta("parts", {})
+		var gems_meta = item.get_meta("gems", [])
+		
+		# Add parts
+		for part_type in parts_meta:
+			var part_id = parts_meta[part_type]
+			var part_item = ItemDatabase.get_item(part_id)
+			if part_item:
+				_inventory_system.add_item(part_item)
+		
+		# Add gems
+		for gem_id in gems_meta:
+			var gem_item = ItemDatabase.get_item(gem_id)
+			if gem_item:
+				_inventory_system.add_item(gem_item)
+		
+		# Remove weapon
+		_inventory_system.remove_item(source_index)
+		
+		_disassemble_slot.clear()
+		_show_success_message("Weapon disassembled!")
+		_refresh_inventory()
+		_update_preview()

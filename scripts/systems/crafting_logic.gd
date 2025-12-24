@@ -367,6 +367,49 @@ func _calculate_weapon_value(config: WeaponConfiguration) -> int:
 	return int(part_value * rarity_mult * crafting_bonus)
 
 # =============================================================================
+# DISASSEMBLY LOGIC
+# =============================================================================
+
+## Disassemble a weapon back into its parts
+## Returns true if successful
+func disassemble_weapon(weapon: ItemData) -> bool:
+	if not weapon:
+		return false
+	
+	if not weapon.has_meta("crafted") or not weapon.get_meta("crafted"):
+		crafting_failed.emit("Cannot disassemble non-crafted items")
+		return false
+	
+	if not inventory_system:
+		return false
+	
+	# Check inventory space (worst case: 5 parts + 3 gems = 8 slots)
+	if inventory_system.get_free_slot_count() < 8:
+		crafting_failed.emit("Not enough inventory space")
+		return false
+	
+	var parts_meta = weapon.get_meta("parts", {})
+	var gems_meta = weapon.get_meta("gems", [])
+	
+	# Add parts back to inventory
+	for part_type in parts_meta:
+		var part_id = parts_meta[part_type]
+		var part_item = ItemDatabase.get_item(part_id)
+		if part_item:
+			inventory_system.add_item(part_item)
+	
+	# Add gems back to inventory
+	for gem_id in gems_meta:
+		var gem_item = ItemDatabase.get_item(gem_id)
+		if gem_item:
+			inventory_system.add_item(gem_item)
+	
+	# Note: Calling code is responsible for removing the original weapon
+	
+	print("Disassembled weapon: %s" % weapon.item_name)
+	return true
+
+# =============================================================================
 # VALIDATION AND REQUIREMENTS
 # =============================================================================
 
