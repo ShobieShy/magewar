@@ -59,6 +59,9 @@ func setup_dungeon() -> void:
 	# Collect spawn points from the scene
 	collect_spawn_points()
 	
+	# Fix missing wall collisions
+	_generate_missing_collisions()
+	
 	# Connect signals
 	connect_signals()
 	
@@ -79,6 +82,52 @@ func collect_spawn_points() -> void:
 		spawn_points.append(Vector3(0, 0, 10))
 		spawn_points.append(Vector3(-10, 0, 10))
 		spawn_points.append(Vector3(10, 0, 10))
+
+func _generate_missing_collisions() -> void:
+	"""Automatically generates collision shapes for StaticBody3D nodes that only have meshes"""
+	var static_bodies = find_children("*", "StaticBody3D", true, false)
+	var generated_count = 0
+	
+	for body in static_bodies:
+		# Check if it already has collision shapes
+		var has_collision = false
+		for child in body.get_children():
+			if child is CollisionShape3D or child is CollisionPolygon3D:
+				has_collision = true
+				break
+		
+		if not has_collision:
+			# Generate collision from MeshInstance3D children
+			for child in body.get_children():
+				if child is MeshInstance3D and child.mesh:
+					var collision_shape = CollisionShape3D.new()
+					collision_shape.name = child.name + "Collision"
+					body.add_child(collision_shape)
+					collision_shape.owner = self # Useful for debugging in editor if needed
+					collision_shape.transform = child.transform
+					
+					# Try to use a simple shape if it's a primitive
+					if child.mesh is BoxMesh:
+						var box = BoxShape3D.new()
+						box.size = child.mesh.size
+						collision_shape.shape = box
+					elif child.mesh is SphereMesh:
+						var sphere = SphereShape3D.new()
+						sphere.radius = child.mesh.radius
+						collision_shape.shape = sphere
+					elif child.mesh is CylinderMesh:
+						var cylinder = CylinderShape3D.new()
+						cylinder.height = child.mesh.height
+						cylinder.radius = child.mesh.top_radius
+						collision_shape.shape = cylinder
+					else:
+						# Fallback to mesh data (convex is usually enough for walls)
+						collision_shape.shape = child.mesh.create_convex_collision_shape()
+					
+					generated_count += 1
+	
+	if generated_count > 0:
+		print("Generated %d missing collision shapes for dungeon walls" % generated_count)
 
 func connect_signals() -> void:
 	# Connect entrance/exit portals if they exist
