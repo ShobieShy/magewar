@@ -6,6 +6,7 @@ extends CanvasLayer
 
 # Preload StatAllocationUI script
 const StatAllocationUIScript = preload("res://scenes/ui/menus/stat_allocation_ui.gd")
+const QuestLogScript = preload("res://scenes/ui/menus/quest_log.gd")
 
 # =============================================================================
 # SIGNALS
@@ -109,6 +110,7 @@ var _storage_panel: Control
 
 # Quests Components
 var _quests_panel: Control
+var _quest_log_ui: Control
 
 # Fast Travel Components
 var _fast_travel_panel: Control
@@ -737,7 +739,8 @@ func _switch_tab(tab: MenuTab) -> void:
 		MenuTab.STORAGE:
 			pass  # Storage tab is static
 		MenuTab.QUESTS:
-			pass  # Quests tab is static
+			if _quest_log_ui:
+				_quest_log_ui.open()
 		MenuTab.FAST_TRAVEL:
 			pass  # Fast Travel tab is static
 
@@ -765,7 +768,8 @@ func _on_tab_changed(tab_index: int) -> void:
 		MenuTab.STORAGE:
 			pass  # Storage tab is static
 		MenuTab.QUESTS:
-			pass  # Quests tab is static
+			if _quest_log_ui:
+				_quest_log_ui.open()
 		MenuTab.FAST_TRAVEL:
 			pass  # Fast Travel tab is static
 
@@ -1622,21 +1626,11 @@ func _create_quests_tab() -> void:
 	_apply_panel_style(_quests_panel)
 	_tab_container.add_child(_quests_panel)
 	
-	var vbox = VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 12)
-	_quests_panel.add_child(vbox)
-	
-	var title = Label.new()
-	title.text = "Quests"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 24)
-	vbox.add_child(title)
-	
-	var placeholder = Label.new()
-	placeholder.text = "[Quest Log content coming soon]\nPress Q to access Quests"
-	placeholder.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	placeholder.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
-	vbox.add_child(placeholder)
+	_quest_log_ui = QuestLogScript.new()
+	_quest_log_ui.name = "QuestLogUI"
+	_quest_log_ui.is_embedded = true
+	_quests_panel.add_child(_quest_log_ui)
+
 
 
 # =============================================================================

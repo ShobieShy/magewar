@@ -261,6 +261,9 @@ func open(shop: ShopData) -> void:
 
 
 func close() -> void:
+	if not _is_open:
+		return
+	
 	_is_open = false
 	_shop = null
 	_tooltip.hide_tooltip()

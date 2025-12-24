@@ -28,6 +28,27 @@ func _ready() -> void:
 		
 		# Update player spawn marker
 		player_spawn.position.y = spawn_height + 2
+	
+	# Add spawn to group so DungeonPortalSystem can find it
+	player_spawn.add_to_group("spawn_points")
+	
+	# Create safety platform
+	var platform = MeshInstance3D.new()
+	platform.mesh = CylinderMesh.new()
+	platform.mesh.top_radius = 5.0
+	platform.mesh.bottom_radius = 5.0
+	platform.mesh.height = 1.0
+	platform.position = Vector3(0, player_spawn.position.y - 2.5, 0) # Just below spawn
+	add_child(platform)
+	
+	var sb = StaticBody3D.new()
+	var col = CollisionShape3D.new()
+	col.shape = CylinderShape3D.new()
+	col.shape.radius = 5.0
+	col.shape.height = 1.0
+	sb.position = platform.position
+	sb.add_child(col)
+	add_child(sb)
 
 func _generate_world() -> void:
 	print("Generating TempLand...")

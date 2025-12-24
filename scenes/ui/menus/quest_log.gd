@@ -1,5 +1,6 @@
 ## QuestLog - Quest tracking and details UI
 ## Shows active quests, objectives, and rewards
+class_name QuestLog
 extends Control
 
 # =============================================================================
@@ -14,6 +15,7 @@ signal quest_abandoned(quest_id: String)
 # PROPERTIES
 # =============================================================================
 
+var is_embedded: bool = false
 var _is_open: bool = false
 var _selected_quest: QuestData = null
 
@@ -34,8 +36,14 @@ var _abandon_button: Button
 # =============================================================================
 
 func _ready() -> void:
+	# Set size flags for proper container integration
+	size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	size_flags_vertical = Control.SIZE_EXPAND_FILL
+	
 	_create_ui()
-	hide()
+	
+	if not is_embedded:
+		hide()
 	
 	# Connect to QuestManager signals
 	QuestManager.quest_started.connect(_on_quest_started)
@@ -44,6 +52,9 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if is_embedded:
+		return
+		
 	if not _is_open:
 		return
 	
@@ -56,17 +67,27 @@ func _input(event: InputEvent) -> void:
 # =============================================================================
 
 func _create_ui() -> void:
-	# Background dimmer
-	var dimmer = ColorRect.new()
-	dimmer.color = Color(0, 0, 0, 0.5)
-	dimmer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	dimmer.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(dimmer)
+	# Background dimmer (only when not embedded)
+	if not is_embedded:
+		var dimmer = ColorRect.new()
+		dimmer.color = Color(0, 0, 0, 0.5)
+		dimmer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		dimmer.mouse_filter = Control.MOUSE_FILTER_STOP
+		add_child(dimmer)
 	
 	# Main container
 	var main_container = HBoxContainer.new()
 	main_container.name = "MainContainer"
-	main_container.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	
+	if is_embedded:
+		main_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		main_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		main_container.alignment = BoxContainer.ALIGNMENT_CENTER
+		# When embedded, fill the space but keep margins if needed
+		main_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	else:
+		main_container.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+		
 	main_container.add_theme_constant_override("separation", 16)
 	add_child(main_container)
 	
@@ -100,10 +121,11 @@ func _create_quest_list_panel(parent: Control) -> void:
 	header.add_child(Control.new())
 	header.get_child(1).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	
-	var close_button = Button.new()
-	close_button.text = "X"
-	close_button.pressed.connect(close)
-	header.add_child(close_button)
+	if not is_embedded:
+		var close_button = Button.new()
+		close_button.text = "X"
+		close_button.pressed.connect(close)
+		header.add_child(close_button)
 	
 	# Separator
 	vbox.add_child(HSeparator.new())
@@ -220,14 +242,16 @@ func open() -> void:
 	_is_open = true
 	_refresh_quest_list()
 	show()
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	if not is_embedded:
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
 func close() -> void:
 	_is_open = false
 	hide()
 	closed.emit()
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	if not is_embedded:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
 func is_open() -> bool:
@@ -240,10 +264,15 @@ func _exit_tree() -> void:
 
 
 func _disconnect_all_signals() -> void:
-	"""Disconnect quest item buttons to prevent memory leaks"""
-	# Disconnect quest item buttons
-	for quest_button in get_tree().get_nodes_in_group("quest_items"):
-		pass  # TODO: Implement button disconnection logic
+	"""Disconnect signals to prevent memory leaks"""
+	if QuestManager:
+		if QuestManager.quest_started.is_connected(_on_quest_started):
+			QuestManager.quest_started.disconnect(_on_quest_started)
+		if QuestManager.quest_completed.is_connected(_on_quest_completed):
+			QuestManager.quest_completed.disconnect(_on_quest_completed)
+		if QuestManager.objective_updated.is_connected(_on_objective_updated):
+			QuestManager.objective_updated.disconnect(_on_objective_updated)
+
 
 
 # =============================================================================

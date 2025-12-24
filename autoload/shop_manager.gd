@@ -103,6 +103,9 @@ func open_shop(shop_id: String) -> bool:
 
 
 func close_shop() -> void:
+	if _current_shop == null:
+		return
+	
 	_current_shop = null
 	_hide_shop_ui()
 	shop_closed.emit()
