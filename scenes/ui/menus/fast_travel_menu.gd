@@ -22,6 +22,7 @@ signal menu_closed()
 # PROPERTIES
 # =============================================================================
 
+var is_embedded: bool = false
 var current_portal_id: String = ""
 var _button_pool: Array[Button] = []
 
@@ -30,13 +31,24 @@ var _button_pool: Array[Button] = []
 # =============================================================================
 
 func _ready() -> void:
-	visible = false
+	if not is_embedded:
+		visible = false
 	
 	if close_button:
-		close_button.pressed.connect(_on_close_pressed)
+		if is_embedded:
+			close_button.visible = false
+		else:
+			close_button.pressed.connect(_on_close_pressed)
+	
+	# If embedded, populate immediately
+	if is_embedded:
+		_populate_destinations()
 
 
 func _input(event: InputEvent) -> void:
+	if is_embedded:
+		return
+		
 	if not visible:
 		return
 	
@@ -54,15 +66,19 @@ func open(from_portal_id: String = "") -> void:
 	# Populate destination list
 	_populate_destinations()
 	
-	# Show menu
-	visible = true
-	
-	# Pause game and show mouse
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	get_tree().paused = true
+	if not is_embedded:
+		# Show menu
+		visible = true
+		
+		# Pause game and show mouse
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		get_tree().paused = true
 
 
 func close() -> void:
+	if is_embedded:
+		return
+		
 	visible = false
 	current_portal_id = ""
 	
@@ -71,6 +87,7 @@ func close() -> void:
 	get_tree().paused = false
 	
 	menu_closed.emit()
+
 
 
 func _exit_tree() -> void:
@@ -137,7 +154,15 @@ func _add_no_destinations_label() -> void:
 
 func _on_destination_pressed(portal_id: String) -> void:
 	destination_selected.emit(portal_id)
-	close()
+	
+	if is_embedded:
+		# If embedded, we probably want to trigger travel but not close the menu
+		# Or maybe the Unified UI handles closure?
+		# Actually, FastTravelManager.travel_to_portal will change scene which might close UI
+		FastTravelManager.travel_to_portal(portal_id)
+	else:
+		close()
+
 
 
 func _on_close_pressed() -> void:

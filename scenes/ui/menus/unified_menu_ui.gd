@@ -7,6 +7,7 @@ extends CanvasLayer
 # Preload StatAllocationUI script
 const StatAllocationUIScript = preload("res://scenes/ui/menus/stat_allocation_ui.gd")
 const QuestLogScript = preload("res://scenes/ui/menus/quest_log.gd")
+const FastTravelMenuScript = preload("res://scenes/ui/menus/fast_travel_menu.gd")
 
 # =============================================================================
 # SIGNALS
@@ -114,6 +115,7 @@ var _quest_log_ui: Control
 
 # Fast Travel Components
 var _fast_travel_panel: Control
+var _fast_travel_ui: Control
 
 # =============================================================================
 # EXPORTED PROPERTIES
@@ -742,7 +744,8 @@ func _switch_tab(tab: MenuTab) -> void:
 			if _quest_log_ui:
 				_quest_log_ui.open()
 		MenuTab.FAST_TRAVEL:
-			pass  # Fast Travel tab is static
+			if _fast_travel_ui:
+				_fast_travel_ui.open()
 
 
 func _on_tab_changed(tab_index: int) -> void:
@@ -771,7 +774,8 @@ func _on_tab_changed(tab_index: int) -> void:
 			if _quest_log_ui:
 				_quest_log_ui.open()
 		MenuTab.FAST_TRAVEL:
-			pass  # Fast Travel tab is static
+			if _fast_travel_ui:
+				_fast_travel_ui.open()
 
 
 # =============================================================================
@@ -1644,21 +1648,11 @@ func _create_fast_travel_tab() -> void:
 	_apply_panel_style(_fast_travel_panel)
 	_tab_container.add_child(_fast_travel_panel)
 	
-	var vbox = VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 12)
-	_fast_travel_panel.add_child(vbox)
-	
-	var title = Label.new()
-	title.text = "Fast Travel"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 24)
-	vbox.add_child(title)
-	
-	var placeholder = Label.new()
-	placeholder.text = "[Fast Travel content coming soon]\nPress M to access Map"
-	placeholder.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	placeholder.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
-	vbox.add_child(placeholder)
+	_fast_travel_ui = FastTravelMenuScript.new()
+	_fast_travel_ui.name = "FastTravelUI"
+	_fast_travel_ui.is_embedded = true
+	_fast_travel_panel.add_child(_fast_travel_ui)
+
 
 
 func _create_join_popup() -> void:
