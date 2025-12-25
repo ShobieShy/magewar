@@ -68,8 +68,8 @@ func _ready() -> void:
 
 
 func _load_initial_world() -> void:
-	# Default to town square
-	load_world("res://scenes/world/starting_town/town_square.tscn")
+	# Default to overworld
+	load_world("res://scenes/world/overworld/overworld.tscn")
 
 
 func load_world(world_path: String) -> void:

@@ -36,16 +36,17 @@ var dungeon_scenes: Dictionary = {
 	"dungeon_3": "res://scenes/dungeons/dungeon_3.tscn",
 	"dungeon_4": "res://scenes/dungeons/dungeon_4.tscn",
 	"dungeon_5": "res://scenes/dungeons/dungeon_5.tscn",
-	"town_square": "res://scenes/world/starting_town/town_square.tscn",
+	"town_square": "res://scenes/world/overworld/overworld.tscn",
 	"home_tree": "res://scenes/world/starting_town/home_tree.tscn",
 	"mage_association": "res://scenes/world/starting_town/mage_association.tscn",
-	"landfill": "res://scenes/world/landfill/landfill.tscn",
+	"landfill": "res://scenes/world/overworld/overworld.tscn",
 	"test_arena": "res://scenes/world/test_arena.tscn",
-	"temp_land": "res://scenes/world/temp_land/temp_land.tscn"
+	"temp_land": "res://scenes/world/overworld/overworld.tscn",
+	"overworld": "res://scenes/world/overworld/overworld.tscn"
 }
 
 # Main hub scene for returning from dungeons
-var overworld_scene: String = "res://scenes/world/starting_town/town_square.tscn"
+var overworld_scene: String = "res://scenes/world/overworld/overworld.tscn"
 
 # =============================================================================
 # BUILT-IN CALLBACKS

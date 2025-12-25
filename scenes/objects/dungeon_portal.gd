@@ -360,8 +360,8 @@ func get_spawn_position() -> Vector3:
 		if child.is_in_group("spawn_points"):
 			return child.global_position
 	
-	# Default to 2 meters in front of the portal
-	return global_position + transform.basis.z * 2.0
+	# Default to 2 meters in front of the portal, raised slightly to avoid floor clipping
+	return global_position + transform.basis.z * 2.0 + Vector3(0, 0.5, 0)
 
 # =============================================================================
 # COLLISION DETECTION

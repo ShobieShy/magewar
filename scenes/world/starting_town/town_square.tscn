@@ -149,7 +149,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 12)
 [node name="NPCSpawns" type="Node3D" parent="."]
 
 [node name="CrazyJoeSpawn" type="Marker3D" parent="NPCSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.5, 8)
 
 [node name="BobSpawn" type="Marker3D" parent="NPCSpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.5, -5)

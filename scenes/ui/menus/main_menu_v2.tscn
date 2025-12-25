@@ -1,0 +1,167 @@
+[gd_scene format=3 uid="uid://8h5cmbya6xd5"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.1, 0.15, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -200.0
+offset_right = 150.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "MAGEWAR"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="VBoxContainer"]
+modulate = Color(0.7, 0.7, 0.7, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Co-op Looter FPS"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="Spacer2" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="SteamStatus" type="Label" parent="VBoxContainer"]
+modulate = Color(0.5, 0.5, 0.5, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Steam: Checking..."
+horizontal_alignment = 1
+
+[node name="LobbyPanel" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="LobbyPanel"]
+layout_mode = 2
+
+[node name="LobbyTitle" type="Label" parent="LobbyPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Lobby"
+horizontal_alignment = 1
+
+[node name="PlayerList" type="ItemList" parent="LobbyPanel/VBox"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="LobbyPanel/VBox"]
+layout_mode = 2
+
+[node name="ReadyButton" type="Button" parent="LobbyPanel/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Ready"
+
+[node name="StartButton" type="Button" parent="LobbyPanel/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Start Game"
+
+[node name="LeaveButton" type="Button" parent="LobbyPanel/VBox"]
+layout_mode = 2
+text = "Leave Lobby"
+
+[node name="JoinPanel" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -100.0
+offset_right = 200.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="JoinPanel"]
+layout_mode = 2
+
+[node name="JoinTitle" type="Label" parent="JoinPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Join Game"
+horizontal_alignment = 1
+
+[node name="AddressInput" type="LineEdit" parent="JoinPanel/VBox"]
+layout_mode = 2
+placeholder_text = "IP Address (for ENet fallback)"
+
+[node name="LobbyList" type="ItemList" parent="JoinPanel/VBox"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="RefreshButton" type="Button" parent="JoinPanel/VBox"]
+layout_mode = 2
+text = "Refresh Lobbies"
+
+[node name="HBox" type="HBoxContainer" parent="JoinPanel/VBox"]
+layout_mode = 2
+
+[node name="JoinSelectedButton" type="Button" parent="JoinPanel/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Join Selected"
+
+[node name="JoinIPButton" type="Button" parent="JoinPanel/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Join by IP"
+
+[node name="BackButton" type="Button" parent="JoinPanel/VBox"]
+layout_mode = 2
+text = "Back"
+
+[connection signal="pressed" from="LobbyPanel/VBox/HBox/ReadyButton" to="." method="_on_ready_pressed"]
+[connection signal="pressed" from="LobbyPanel/VBox/HBox/StartButton" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="LobbyPanel/VBox/LeaveButton" to="." method="_on_leave_lobby_pressed"]
+[connection signal="pressed" from="JoinPanel/VBox/RefreshButton" to="." method="_on_refresh_pressed"]
+[connection signal="pressed" from="JoinPanel/VBox/HBox/JoinSelectedButton" to="." method="_on_join_selected_pressed"]
+[connection signal="pressed" from="JoinPanel/VBox/HBox/JoinIPButton" to="." method="_on_join_ip_pressed"]
+[connection signal="pressed" from="JoinPanel/VBox/BackButton" to="." method="_on_back_pressed"]
