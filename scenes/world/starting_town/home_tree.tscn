@@ -1,25 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://home_tree"]
+[gd_scene load_steps=11 format=3 uid="uid://c87vb3wusubfa"]
 
-[ext_resource type="Script" path="res://scenes/world/starting_town/home_tree.gd" id="1_home"]
-[ext_resource type="Script" path="res://scenes/world/storage_chest.gd" id="2_storage"]
-[ext_resource type="Script" path="res://scenes/world/assembly_station.gd" id="3_assembly"]
+[ext_resource type="Script" uid="uid://chw5ju67lwvuf" path="res://scenes/world/starting_town/home_tree.gd" id="1_home"]
+[ext_resource type="Script" uid="uid://w5lt4wwg023y" path="res://scenes/world/storage_chest.gd" id="2_storage"]
+[ext_resource type="Script" uid="uid://d3s2kh6bh3hdp" path="res://scenes/world/assembly_station.gd" id="3_assembly"]
 [ext_resource type="PackedScene" uid="uid://dportal001" path="res://scenes/objects/dungeon_portal.tscn" id="4_dportal"]
-[ext_resource type="Script" path="res://scripts/components/interactable.gd" id="5_interactable"]
-
-[sub_resource type="StandardMaterial3D" id="mat_wood"]
-albedo_color = Color(0.35, 0.25, 0.18, 1)
-
-[sub_resource type="StandardMaterial3D" id="mat_floor"]
-albedo_color = Color(0.4, 0.32, 0.25, 1)
-
-[sub_resource type="StandardMaterial3D" id="mat_fabric"]
-albedo_color = Color(0.5, 0.35, 0.25, 1)
-
-[sub_resource type="StandardMaterial3D" id="mat_leaves"]
-albedo_color = Color(0.25, 0.4, 0.2, 1)
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_1"]
-radius = 2.0
+[ext_resource type="Script" uid="uid://cjvhlm8rb5y0x" path="res://scripts/components/interactable.gd" id="5_interactable"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -27,6 +12,18 @@ background_color = Color(0.18, 0.15, 0.12, 1)
 ambient_light_source = 2
 ambient_light_color = Color(0.6, 0.55, 0.45, 1)
 ambient_light_energy = 0.4
+
+[sub_resource type="StandardMaterial3D" id="mat_floor"]
+albedo_color = Color(0.4, 0.32, 0.25, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_wood"]
+albedo_color = Color(0.35, 0.25, 0.18, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_fabric"]
+albedo_color = Color(0.5, 0.35, 0.25, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1"]
+radius = 2.0
 
 [node name="HomeTree" type="Node3D"]
 script = ExtResource("1_home")
@@ -185,7 +182,7 @@ collision_mask = 2
 shape = SubResource("SphereShape3D_1")
 
 [node name="EntrancePortal" parent="." instance=ExtResource("4_dportal")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.471708)
 portal_id = "entrance"
 portal_type = 1
 dungeon_id = "town_square"

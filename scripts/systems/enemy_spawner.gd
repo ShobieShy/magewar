@@ -115,6 +115,9 @@ func _start_next_wave() -> void:
 
 func _spawn_enemies_with_delay(delay: float) -> void:
 	while _spawn_queue.size() > 0 and is_spawning:
+		if not is_inside_tree():
+			return
+
 		if get_active_enemy_count() >= max_concurrent_enemies:
 			# Wait for some enemies to die
 			await get_tree().create_timer(0.5).timeout
@@ -128,6 +131,8 @@ func _spawn_enemies_with_delay(delay: float) -> void:
 	
 	# Wait for all enemies to be killed
 	while get_active_enemy_count() > 0:
+		if not is_inside_tree():
+			return
 		await get_tree().create_timer(0.5).timeout
 	
 	_on_wave_complete()
@@ -149,7 +154,16 @@ func _on_wave_complete() -> void:
 # =============================================================================
 
 func _spawn_single_enemy(enemy_scene: PackedScene) -> Node:
+	# Check if we can spawn more enemies
+	if active_enemies.size() >= max_concurrent_enemies:
+		push_warning("EnemySpawner: Max concurrent enemies reached (%d). Skipping spawn." % max_concurrent_enemies)
+		return null
+	
 	var enemy = enemy_scene.instantiate()
+	
+	# Add to scene first to ensure it's in the tree before setting global_position
+	get_tree().current_scene.add_child(enemy)
+	active_enemies.append(enemy)
 	
 	# Get spawn position
 	var spawn_pos = _get_spawn_position()
@@ -159,16 +173,6 @@ func _spawn_single_enemy(enemy_scene: PackedScene) -> Node:
 	# Connect death signal
 	if enemy.has_signal("died"):
 		enemy.died.connect(_on_enemy_died.bind(enemy))
-	
-	# Check if we can spawn more enemies
-	if active_enemies.size() >= max_concurrent_enemies:
-		push_warning("EnemySpawner: Max concurrent enemies reached (%d). Skipping spawn." % max_concurrent_enemies)
-		enemy.queue_free()
-		return null
-	
-	# Add to scene
-	get_tree().current_scene.add_child(enemy)
-	active_enemies.append(enemy)
 	
 	enemy_spawned.emit(enemy)
 	return enemy
@@ -203,14 +207,14 @@ func spawn_boss(boss_scene: PackedScene, position: Vector3 = Vector3.ZERO) -> No
 	## Spawn a single boss enemy at a specific position
 	var boss = boss_scene.instantiate()
 	
+	get_tree().current_scene.add_child(boss)
+	active_enemies.append(boss)
+	
 	if boss is Node3D:
 		boss.global_position = position if position != Vector3.ZERO else _get_spawn_position()
 	
 	if boss.has_signal("died"):
 		boss.died.connect(_on_enemy_died.bind(boss))
-	
-	get_tree().current_scene.add_child(boss)
-	active_enemies.append(boss)
 	
 	enemy_spawned.emit(boss)
 	return boss
